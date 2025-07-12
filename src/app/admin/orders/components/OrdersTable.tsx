@@ -2,18 +2,13 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Eye, Truck, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { OrderActionsDropdown } from "./OrderActionsDropdown";
+import { AdminTable, TableColumn } from "../../components/Table";
+import { AdminDropdown, DropdownAction } from "../../components/Dropdown";
 import { OrderDetailsModal } from "./OrderDetailsModal";
 import { formatPrice, getStatusVariant, getStatusLabel } from "@/lib/orders";
+import { markAsShippedAction, deleteOrderAction } from "../actions";
 import type { Order } from "@/app/generated/prisma";
 
 interface OrderWithUser extends Order {
@@ -38,57 +33,95 @@ export function OrdersTable({ orders }: OrdersTableProps) {
     setSelectedOrderId(null);
   };
 
+  const handleMarkAsShipped = async (orderId: string) => {
+    const result = await markAsShippedAction(orderId);
+    if (!result.success) {
+      console.error("Failed to mark as shipped:", result.error);
+    }
+  };
+
+  const handleDelete = async (orderId: string) => {
+    if (window.confirm("Are you sure you want to delete this order?")) {
+      const result = await deleteOrderAction(orderId);
+      if (!result.success) {
+        console.error("Failed to delete order:", result.error);
+      }
+    }
+  };
+
+  const getOrderActions = (order: OrderWithUser): DropdownAction[] => [
+    {
+      label: "Details",
+      icon: <Eye className="mr-2 h-4 w-4" />,
+      onClick: () => handleViewDetails(order.id),
+    },
+    {
+      label: "Mark as shipped",
+      icon: <Truck className="mr-2 h-4 w-4" />,
+      onClick: () => handleMarkAsShipped(order.id),
+    },
+    {
+      label: "Delete",
+      icon: <Trash2 className="mr-2 h-4 w-4" />,
+      onClick: () => handleDelete(order.id),
+      variant: "destructive" as const,
+      separator: true,
+    },
+  ];
+
+  const columns: TableColumn<OrderWithUser>[] = [
+    {
+      key: "id",
+      label: "Order ID",
+      render: (order) => (
+        <span className="font-mono text-sm">{order.id.slice(0, 8)}...</span>
+      ),
+    },
+    {
+      key: "status",
+      label: "Status",
+      render: (order) => (
+        <Badge variant={getStatusVariant(order.status)}>
+          {getStatusLabel(order.status)}
+        </Badge>
+      ),
+    },
+    {
+      key: "price",
+      label: "Price",
+      render: (order) => formatPrice(order.pricePaid),
+    },
+    {
+      key: "created",
+      label: "Created",
+      render: (order) => format(new Date(order.createdAt), "dd/MM/yyyy HH:mm"),
+    },
+    {
+      key: "email",
+      label: "Customer Email",
+      render: (order) => order.user.email,
+    },
+    {
+      key: "phone",
+      label: "Phone",
+      render: (order) => order.user.phoneNumber || "-",
+    },
+    {
+      key: "actions",
+      label: "",
+      className: "text-right",
+      render: (order) => <AdminDropdown actions={getOrderActions(order)} />,
+    },
+  ];
+
   return (
     <>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Order ID</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead>Customer Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {orders.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} className="py-8 text-center">
-                  No orders found
-                </TableCell>
-              </TableRow>
-            ) : (
-              orders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell className="font-mono text-sm">
-                    {order.id.slice(0, 8)}...
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusVariant(order.status)}>
-                      {getStatusLabel(order.status)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{formatPrice(order.pricePaid)}</TableCell>
-                  <TableCell>
-                    {format(new Date(order.createdAt), "dd/MM/yyyy HH:mm")}
-                  </TableCell>
-                  <TableCell>{order.user.email}</TableCell>
-                  <TableCell>{order.user.phoneNumber || "-"}</TableCell>
-                  <TableCell className="text-right">
-                    <OrderActionsDropdown
-                      orderId={order.id}
-                      onViewDetails={handleViewDetails}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <AdminTable
+        columns={columns}
+        data={orders}
+        emptyMessage="No orders found"
+        keyExtractor={(order) => order.id}
+      />
 
       {selectedOrderId && (
         <OrderDetailsModal

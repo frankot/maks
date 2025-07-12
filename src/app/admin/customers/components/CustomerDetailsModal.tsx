@@ -1,23 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
 import { format } from "date-fns";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DetailsModal } from "@/app/admin/components/DetailsModal";
 import {
   formatCustomerName,
   calculateTotalSpent,
   formatPrice,
 } from "@/lib/customers";
 import { getStatusVariant, getStatusLabel } from "@/lib/orders";
+import { OrderDetailsModal } from "../../orders/components/OrderDetailsModal";
 import type { User, Order, OrderItem, Address } from "@/app/generated/prisma";
+import {
+  User as UserIcon,
+  Mail,
+  Phone,
+  Calendar,
+  ShoppingBag,
+  DollarSign,
+  MapPin,
+  Package,
+} from "lucide-react";
 
 interface CustomerDetailsModalProps {
   customerId: string;
@@ -49,6 +53,15 @@ export function CustomerDetailsModal({
   const [customer, setCustomer] = useState<CustomerWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+
+  const handleOrderClick = (orderId: string) => {
+    setSelectedOrderId(orderId);
+  };
+
+  const handleCloseOrderModal = () => {
+    setSelectedOrderId(null);
+  };
 
   useEffect(() => {
     const fetchCustomer = async () => {
@@ -73,183 +86,278 @@ export function CustomerDetailsModal({
     fetchCustomer();
   }, [customerId]);
 
-  if (loading) {
-    return (
-      <Dialog open={true} onOpenChange={onClose}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Loading Customer Details</DialogTitle>
-          </DialogHeader>
-          <div className="flex items-center justify-center py-8">
-            <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
-  if (error || !customer) {
-    return (
-      <Dialog open={true} onOpenChange={onClose}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Error</DialogTitle>
-          </DialogHeader>
-          <div className="py-8 text-center">
-            <p className="text-red-600">{error || "Customer not found"}</p>
-            <Button onClick={onClose} className="mt-4">
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  }
+  const title = customer
+    ? `${formatCustomerName(customer.firstName, customer.lastName)}`
+    : "Loading Customer Details";
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>
-              Customer Details -{" "}
-              {formatCustomerName(customer.firstName, customer.lastName)}
-            </span>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogTitle>
-        </DialogHeader>
+    <>
+      <DetailsModal
+        isOpen={true}
+        onClose={onClose}
+        title={title}
+        loading={loading}
+        error={error}
+        size="full"
+      >
+        {customer && (
+          <>
+            {/* Top Stats Cards */}
+            <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-4">
+              <div className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 p-6">
+                <div className="flex items-center">
+                  <div className="rounded-lg bg-blue-500 p-3">
+                    <ShoppingBag className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-blue-600">
+                      Total Orders
+                    </p>
+                    <p className="text-2xl font-bold text-blue-900">
+                      {customer._count.orders}
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-        <div className="space-y-6">
-          {/* Customer Info */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <h3 className="mb-2 font-semibold">Customer Information</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Full Name:</span>
-                  <span className="font-medium">
-                    {formatCustomerName(customer.firstName, customer.lastName)}
-                  </span>
+              <div className="rounded-xl border border-green-200 bg-gradient-to-br from-green-50 to-green-100 p-6">
+                <div className="flex items-center">
+                  <div className="rounded-lg bg-green-500 p-3">
+                    <DollarSign className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-green-600">
+                      Total Spent
+                    </p>
+                    <p className="text-2xl font-bold text-green-900">
+                      {formatPrice(calculateTotalSpent(customer.orders))}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span>Email:</span>
-                  <span>{customer.email}</span>
+              </div>
+
+              <div className="rounded-xl border border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100 p-6">
+                <div className="flex items-center">
+                  <div className="rounded-lg bg-purple-500 p-3">
+                    <Package className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-purple-600">
+                      Avg Order
+                    </p>
+                    <p className="text-2xl font-bold text-purple-900">
+                      {customer._count.orders > 0
+                        ? formatPrice(
+                            calculateTotalSpent(customer.orders) /
+                              customer._count.orders,
+                          )
+                        : formatPrice(0)}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span>Phone:</span>
-                  <span>{customer.phoneNumber || "-"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Joined:</span>
-                  <span>
-                    {format(new Date(customer.createdAt), "dd/MM/yyyy")}
-                  </span>
+              </div>
+
+              <div className="rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-amber-100 p-6">
+                <div className="flex items-center">
+                  <div className="rounded-lg bg-amber-500 p-3">
+                    <Calendar className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-amber-600">
+                      Member Since
+                    </p>
+                    <p className="text-xl font-bold text-amber-900">
+                      {format(new Date(customer.createdAt), "MMM yyyy")}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div>
-              <h3 className="mb-2 font-semibold">Order Statistics</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Total Orders:</span>
-                  <span className="font-medium">{customer._count.orders}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Total Spent:</span>
-                  <span className="font-medium">
-                    {formatPrice(calculateTotalSpent(customer.orders))}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Average Order:</span>
-                  <span>
-                    {customer._count.orders > 0
-                      ? formatPrice(
-                          calculateTotalSpent(customer.orders) /
-                            customer._count.orders,
-                        )
-                      : formatPrice(0)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Customer Addresses */}
-          {customer.addresses.length > 0 && (
-            <div>
-              <h3 className="mb-2 font-semibold">Addresses</h3>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                {customer.addresses.map((address) => (
-                  <div key={address.id} className="rounded-lg border p-3">
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        {address.addressType}
-                      </span>
-                      {address.isDefault && (
-                        <Badge variant="secondary" className="text-xs">
-                          Default
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="space-y-1 text-sm text-gray-600">
-                      <div>{address.street}</div>
+            {/* Main Content - 3 Column Layout */}
+            <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
+              {/* Column 1: Customer Information */}
+              <div className="space-y-6">
+                <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                  <div className="mb-6 flex items-center">
+                    <UserIcon className="mr-3 h-6 w-6 text-gray-600" />
+                    <h3 className="text-xl font-semibold text-gray-900">
+                      Customer Information
+                    </h3>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center">
+                      <UserIcon className="mr-3 h-5 w-5 text-gray-400" />
                       <div>
-                        {address.city} {address.postalCode}
+                        <p className="text-sm text-gray-500">Full Name</p>
+                        <p className="font-medium text-gray-900">
+                          {formatCustomerName(
+                            customer.firstName,
+                            customer.lastName,
+                          )}
+                        </p>
                       </div>
-                      <div>{address.country}</div>
+                    </div>
+                    <div className="flex items-center">
+                      <Mail className="mr-3 h-5 w-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Email</p>
+                        <p className="font-medium text-gray-900">
+                          {customer.email}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <Phone className="mr-3 h-5 w-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Phone</p>
+                        <p className="font-medium text-gray-900">
+                          {customer.phoneNumber || "Not provided"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <Calendar className="mr-3 h-5 w-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Joined</p>
+                        <p className="font-medium text-gray-900">
+                          {format(new Date(customer.createdAt), "dd MMM yyyy")}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Addresses */}
+                {customer.addresses.length > 0 && (
+                  <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                    <div className="mb-6 flex items-center">
+                      <MapPin className="mr-3 h-6 w-6 text-gray-600" />
+                      <h3 className="text-xl font-semibold text-gray-900">
+                        Addresses
+                      </h3>
+                    </div>
+                    <div className="space-y-4">
+                      {customer.addresses.map((address) => (
+                        <div
+                          key={address.id}
+                          className="rounded-lg border border-gray-100 bg-gray-50 p-4"
+                        >
+                          <div className="mb-2 flex items-center justify-between">
+                            <span className="font-medium text-gray-900 capitalize">
+                              {address.addressType.toLowerCase()}
+                            </span>
+                            {address.isDefault && (
+                              <Badge variant="secondary" className="text-xs">
+                                Default
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="space-y-1 text-sm text-gray-600">
+                            <p>{address.street}</p>
+                            <p>
+                              {address.city} {address.postalCode}
+                            </p>
+                            <p>{address.country}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Column 2 & 3: Order History */}
+              <div className="xl:col-span-2">
+                <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                  <div className="mb-6 flex items-center">
+                    <ShoppingBag className="mr-3 h-6 w-6 text-gray-600" />
+                    <h3 className="text-xl font-semibold text-gray-900">
+                      Order History
+                    </h3>
+                    <span className="ml-auto text-sm text-gray-500">
+                      {customer.orders.length} orders
+                    </span>
+                  </div>
+
+                  {customer.orders.length === 0 ? (
+                    <div className="py-12 text-center">
+                      <ShoppingBag className="mx-auto mb-4 h-12 w-12 text-gray-300" />
+                      <p className="text-lg text-gray-500">No orders found</p>
+                      <p className="text-sm text-gray-400">
+                        This customer hasn&apos;t placed any orders yet.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-gray-200">
+                            <th className="px-4 py-4 text-left font-semibold text-gray-900">
+                              Order ID
+                            </th>
+                            <th className="px-4 py-4 text-left font-semibold text-gray-900">
+                              Status
+                            </th>
+                            <th className="px-4 py-4 text-right font-semibold text-gray-900">
+                              Total
+                            </th>
+                            <th className="px-4 py-4 text-right font-semibold text-gray-900">
+                              Date
+                            </th>
+                            <th className="px-4 py-4 text-right font-semibold text-gray-900">
+                              Items
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {customer.orders.map((order) => (
+                            <tr
+                              key={order.id}
+                              className="group cursor-pointer transition-colors hover:bg-gray-50"
+                              onClick={() => handleOrderClick(order.id)}
+                            >
+                              <td className="px-4 py-4">
+                                <div className="font-mono text-sm text-blue-600 group-hover:text-blue-800">
+                                  #{order.id.slice(0, 8)}
+                                </div>
+                              </td>
+                              <td className="px-4 py-4">
+                                <Badge variant={getStatusVariant(order.status)}>
+                                  {getStatusLabel(order.status)}
+                                </Badge>
+                              </td>
+                              <td className="px-4 py-4 text-right font-semibold text-gray-900">
+                                {formatPrice(order.pricePaid)}
+                              </td>
+                              <td className="px-4 py-4 text-right text-gray-600">
+                                {format(
+                                  new Date(order.createdAt),
+                                  "dd MMM yyyy",
+                                )}
+                              </td>
+                              <td className="px-4 py-4 text-right text-gray-600">
+                                {order.orderItems.length} items
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          )}
+          </>
+        )}
+      </DetailsModal>
 
-          {/* Order History */}
-          <div>
-            <h3 className="mb-2 font-semibold">Order History</h3>
-            {customer.orders.length === 0 ? (
-              <p className="text-sm text-gray-500">No orders found</p>
-            ) : (
-              <div className="rounded-lg border">
-                <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="p-3 text-left">Order ID</th>
-                      <th className="p-3 text-left">Status</th>
-                      <th className="p-3 text-right">Total</th>
-                      <th className="p-3 text-right">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {customer.orders.map((order) => (
-                      <tr key={order.id} className="border-t">
-                        <td className="p-3 font-mono text-sm">
-                          {order.id.slice(0, 8)}...
-                        </td>
-                        <td className="p-3">
-                          <Badge variant={getStatusVariant(order.status)}>
-                            {getStatusLabel(order.status)}
-                          </Badge>
-                        </td>
-                        <td className="p-3 text-right">
-                          {formatPrice(order.pricePaid)}
-                        </td>
-                        <td className="p-3 text-right">
-                          {format(new Date(order.createdAt), "dd/MM/yyyy")}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+      {selectedOrderId && (
+        <OrderDetailsModal
+          orderId={selectedOrderId}
+          onClose={handleCloseOrderModal}
+        />
+      )}
+    </>
   );
 }

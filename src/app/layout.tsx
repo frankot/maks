@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import Nav from "./(customerFacing)/components/Nav";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "MAKS-SHOP",
@@ -13,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={`${inter.className} antialiased`}>
+        <Nav/>
+        {children}</body>
     </html>
   );
 }

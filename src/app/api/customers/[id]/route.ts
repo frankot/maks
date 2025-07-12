@@ -3,10 +3,11 @@ import { getCustomerById } from "@/lib/customers";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const customer = await getCustomerById(params.id);
+    const { id } = await params;
+    const customer = await getCustomerById(id);
 
     if (!customer) {
       return NextResponse.json(
