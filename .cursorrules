@@ -1,0 +1,196 @@
+# Cursor Rules for Next.js Ecommerce Shop (maks)
+
+## Tech Stack & Dependencies
+
+- **Framework**: Next.js 15+ (App Router)
+- **Styling**: Tailwind CSS v4
+- **Database**: Prisma ORM
+- **UI Components**: shadcn/ui (ALWAYS use, install if needed)
+- **Icons**: Lucide React
+- **Animations**: Framer Motion
+- **Language**: TypeScript (strict mode)
+
+## Core Development Principles
+
+### 1. UI Components
+
+- **ALWAYS use shadcn/ui components** - never create custom UI from scratch
+- Install shadcn components with `npx shadcn@latest add [component]` if not available
+- Prefer shadcn over any other UI library
+- Use Lucide React for all icons
+- Follow shadcn's design system and patterns
+
+### 2. Code Style & Preferences
+
+- **Terse, concise answers** - avoid verbose explanations
+- **DO NOT run `npm run dev`** automatically
+- Use TypeScript with strict typing
+- **Prefer Server Components by default** - especially for admin panels
+- Use "use client" directive only for interactive elements
+- Push client components to leaf nodes of component tree
+- Follow Next.js 15 App Router conventions
+
+### 3. Research & Documentation
+
+- **ALWAYS use web search** to find current documentation
+- **Use sequential thinking** for complex problems
+- Verify solutions against latest Next.js, shadcn, and Prisma docs
+- Check for breaking changes and updates
+- Prioritize official documentation over third-party sources
+
+### 4. Project Structure
+
+```
+src/
+├── app/
+│   ├── admin/          # Admin panel routes
+│   ├── (shop)/         # Public shop routes
+│   └── api/            # API routes
+├── components/
+│   ├── ui/             # shadcn components
+│   ├── admin/          # Admin-specific components
+│   └── shop/           # Shop-specific components
+├── lib/
+│   ├── utils.ts        # Utility functions
+│   ├── prisma.ts       # Prisma client
+│   └── validations.ts  # Zod schemas
+└── types/              # TypeScript types
+```
+
+## Ecommerce-Specific Guidelines
+
+### 1. Admin Panel Features
+
+- **Use Server Components for admin pages** (/admin/orders, /admin/products, etc.)
+- Product management (CRUD operations)
+- Order management and tracking
+- Customer management
+- CMS for content management
+- Settings and configuration
+- Analytics and reporting
+- Direct database access with Prisma (no API routes needed)
+
+### 2. Shop Features
+
+- Product catalog with filtering/search
+- Shopping cart functionality
+- Checkout process
+- User authentication
+- Order history
+- Wishlist functionality
+
+### 3. Database Schema (Prisma)
+
+- Use proper relations between models
+- Include audit fields (createdAt, updatedAt)
+- Implement soft deletes where appropriate
+- Use enums for status fields
+- Include proper indexes for performance
+
+### 4. Security Best Practices
+
+- Validate all inputs with Zod
+- Implement proper authentication
+- Use CSRF protection
+- Sanitize user inputs
+- Implement rate limiting
+- Use HTTPS in production
+
+## Development Workflow
+
+### 1. Component Development
+
+1. Check if shadcn component exists
+2. Install if needed: `npx shadcn@latest add [component]`
+3. Create wrapper components for business logic
+4. Use TypeScript interfaces for props
+5. Implement proper error handling
+
+### 2. API Development
+
+- Use Next.js API routes in `app/api/`
+- Implement proper error handling
+- Use Zod for request validation
+- Return consistent response formats
+- Include proper HTTP status codes
+
+### 3. Database Operations
+
+- Use Prisma Client for all database operations
+- Implement proper error handling
+- Use transactions for complex operations
+- Include proper logging
+- Optimize queries with includes/selects
+
+## Code Quality Standards
+
+### 1. TypeScript
+
+- Use strict mode
+- Define proper interfaces/types
+- Avoid `any` type
+- Use proper generic constraints
+- Implement proper error types
+
+### 2. React Best Practices
+
+- Use proper dependency arrays in useEffect
+- Implement proper loading states
+- Handle error boundaries
+- Use React.memo for performance optimization
+- Implement proper form validation
+
+### 3. Performance
+
+- Use Next.js Image component for images
+- Implement proper caching strategies
+- Use React.lazy for code splitting
+- Optimize bundle size
+- Implement proper SEO practices
+
+
+
+## Problem-Solving Approach
+
+1. **Use sequential thinking** for complex problems
+2. **Search for current documentation** before implementing
+3. **Break down complex tasks** into smaller components
+4. **Verify solutions** against best practices
+5. **Consider performance implications**
+6. **Think about user experience**
+
+## Common Patterns
+
+### 1. Form Handling
+
+```typescript
+// Use react-hook-form with Zod validation
+// Implement proper error handling
+// Show loading states during submission
+```
+
+### 2. Data Fetching
+
+```typescript
+// Use Next.js server components when possible
+// Implement proper loading and error states
+// Use React Query for client-side data fetching
+```
+
+### 3. State Management
+
+```typescript
+// Use React hooks for local state
+// Consider Zustand for global state if needed
+// Implement proper state persistence
+```
+
+## Remember
+
+- **Always prioritize shadcn/ui components**
+- **Search for current documentation**
+- **Use sequential thinking for complex problems**
+- **Keep code terse and focused**
+- **Follow modern Next.js patterns**
+- **Ensure type safety with TypeScript**
+- **Consider ecommerce-specific requirements**

@@ -1,0 +1,7 @@
+src/app/generated/**/*
+prisma/migrations/**/*
+node_modules/**/*
+.next/**/*
+out/**/*
+build/**/*
+dist/**/* 
