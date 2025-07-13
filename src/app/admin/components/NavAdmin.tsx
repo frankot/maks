@@ -16,7 +16,7 @@ const navItems = [
   { name: "Orders", href: "/admin/orders" },
   { name: "Customers", href: "/admin/customers" },
   { name: "Products", href: "/admin/products" },
-  { name: "CMS", href: "/admin/cms" },
+  { name: "CMS", href: "/admin/cms/hero" },
   { name: "Settings", href: "/admin/settings" },
 ];
 

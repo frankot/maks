@@ -14,7 +14,7 @@ import { usePathname } from "next/navigation";
 const cmsNavItems = [
   {
     name: "Landing Page",
-    href: "/admin/cms",
+    href: "/admin/cms/hero",
   },
   {
     name: "Gallery",

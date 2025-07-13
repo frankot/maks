@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createProduct, getProducts } from "@/lib/products";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const products = await getProducts();
-    return NextResponse.json(products);
+    const { searchParams } = new URL(request.url);
+    const featured = searchParams.get("featured");
+
+    if (featured === "true") {
+      const { getFeaturedProducts } = await import("@/lib/products");
+      const products = await getFeaturedProducts();
+      return NextResponse.json(products);
+    } else {
+      const products = await getProducts();
+      return NextResponse.json(products);
+    }
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json(

@@ -31,7 +31,7 @@ export function AdminTable<T>({
   keyExtractor,
 }: AdminTableProps<T>) {
   return (
-    <div className="rounded-md border">
+    <div className="">
       <Table>
         <TableHeader>
           <TableRow>
