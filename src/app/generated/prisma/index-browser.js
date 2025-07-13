@@ -127,6 +127,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   priceInCents: 'priceInCents',
   imagePaths: 'imagePaths',
   description: 'description',
+  productStatus: 'productStatus',
   isAvailable: 'isAvailable',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -194,6 +195,17 @@ exports.Prisma.PaymentScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.HeroContentScalarFieldEnum = {
+  id: 'id',
+  description: 'description',
+  imagePaths: 'imagePaths',
+  imagePublicIds: 'imagePublicIds',
+  href: 'href',
+  textHref: 'textHref',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -208,6 +220,12 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.ProductStatus = exports.$Enums.ProductStatus = {
+  SHOP: 'SHOP',
+  ORDERED: 'ORDERED',
+  SOLD: 'SOLD'
+};
+
 exports.AddressType = exports.$Enums.AddressType = {
   BILLING: 'BILLING',
   SHIPPING: 'SHIPPING',
@@ -239,7 +257,8 @@ exports.Prisma.ModelName = {
   Address: 'Address',
   Order: 'Order',
   OrderItem: 'OrderItem',
-  Payment: 'Payment'
+  Payment: 'Payment',
+  HeroContent: 'HeroContent'
 };
 
 /**

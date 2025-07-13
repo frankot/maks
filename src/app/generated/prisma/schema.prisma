@@ -33,16 +33,23 @@ enum AddressType {
   BOTH
 }
 
+enum ProductStatus {
+  SHOP
+  ORDERED
+  SOLD
+}
+
 model Product {
-  id             String      @id @default(uuid())
+  id             String        @id
   name           String
   priceInGrosz   Int // Price in PLN grosz (1 PLN = 100 grosz)
   priceInCents   Int // Price in EUR cents (1 EUR = 100 cents)
   imagePaths     String[]
   description    String
-  isAvailable    Boolean     @default(true)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  productStatus  ProductStatus @default(SHOP)
+  isAvailable    Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   imagePublicIds String[]
   orderItems     OrderItem[]
 }
@@ -121,4 +128,15 @@ model Payment {
   updatedAt         DateTime      @updatedAt
   order             Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
   user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model HeroContent {
+  id             String   @id @default(uuid())
+  description    String
+  imagePaths     String[]
+  imagePublicIds String[]
+  href           String?
+  textHref       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

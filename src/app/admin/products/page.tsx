@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getProducts } from "@/lib/products";
-import { ProductsTable } from "./components/ProductsTable";
+import { ProductsTable } from "./_components/ProductsTable";
 import Link from "next/link";
 
 export default async function ProductsPage() {

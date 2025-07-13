@@ -4,6 +4,7 @@ import {
   PaymentMethod,
   PaymentStatus,
   AddressType,
+  ProductStatus,
 } from "../src/app/generated/prisma";
 
 const prisma = new PrismaClient();
@@ -119,104 +120,133 @@ async function main() {
   const products = await Promise.all([
     prisma.product.create({
       data: {
+        id: "diamond-solitaire-ring",
         name: "Diamond Solitaire Ring",
         priceInGrosz: 299900, // 2999.00 PLN
         priceInCents: 69767, // 697.67 EUR
         description:
           "Elegant 18k white gold solitaire ring with 0.5ct diamond. Perfect for engagement or special occasions.",
         imagePaths: [
-          "/images/diamond-ring-1.jpg",
-          "/images/diamond-ring-2.jpg",
+          "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&q=80",
+          "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&q=80",
         ],
         imagePublicIds: ["diamond-ring-1", "diamond-ring-2"],
+        productStatus: ProductStatus.SHOP,
         isAvailable: true,
       },
     }),
     prisma.product.create({
       data: {
+        id: "pearl-necklace",
         name: "Pearl Necklace",
         priceInGrosz: 89900, // 899.00 PLN
         priceInCents: 20907, // 209.07 EUR
         description:
           "Classic freshwater pearl necklace with sterling silver clasp. Timeless elegance for any outfit.",
-        imagePaths: ["/images/pearl-necklace-1.jpg"],
+        imagePaths: [
+          "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800&q=80",
+        ],
         imagePublicIds: ["pearl-necklace-1"],
-        isAvailable: true,
+        productStatus: ProductStatus.ORDERED,
+        isAvailable: false,
       },
     }),
     prisma.product.create({
       data: {
+        id: "gold-hoop-earrings",
         name: "Gold Hoop Earrings",
         priceInGrosz: 45900, // 459.00 PLN
         priceInCents: 10674, // 106.74 EUR
         description:
           "14k yellow gold hoop earrings with intricate pattern. Lightweight and comfortable for daily wear.",
-        imagePaths: ["/images/gold-hoops-1.jpg", "/images/gold-hoops-2.jpg"],
+        imagePaths: [
+          "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800&q=80",
+          "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800&q=80",
+        ],
         imagePublicIds: ["gold-hoops-1", "gold-hoops-2"],
-        isAvailable: true,
+        productStatus: ProductStatus.SOLD,
+        isAvailable: false,
       },
     }),
     prisma.product.create({
       data: {
+        id: "silver-charm-bracelet",
         name: "Silver Charm Bracelet",
         priceInGrosz: 32900, // 329.00 PLN
         priceInCents: 7651, // 76.51 EUR
         description:
           "Sterling silver charm bracelet with heart, star, and flower charms. Perfect gift for loved ones.",
-        imagePaths: ["/images/silver-bracelet-1.jpg"],
+        imagePaths: [
+          "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800&q=80",
+        ],
         imagePublicIds: ["silver-bracelet-1"],
-        isAvailable: true,
+        productStatus: ProductStatus.ORDERED,
+        isAvailable: false,
       },
     }),
     prisma.product.create({
       data: {
+        id: "emerald-pendant",
         name: "Emerald Pendant",
         priceInGrosz: 189900, // 1899.00 PLN
         priceInCents: 44163, // 441.63 EUR
         description:
           "Stunning emerald pendant set in 18k white gold with diamond accents. Comes with matching chain.",
         imagePaths: [
-          "/images/emerald-pendant-1.jpg",
-          "/images/emerald-pendant-2.jpg",
+          "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=800&q=80",
+          "https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=800&q=80",
         ],
         imagePublicIds: ["emerald-pendant-1", "emerald-pendant-2"],
+        productStatus: ProductStatus.SHOP,
         isAvailable: true,
       },
     }),
     prisma.product.create({
       data: {
+        id: "rose-gold-watch",
         name: "Rose Gold Watch",
         priceInGrosz: 129900, // 1299.00 PLN
         priceInCents: 30209, // 302.09 EUR
         description:
           "Elegant rose gold watch with mother-of-pearl dial and leather strap. Swiss movement.",
-        imagePaths: ["/images/rose-gold-watch-1.jpg"],
+        imagePaths: [
+          "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800&q=80",
+        ],
         imagePublicIds: ["rose-gold-watch-1"],
+        productStatus: ProductStatus.SHOP,
         isAvailable: true,
       },
     }),
     prisma.product.create({
       data: {
+        id: "sapphire-stud-earrings",
         name: "Sapphire Stud Earrings",
         priceInGrosz: 79900, // 799.00 PLN
         priceInCents: 18581, // 185.81 EUR
         description:
           "Blue sapphire stud earrings in 14k white gold setting. Perfect for special occasions.",
-        imagePaths: ["/images/sapphire-studs-1.jpg"],
+        imagePaths: [
+          "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=800&q=80",
+        ],
         imagePublicIds: ["sapphire-studs-1"],
+        productStatus: ProductStatus.SHOP,
         isAvailable: true,
       },
     }),
     prisma.product.create({
       data: {
+        id: "vintage-brooch",
         name: "Vintage Brooch",
         priceInGrosz: 24900, // 249.00 PLN
         priceInCents: 5791, // 57.91 EUR
         description:
           "Antique-style brooch with intricate filigree work and small gemstones. Unique vintage piece.",
-        imagePaths: ["/images/vintage-brooch-1.jpg"],
+        imagePaths: [
+          "https://images.unsplash.com/photo-1588444837495-b9acd8b3b101?w=800&q=80",
+        ],
         imagePublicIds: ["vintage-brooch-1"],
-        isAvailable: true,
+        productStatus: ProductStatus.SHOP,
+        isAvailable: false, // Example of SHOP product that's temporarily unavailable
       },
     }),
   ]);

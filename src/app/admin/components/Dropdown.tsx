@@ -10,6 +10,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface DropdownAction {
   label: string;
@@ -17,6 +23,8 @@ export interface DropdownAction {
   onClick: () => void | Promise<void>;
   variant?: "default" | "destructive";
   separator?: boolean;
+  disabled?: boolean;
+  disabledTooltip?: string;
 }
 
 interface AdminDropdownProps {
@@ -42,32 +50,57 @@ export function AdminDropdown({
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="h-8 w-8 p-0"
-          disabled={disabled || isLoading}
-        >
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {actions.map((action, index) => (
-          <div key={index}>
-            {action.separator && index > 0 && <DropdownMenuSeparator />}
-            <DropdownMenuItem
-              onClick={() => handleActionClick(action)}
-              className={action.variant === "destructive" ? "text-red-600" : ""}
-            >
-              {action.icon}
-              {action.label}
-            </DropdownMenuItem>
-          </div>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <TooltipProvider>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="h-8 w-8 p-0"
+            disabled={disabled || isLoading}
+          >
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {actions.map((action, index) => (
+            <div key={index}>
+              {action.separator && index > 0 && <DropdownMenuSeparator />}
+              {action.disabled && action.disabledTooltip ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <DropdownMenuItem
+                        disabled
+                        className={`cursor-not-allowed opacity-50 ${
+                          action.variant === "destructive" ? "text-red-600" : ""
+                        }`}
+                      >
+                        {action.icon}
+                        {action.label}
+                      </DropdownMenuItem>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{action.disabledTooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() => handleActionClick(action)}
+                  disabled={action.disabled}
+                  className={`${action.variant === "destructive" ? "text-red-600" : ""} ${
+                    action.disabled ? "cursor-not-allowed opacity-50" : ""
+                  }`}
+                >
+                  {action.icon}
+                  {action.label}
+                </DropdownMenuItem>
+              )}
+            </div>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </TooltipProvider>
   );
 }
-

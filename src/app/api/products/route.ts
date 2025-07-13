@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     const {
+      id,
       name,
       priceInGrosz,
       priceInCents,
@@ -36,6 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     const product = await createProduct({
+      id,
       name,
       priceInGrosz: Number(priceInGrosz),
       priceInCents: Number(priceInCents),

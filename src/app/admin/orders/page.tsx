@@ -1,5 +1,5 @@
 import { getOrders } from "@/lib/orders";
-import { OrdersTable } from "./components/OrdersTable";
+import { OrdersTable } from "./_components/OrdersTable";
 
 export default async function OrdersPage() {
   const orders = await getOrders();

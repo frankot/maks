@@ -1,5 +1,5 @@
 import { getCustomers } from "@/lib/customers";
-import { CustomersTable } from "./components/CustomersTable";
+import { CustomersTable } from "./_components/CustomersTable";
 
 export default async function CustomersPage() {
   const customers = await getCustomers();

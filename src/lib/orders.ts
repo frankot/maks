@@ -82,14 +82,17 @@ export async function getOrderById(orderId: string) {
   }
 }
 
-export function formatPrice(priceInGrosz: number, currency: string = "PLN"): string {
+export function formatPrice(
+  priceInGrosz: number,
+  currency: string = "PLN",
+): string {
   if (currency === "EUR") {
     return new Intl.NumberFormat("en-EU", {
       style: "currency",
       currency: "EUR",
     }).format(priceInGrosz / 100);
   }
-  
+
   return new Intl.NumberFormat("pl-PL", {
     style: "currency",
     currency: "PLN",

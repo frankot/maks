@@ -43,6 +43,11 @@ export type OrderItem = $Result.DefaultSelection<Prisma.$OrderItemPayload>
  * 
  */
 export type Payment = $Result.DefaultSelection<Prisma.$PaymentPayload>
+/**
+ * Model HeroContent
+ * 
+ */
+export type HeroContent = $Result.DefaultSelection<Prisma.$HeroContentPayload>
 
 /**
  * Enums
@@ -84,6 +89,15 @@ export const AddressType: {
 
 export type AddressType = (typeof AddressType)[keyof typeof AddressType]
 
+
+export const ProductStatus: {
+  SHOP: 'SHOP',
+  ORDERED: 'ORDERED',
+  SOLD: 'SOLD'
+};
+
+export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus]
+
 }
 
 export type OrderStatus = $Enums.OrderStatus
@@ -101,6 +115,10 @@ export const PaymentStatus: typeof $Enums.PaymentStatus
 export type AddressType = $Enums.AddressType
 
 export const AddressType: typeof $Enums.AddressType
+
+export type ProductStatus = $Enums.ProductStatus
+
+export const ProductStatus: typeof $Enums.ProductStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -286,6 +304,16 @@ export class PrismaClient<
     * ```
     */
   get payment(): Prisma.PaymentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.heroContent`: Exposes CRUD operations for the **HeroContent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more HeroContents
+    * const heroContents = await prisma.heroContent.findMany()
+    * ```
+    */
+  get heroContent(): Prisma.HeroContentDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -731,7 +759,8 @@ export namespace Prisma {
     Address: 'Address',
     Order: 'Order',
     OrderItem: 'OrderItem',
-    Payment: 'Payment'
+    Payment: 'Payment',
+    HeroContent: 'HeroContent'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -750,7 +779,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "product" | "user" | "address" | "order" | "orderItem" | "payment"
+      modelProps: "product" | "user" | "address" | "order" | "orderItem" | "payment" | "heroContent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1198,6 +1227,80 @@ export namespace Prisma {
           }
         }
       }
+      HeroContent: {
+        payload: Prisma.$HeroContentPayload<ExtArgs>
+        fields: Prisma.HeroContentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.HeroContentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroContentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.HeroContentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroContentPayload>
+          }
+          findFirst: {
+            args: Prisma.HeroContentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroContentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.HeroContentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroContentPayload>
+          }
+          findMany: {
+            args: Prisma.HeroContentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroContentPayload>[]
+          }
+          create: {
+            args: Prisma.HeroContentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroContentPayload>
+          }
+          createMany: {
+            args: Prisma.HeroContentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.HeroContentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroContentPayload>[]
+          }
+          delete: {
+            args: Prisma.HeroContentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroContentPayload>
+          }
+          update: {
+            args: Prisma.HeroContentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroContentPayload>
+          }
+          deleteMany: {
+            args: Prisma.HeroContentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.HeroContentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.HeroContentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroContentPayload>[]
+          }
+          upsert: {
+            args: Prisma.HeroContentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroContentPayload>
+          }
+          aggregate: {
+            args: Prisma.HeroContentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateHeroContent>
+          }
+          groupBy: {
+            args: Prisma.HeroContentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<HeroContentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.HeroContentCountArgs<ExtArgs>
+            result: $Utils.Optional<HeroContentCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1288,6 +1391,7 @@ export namespace Prisma {
     order?: OrderOmit
     orderItem?: OrderItemOmit
     payment?: PaymentOmit
+    heroContent?: HeroContentOmit
   }
 
   /* Types for Logging */
@@ -1569,6 +1673,7 @@ export namespace Prisma {
     priceInGrosz: number | null
     priceInCents: number | null
     description: string | null
+    productStatus: $Enums.ProductStatus | null
     isAvailable: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -1580,6 +1685,7 @@ export namespace Prisma {
     priceInGrosz: number | null
     priceInCents: number | null
     description: string | null
+    productStatus: $Enums.ProductStatus | null
     isAvailable: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -1592,6 +1698,7 @@ export namespace Prisma {
     priceInCents: number
     imagePaths: number
     description: number
+    productStatus: number
     isAvailable: number
     createdAt: number
     updatedAt: number
@@ -1616,6 +1723,7 @@ export namespace Prisma {
     priceInGrosz?: true
     priceInCents?: true
     description?: true
+    productStatus?: true
     isAvailable?: true
     createdAt?: true
     updatedAt?: true
@@ -1627,6 +1735,7 @@ export namespace Prisma {
     priceInGrosz?: true
     priceInCents?: true
     description?: true
+    productStatus?: true
     isAvailable?: true
     createdAt?: true
     updatedAt?: true
@@ -1639,6 +1748,7 @@ export namespace Prisma {
     priceInCents?: true
     imagePaths?: true
     description?: true
+    productStatus?: true
     isAvailable?: true
     createdAt?: true
     updatedAt?: true
@@ -1739,6 +1849,7 @@ export namespace Prisma {
     priceInCents: number
     imagePaths: string[]
     description: string
+    productStatus: $Enums.ProductStatus
     isAvailable: boolean
     createdAt: Date
     updatedAt: Date
@@ -1771,6 +1882,7 @@ export namespace Prisma {
     priceInCents?: boolean
     imagePaths?: boolean
     description?: boolean
+    productStatus?: boolean
     isAvailable?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1786,6 +1898,7 @@ export namespace Prisma {
     priceInCents?: boolean
     imagePaths?: boolean
     description?: boolean
+    productStatus?: boolean
     isAvailable?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1799,6 +1912,7 @@ export namespace Prisma {
     priceInCents?: boolean
     imagePaths?: boolean
     description?: boolean
+    productStatus?: boolean
     isAvailable?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1812,13 +1926,14 @@ export namespace Prisma {
     priceInCents?: boolean
     imagePaths?: boolean
     description?: boolean
+    productStatus?: boolean
     isAvailable?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     imagePublicIds?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "priceInGrosz" | "priceInCents" | "imagePaths" | "description" | "isAvailable" | "createdAt" | "updatedAt" | "imagePublicIds", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "priceInGrosz" | "priceInCents" | "imagePaths" | "description" | "productStatus" | "isAvailable" | "createdAt" | "updatedAt" | "imagePublicIds", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
@@ -1838,6 +1953,7 @@ export namespace Prisma {
       priceInCents: number
       imagePaths: string[]
       description: string
+      productStatus: $Enums.ProductStatus
       isAvailable: boolean
       createdAt: Date
       updatedAt: Date
@@ -2272,6 +2388,7 @@ export namespace Prisma {
     readonly priceInCents: FieldRef<"Product", 'Int'>
     readonly imagePaths: FieldRef<"Product", 'String[]'>
     readonly description: FieldRef<"Product", 'String'>
+    readonly productStatus: FieldRef<"Product", 'ProductStatus'>
     readonly isAvailable: FieldRef<"Product", 'Boolean'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
@@ -8600,6 +8717,1032 @@ export namespace Prisma {
 
 
   /**
+   * Model HeroContent
+   */
+
+  export type AggregateHeroContent = {
+    _count: HeroContentCountAggregateOutputType | null
+    _min: HeroContentMinAggregateOutputType | null
+    _max: HeroContentMaxAggregateOutputType | null
+  }
+
+  export type HeroContentMinAggregateOutputType = {
+    id: string | null
+    description: string | null
+    href: string | null
+    textHref: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type HeroContentMaxAggregateOutputType = {
+    id: string | null
+    description: string | null
+    href: string | null
+    textHref: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type HeroContentCountAggregateOutputType = {
+    id: number
+    description: number
+    imagePaths: number
+    imagePublicIds: number
+    href: number
+    textHref: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type HeroContentMinAggregateInputType = {
+    id?: true
+    description?: true
+    href?: true
+    textHref?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type HeroContentMaxAggregateInputType = {
+    id?: true
+    description?: true
+    href?: true
+    textHref?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type HeroContentCountAggregateInputType = {
+    id?: true
+    description?: true
+    imagePaths?: true
+    imagePublicIds?: true
+    href?: true
+    textHref?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type HeroContentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HeroContent to aggregate.
+     */
+    where?: HeroContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HeroContents to fetch.
+     */
+    orderBy?: HeroContentOrderByWithRelationInput | HeroContentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: HeroContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HeroContents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HeroContents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned HeroContents
+    **/
+    _count?: true | HeroContentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: HeroContentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: HeroContentMaxAggregateInputType
+  }
+
+  export type GetHeroContentAggregateType<T extends HeroContentAggregateArgs> = {
+        [P in keyof T & keyof AggregateHeroContent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateHeroContent[P]>
+      : GetScalarType<T[P], AggregateHeroContent[P]>
+  }
+
+
+
+
+  export type HeroContentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HeroContentWhereInput
+    orderBy?: HeroContentOrderByWithAggregationInput | HeroContentOrderByWithAggregationInput[]
+    by: HeroContentScalarFieldEnum[] | HeroContentScalarFieldEnum
+    having?: HeroContentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: HeroContentCountAggregateInputType | true
+    _min?: HeroContentMinAggregateInputType
+    _max?: HeroContentMaxAggregateInputType
+  }
+
+  export type HeroContentGroupByOutputType = {
+    id: string
+    description: string
+    imagePaths: string[]
+    imagePublicIds: string[]
+    href: string | null
+    textHref: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: HeroContentCountAggregateOutputType | null
+    _min: HeroContentMinAggregateOutputType | null
+    _max: HeroContentMaxAggregateOutputType | null
+  }
+
+  type GetHeroContentGroupByPayload<T extends HeroContentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<HeroContentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof HeroContentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], HeroContentGroupByOutputType[P]>
+            : GetScalarType<T[P], HeroContentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type HeroContentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    description?: boolean
+    imagePaths?: boolean
+    imagePublicIds?: boolean
+    href?: boolean
+    textHref?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["heroContent"]>
+
+  export type HeroContentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    description?: boolean
+    imagePaths?: boolean
+    imagePublicIds?: boolean
+    href?: boolean
+    textHref?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["heroContent"]>
+
+  export type HeroContentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    description?: boolean
+    imagePaths?: boolean
+    imagePublicIds?: boolean
+    href?: boolean
+    textHref?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["heroContent"]>
+
+  export type HeroContentSelectScalar = {
+    id?: boolean
+    description?: boolean
+    imagePaths?: boolean
+    imagePublicIds?: boolean
+    href?: boolean
+    textHref?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type HeroContentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "description" | "imagePaths" | "imagePublicIds" | "href" | "textHref" | "createdAt" | "updatedAt", ExtArgs["result"]["heroContent"]>
+
+  export type $HeroContentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "HeroContent"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      description: string
+      imagePaths: string[]
+      imagePublicIds: string[]
+      href: string | null
+      textHref: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["heroContent"]>
+    composites: {}
+  }
+
+  type HeroContentGetPayload<S extends boolean | null | undefined | HeroContentDefaultArgs> = $Result.GetResult<Prisma.$HeroContentPayload, S>
+
+  type HeroContentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<HeroContentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: HeroContentCountAggregateInputType | true
+    }
+
+  export interface HeroContentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['HeroContent'], meta: { name: 'HeroContent' } }
+    /**
+     * Find zero or one HeroContent that matches the filter.
+     * @param {HeroContentFindUniqueArgs} args - Arguments to find a HeroContent
+     * @example
+     * // Get one HeroContent
+     * const heroContent = await prisma.heroContent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends HeroContentFindUniqueArgs>(args: SelectSubset<T, HeroContentFindUniqueArgs<ExtArgs>>): Prisma__HeroContentClient<$Result.GetResult<Prisma.$HeroContentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one HeroContent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {HeroContentFindUniqueOrThrowArgs} args - Arguments to find a HeroContent
+     * @example
+     * // Get one HeroContent
+     * const heroContent = await prisma.heroContent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends HeroContentFindUniqueOrThrowArgs>(args: SelectSubset<T, HeroContentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__HeroContentClient<$Result.GetResult<Prisma.$HeroContentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first HeroContent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroContentFindFirstArgs} args - Arguments to find a HeroContent
+     * @example
+     * // Get one HeroContent
+     * const heroContent = await prisma.heroContent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends HeroContentFindFirstArgs>(args?: SelectSubset<T, HeroContentFindFirstArgs<ExtArgs>>): Prisma__HeroContentClient<$Result.GetResult<Prisma.$HeroContentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first HeroContent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroContentFindFirstOrThrowArgs} args - Arguments to find a HeroContent
+     * @example
+     * // Get one HeroContent
+     * const heroContent = await prisma.heroContent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends HeroContentFindFirstOrThrowArgs>(args?: SelectSubset<T, HeroContentFindFirstOrThrowArgs<ExtArgs>>): Prisma__HeroContentClient<$Result.GetResult<Prisma.$HeroContentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more HeroContents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroContentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all HeroContents
+     * const heroContents = await prisma.heroContent.findMany()
+     * 
+     * // Get first 10 HeroContents
+     * const heroContents = await prisma.heroContent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const heroContentWithIdOnly = await prisma.heroContent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends HeroContentFindManyArgs>(args?: SelectSubset<T, HeroContentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HeroContentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a HeroContent.
+     * @param {HeroContentCreateArgs} args - Arguments to create a HeroContent.
+     * @example
+     * // Create one HeroContent
+     * const HeroContent = await prisma.heroContent.create({
+     *   data: {
+     *     // ... data to create a HeroContent
+     *   }
+     * })
+     * 
+     */
+    create<T extends HeroContentCreateArgs>(args: SelectSubset<T, HeroContentCreateArgs<ExtArgs>>): Prisma__HeroContentClient<$Result.GetResult<Prisma.$HeroContentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many HeroContents.
+     * @param {HeroContentCreateManyArgs} args - Arguments to create many HeroContents.
+     * @example
+     * // Create many HeroContents
+     * const heroContent = await prisma.heroContent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends HeroContentCreateManyArgs>(args?: SelectSubset<T, HeroContentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many HeroContents and returns the data saved in the database.
+     * @param {HeroContentCreateManyAndReturnArgs} args - Arguments to create many HeroContents.
+     * @example
+     * // Create many HeroContents
+     * const heroContent = await prisma.heroContent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many HeroContents and only return the `id`
+     * const heroContentWithIdOnly = await prisma.heroContent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends HeroContentCreateManyAndReturnArgs>(args?: SelectSubset<T, HeroContentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HeroContentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a HeroContent.
+     * @param {HeroContentDeleteArgs} args - Arguments to delete one HeroContent.
+     * @example
+     * // Delete one HeroContent
+     * const HeroContent = await prisma.heroContent.delete({
+     *   where: {
+     *     // ... filter to delete one HeroContent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends HeroContentDeleteArgs>(args: SelectSubset<T, HeroContentDeleteArgs<ExtArgs>>): Prisma__HeroContentClient<$Result.GetResult<Prisma.$HeroContentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one HeroContent.
+     * @param {HeroContentUpdateArgs} args - Arguments to update one HeroContent.
+     * @example
+     * // Update one HeroContent
+     * const heroContent = await prisma.heroContent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends HeroContentUpdateArgs>(args: SelectSubset<T, HeroContentUpdateArgs<ExtArgs>>): Prisma__HeroContentClient<$Result.GetResult<Prisma.$HeroContentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more HeroContents.
+     * @param {HeroContentDeleteManyArgs} args - Arguments to filter HeroContents to delete.
+     * @example
+     * // Delete a few HeroContents
+     * const { count } = await prisma.heroContent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends HeroContentDeleteManyArgs>(args?: SelectSubset<T, HeroContentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more HeroContents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroContentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many HeroContents
+     * const heroContent = await prisma.heroContent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends HeroContentUpdateManyArgs>(args: SelectSubset<T, HeroContentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more HeroContents and returns the data updated in the database.
+     * @param {HeroContentUpdateManyAndReturnArgs} args - Arguments to update many HeroContents.
+     * @example
+     * // Update many HeroContents
+     * const heroContent = await prisma.heroContent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more HeroContents and only return the `id`
+     * const heroContentWithIdOnly = await prisma.heroContent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends HeroContentUpdateManyAndReturnArgs>(args: SelectSubset<T, HeroContentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HeroContentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one HeroContent.
+     * @param {HeroContentUpsertArgs} args - Arguments to update or create a HeroContent.
+     * @example
+     * // Update or create a HeroContent
+     * const heroContent = await prisma.heroContent.upsert({
+     *   create: {
+     *     // ... data to create a HeroContent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the HeroContent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends HeroContentUpsertArgs>(args: SelectSubset<T, HeroContentUpsertArgs<ExtArgs>>): Prisma__HeroContentClient<$Result.GetResult<Prisma.$HeroContentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of HeroContents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroContentCountArgs} args - Arguments to filter HeroContents to count.
+     * @example
+     * // Count the number of HeroContents
+     * const count = await prisma.heroContent.count({
+     *   where: {
+     *     // ... the filter for the HeroContents we want to count
+     *   }
+     * })
+    **/
+    count<T extends HeroContentCountArgs>(
+      args?: Subset<T, HeroContentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], HeroContentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a HeroContent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroContentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends HeroContentAggregateArgs>(args: Subset<T, HeroContentAggregateArgs>): Prisma.PrismaPromise<GetHeroContentAggregateType<T>>
+
+    /**
+     * Group by HeroContent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroContentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends HeroContentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: HeroContentGroupByArgs['orderBy'] }
+        : { orderBy?: HeroContentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, HeroContentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetHeroContentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the HeroContent model
+   */
+  readonly fields: HeroContentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for HeroContent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__HeroContentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the HeroContent model
+   */
+  interface HeroContentFieldRefs {
+    readonly id: FieldRef<"HeroContent", 'String'>
+    readonly description: FieldRef<"HeroContent", 'String'>
+    readonly imagePaths: FieldRef<"HeroContent", 'String[]'>
+    readonly imagePublicIds: FieldRef<"HeroContent", 'String[]'>
+    readonly href: FieldRef<"HeroContent", 'String'>
+    readonly textHref: FieldRef<"HeroContent", 'String'>
+    readonly createdAt: FieldRef<"HeroContent", 'DateTime'>
+    readonly updatedAt: FieldRef<"HeroContent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * HeroContent findUnique
+   */
+  export type HeroContentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+    /**
+     * Filter, which HeroContent to fetch.
+     */
+    where: HeroContentWhereUniqueInput
+  }
+
+  /**
+   * HeroContent findUniqueOrThrow
+   */
+  export type HeroContentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+    /**
+     * Filter, which HeroContent to fetch.
+     */
+    where: HeroContentWhereUniqueInput
+  }
+
+  /**
+   * HeroContent findFirst
+   */
+  export type HeroContentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+    /**
+     * Filter, which HeroContent to fetch.
+     */
+    where?: HeroContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HeroContents to fetch.
+     */
+    orderBy?: HeroContentOrderByWithRelationInput | HeroContentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HeroContents.
+     */
+    cursor?: HeroContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HeroContents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HeroContents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HeroContents.
+     */
+    distinct?: HeroContentScalarFieldEnum | HeroContentScalarFieldEnum[]
+  }
+
+  /**
+   * HeroContent findFirstOrThrow
+   */
+  export type HeroContentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+    /**
+     * Filter, which HeroContent to fetch.
+     */
+    where?: HeroContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HeroContents to fetch.
+     */
+    orderBy?: HeroContentOrderByWithRelationInput | HeroContentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HeroContents.
+     */
+    cursor?: HeroContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HeroContents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HeroContents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HeroContents.
+     */
+    distinct?: HeroContentScalarFieldEnum | HeroContentScalarFieldEnum[]
+  }
+
+  /**
+   * HeroContent findMany
+   */
+  export type HeroContentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+    /**
+     * Filter, which HeroContents to fetch.
+     */
+    where?: HeroContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HeroContents to fetch.
+     */
+    orderBy?: HeroContentOrderByWithRelationInput | HeroContentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing HeroContents.
+     */
+    cursor?: HeroContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HeroContents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HeroContents.
+     */
+    skip?: number
+    distinct?: HeroContentScalarFieldEnum | HeroContentScalarFieldEnum[]
+  }
+
+  /**
+   * HeroContent create
+   */
+  export type HeroContentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+    /**
+     * The data needed to create a HeroContent.
+     */
+    data: XOR<HeroContentCreateInput, HeroContentUncheckedCreateInput>
+  }
+
+  /**
+   * HeroContent createMany
+   */
+  export type HeroContentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many HeroContents.
+     */
+    data: HeroContentCreateManyInput | HeroContentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * HeroContent createManyAndReturn
+   */
+  export type HeroContentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+    /**
+     * The data used to create many HeroContents.
+     */
+    data: HeroContentCreateManyInput | HeroContentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * HeroContent update
+   */
+  export type HeroContentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+    /**
+     * The data needed to update a HeroContent.
+     */
+    data: XOR<HeroContentUpdateInput, HeroContentUncheckedUpdateInput>
+    /**
+     * Choose, which HeroContent to update.
+     */
+    where: HeroContentWhereUniqueInput
+  }
+
+  /**
+   * HeroContent updateMany
+   */
+  export type HeroContentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update HeroContents.
+     */
+    data: XOR<HeroContentUpdateManyMutationInput, HeroContentUncheckedUpdateManyInput>
+    /**
+     * Filter which HeroContents to update
+     */
+    where?: HeroContentWhereInput
+    /**
+     * Limit how many HeroContents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * HeroContent updateManyAndReturn
+   */
+  export type HeroContentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+    /**
+     * The data used to update HeroContents.
+     */
+    data: XOR<HeroContentUpdateManyMutationInput, HeroContentUncheckedUpdateManyInput>
+    /**
+     * Filter which HeroContents to update
+     */
+    where?: HeroContentWhereInput
+    /**
+     * Limit how many HeroContents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * HeroContent upsert
+   */
+  export type HeroContentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+    /**
+     * The filter to search for the HeroContent to update in case it exists.
+     */
+    where: HeroContentWhereUniqueInput
+    /**
+     * In case the HeroContent found by the `where` argument doesn't exist, create a new HeroContent with this data.
+     */
+    create: XOR<HeroContentCreateInput, HeroContentUncheckedCreateInput>
+    /**
+     * In case the HeroContent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<HeroContentUpdateInput, HeroContentUncheckedUpdateInput>
+  }
+
+  /**
+   * HeroContent delete
+   */
+  export type HeroContentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+    /**
+     * Filter which HeroContent to delete.
+     */
+    where: HeroContentWhereUniqueInput
+  }
+
+  /**
+   * HeroContent deleteMany
+   */
+  export type HeroContentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HeroContents to delete
+     */
+    where?: HeroContentWhereInput
+    /**
+     * Limit how many HeroContents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * HeroContent without action
+   */
+  export type HeroContentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroContent
+     */
+    select?: HeroContentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroContent
+     */
+    omit?: HeroContentOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8620,6 +9763,7 @@ export namespace Prisma {
     priceInCents: 'priceInCents',
     imagePaths: 'imagePaths',
     description: 'description',
+    productStatus: 'productStatus',
     isAvailable: 'isAvailable',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
@@ -8705,6 +9849,20 @@ export namespace Prisma {
   export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
 
 
+  export const HeroContentScalarFieldEnum: {
+    id: 'id',
+    description: 'description',
+    imagePaths: 'imagePaths',
+    imagePublicIds: 'imagePublicIds',
+    href: 'href',
+    textHref: 'textHref',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type HeroContentScalarFieldEnum = (typeof HeroContentScalarFieldEnum)[keyof typeof HeroContentScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -8759,6 +9917,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProductStatus'
+   */
+  export type EnumProductStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProductStatus[]'
+   */
+  export type ListEnumProductStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductStatus[]'>
     
 
 
@@ -8866,6 +10038,7 @@ export namespace Prisma {
     priceInCents?: IntFilter<"Product"> | number
     imagePaths?: StringNullableListFilter<"Product">
     description?: StringFilter<"Product"> | string
+    productStatus?: EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
     isAvailable?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
@@ -8880,6 +10053,7 @@ export namespace Prisma {
     priceInCents?: SortOrder
     imagePaths?: SortOrder
     description?: SortOrder
+    productStatus?: SortOrder
     isAvailable?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8897,6 +10071,7 @@ export namespace Prisma {
     priceInCents?: IntFilter<"Product"> | number
     imagePaths?: StringNullableListFilter<"Product">
     description?: StringFilter<"Product"> | string
+    productStatus?: EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
     isAvailable?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
@@ -8911,6 +10086,7 @@ export namespace Prisma {
     priceInCents?: SortOrder
     imagePaths?: SortOrder
     description?: SortOrder
+    productStatus?: SortOrder
     isAvailable?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8932,6 +10108,7 @@ export namespace Prisma {
     priceInCents?: IntWithAggregatesFilter<"Product"> | number
     imagePaths?: StringNullableListFilter<"Product">
     description?: StringWithAggregatesFilter<"Product"> | string
+    productStatus?: EnumProductStatusWithAggregatesFilter<"Product"> | $Enums.ProductStatus
     isAvailable?: BoolWithAggregatesFilter<"Product"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
@@ -9354,13 +10531,81 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
   }
 
-  export type ProductCreateInput = {
+  export type HeroContentWhereInput = {
+    AND?: HeroContentWhereInput | HeroContentWhereInput[]
+    OR?: HeroContentWhereInput[]
+    NOT?: HeroContentWhereInput | HeroContentWhereInput[]
+    id?: StringFilter<"HeroContent"> | string
+    description?: StringFilter<"HeroContent"> | string
+    imagePaths?: StringNullableListFilter<"HeroContent">
+    imagePublicIds?: StringNullableListFilter<"HeroContent">
+    href?: StringNullableFilter<"HeroContent"> | string | null
+    textHref?: StringNullableFilter<"HeroContent"> | string | null
+    createdAt?: DateTimeFilter<"HeroContent"> | Date | string
+    updatedAt?: DateTimeFilter<"HeroContent"> | Date | string
+  }
+
+  export type HeroContentOrderByWithRelationInput = {
+    id?: SortOrder
+    description?: SortOrder
+    imagePaths?: SortOrder
+    imagePublicIds?: SortOrder
+    href?: SortOrderInput | SortOrder
+    textHref?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HeroContentWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    AND?: HeroContentWhereInput | HeroContentWhereInput[]
+    OR?: HeroContentWhereInput[]
+    NOT?: HeroContentWhereInput | HeroContentWhereInput[]
+    description?: StringFilter<"HeroContent"> | string
+    imagePaths?: StringNullableListFilter<"HeroContent">
+    imagePublicIds?: StringNullableListFilter<"HeroContent">
+    href?: StringNullableFilter<"HeroContent"> | string | null
+    textHref?: StringNullableFilter<"HeroContent"> | string | null
+    createdAt?: DateTimeFilter<"HeroContent"> | Date | string
+    updatedAt?: DateTimeFilter<"HeroContent"> | Date | string
+  }, "id">
+
+  export type HeroContentOrderByWithAggregationInput = {
+    id?: SortOrder
+    description?: SortOrder
+    imagePaths?: SortOrder
+    imagePublicIds?: SortOrder
+    href?: SortOrderInput | SortOrder
+    textHref?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: HeroContentCountOrderByAggregateInput
+    _max?: HeroContentMaxOrderByAggregateInput
+    _min?: HeroContentMinOrderByAggregateInput
+  }
+
+  export type HeroContentScalarWhereWithAggregatesInput = {
+    AND?: HeroContentScalarWhereWithAggregatesInput | HeroContentScalarWhereWithAggregatesInput[]
+    OR?: HeroContentScalarWhereWithAggregatesInput[]
+    NOT?: HeroContentScalarWhereWithAggregatesInput | HeroContentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"HeroContent"> | string
+    description?: StringWithAggregatesFilter<"HeroContent"> | string
+    imagePaths?: StringNullableListFilter<"HeroContent">
+    imagePublicIds?: StringNullableListFilter<"HeroContent">
+    href?: StringNullableWithAggregatesFilter<"HeroContent"> | string | null
+    textHref?: StringNullableWithAggregatesFilter<"HeroContent"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"HeroContent"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"HeroContent"> | Date | string
+  }
+
+  export type ProductCreateInput = {
+    id: string
     name: string
     priceInGrosz: number
     priceInCents: number
     imagePaths?: ProductCreateimagePathsInput | string[]
     description: string
+    productStatus?: $Enums.ProductStatus
     isAvailable?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9369,12 +10614,13 @@ export namespace Prisma {
   }
 
   export type ProductUncheckedCreateInput = {
-    id?: string
+    id: string
     name: string
     priceInGrosz: number
     priceInCents: number
     imagePaths?: ProductCreateimagePathsInput | string[]
     description: string
+    productStatus?: $Enums.ProductStatus
     isAvailable?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9389,6 +10635,7 @@ export namespace Prisma {
     priceInCents?: IntFieldUpdateOperationsInput | number
     imagePaths?: ProductUpdateimagePathsInput | string[]
     description?: StringFieldUpdateOperationsInput | string
+    productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9403,6 +10650,7 @@ export namespace Prisma {
     priceInCents?: IntFieldUpdateOperationsInput | number
     imagePaths?: ProductUpdateimagePathsInput | string[]
     description?: StringFieldUpdateOperationsInput | string
+    productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9411,12 +10659,13 @@ export namespace Prisma {
   }
 
   export type ProductCreateManyInput = {
-    id?: string
+    id: string
     name: string
     priceInGrosz: number
     priceInCents: number
     imagePaths?: ProductCreateimagePathsInput | string[]
     description: string
+    productStatus?: $Enums.ProductStatus
     isAvailable?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9430,6 +10679,7 @@ export namespace Prisma {
     priceInCents?: IntFieldUpdateOperationsInput | number
     imagePaths?: ProductUpdateimagePathsInput | string[]
     description?: StringFieldUpdateOperationsInput | string
+    productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9443,6 +10693,7 @@ export namespace Prisma {
     priceInCents?: IntFieldUpdateOperationsInput | number
     imagePaths?: ProductUpdateimagePathsInput | string[]
     description?: StringFieldUpdateOperationsInput | string
+    productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9896,6 +11147,83 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type HeroContentCreateInput = {
+    id?: string
+    description: string
+    imagePaths?: HeroContentCreateimagePathsInput | string[]
+    imagePublicIds?: HeroContentCreateimagePublicIdsInput | string[]
+    href?: string | null
+    textHref?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HeroContentUncheckedCreateInput = {
+    id?: string
+    description: string
+    imagePaths?: HeroContentCreateimagePathsInput | string[]
+    imagePublicIds?: HeroContentCreateimagePublicIdsInput | string[]
+    href?: string | null
+    textHref?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HeroContentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    imagePaths?: HeroContentUpdateimagePathsInput | string[]
+    imagePublicIds?: HeroContentUpdateimagePublicIdsInput | string[]
+    href?: NullableStringFieldUpdateOperationsInput | string | null
+    textHref?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HeroContentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    imagePaths?: HeroContentUpdateimagePathsInput | string[]
+    imagePublicIds?: HeroContentUpdateimagePublicIdsInput | string[]
+    href?: NullableStringFieldUpdateOperationsInput | string | null
+    textHref?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HeroContentCreateManyInput = {
+    id?: string
+    description: string
+    imagePaths?: HeroContentCreateimagePathsInput | string[]
+    imagePublicIds?: HeroContentCreateimagePublicIdsInput | string[]
+    href?: string | null
+    textHref?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HeroContentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    imagePaths?: HeroContentUpdateimagePathsInput | string[]
+    imagePublicIds?: HeroContentUpdateimagePublicIdsInput | string[]
+    href?: NullableStringFieldUpdateOperationsInput | string | null
+    textHref?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HeroContentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    imagePaths?: HeroContentUpdateimagePathsInput | string[]
+    imagePublicIds?: HeroContentUpdateimagePublicIdsInput | string[]
+    href?: NullableStringFieldUpdateOperationsInput | string | null
+    textHref?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -9928,6 +11256,13 @@ export namespace Prisma {
     hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
     hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
     isEmpty?: boolean
+  }
+
+  export type EnumProductStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductStatusFilter<$PrismaModel> | $Enums.ProductStatus
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -9963,6 +11298,7 @@ export namespace Prisma {
     priceInCents?: SortOrder
     imagePaths?: SortOrder
     description?: SortOrder
+    productStatus?: SortOrder
     isAvailable?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9980,6 +11316,7 @@ export namespace Prisma {
     priceInGrosz?: SortOrder
     priceInCents?: SortOrder
     description?: SortOrder
+    productStatus?: SortOrder
     isAvailable?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9991,6 +11328,7 @@ export namespace Prisma {
     priceInGrosz?: SortOrder
     priceInCents?: SortOrder
     description?: SortOrder
+    productStatus?: SortOrder
     isAvailable?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10033,6 +11371,16 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type EnumProductStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProductStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProductStatusFilter<$PrismaModel>
+    _max?: NestedEnumProductStatusFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -10426,6 +11774,35 @@ export namespace Prisma {
     _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
   }
 
+  export type HeroContentCountOrderByAggregateInput = {
+    id?: SortOrder
+    description?: SortOrder
+    imagePaths?: SortOrder
+    imagePublicIds?: SortOrder
+    href?: SortOrder
+    textHref?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HeroContentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    description?: SortOrder
+    href?: SortOrder
+    textHref?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HeroContentMinOrderByAggregateInput = {
+    id?: SortOrder
+    description?: SortOrder
+    href?: SortOrder
+    textHref?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type ProductCreateimagePathsInput = {
     set: string[]
   }
@@ -10463,6 +11840,10 @@ export namespace Prisma {
   export type ProductUpdateimagePathsInput = {
     set?: string[]
     push?: string | string[]
+  }
+
+  export type EnumProductStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ProductStatus
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -10932,6 +12313,24 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPaymentsInput, UserUpdateWithoutPaymentsInput>, UserUncheckedUpdateWithoutPaymentsInput>
   }
 
+  export type HeroContentCreateimagePathsInput = {
+    set: string[]
+  }
+
+  export type HeroContentCreateimagePublicIdsInput = {
+    set: string[]
+  }
+
+  export type HeroContentUpdateimagePathsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type HeroContentUpdateimagePublicIdsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -10955,6 +12354,13 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumProductStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductStatusFilter<$PrismaModel> | $Enums.ProductStatus
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -11015,6 +12421,16 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumProductStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProductStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProductStatusFilter<$PrismaModel>
+    _max?: NestedEnumProductStatusFilter<$PrismaModel>
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -11937,12 +13353,13 @@ export namespace Prisma {
   }
 
   export type ProductCreateWithoutOrderItemsInput = {
-    id?: string
+    id: string
     name: string
     priceInGrosz: number
     priceInCents: number
     imagePaths?: ProductCreateimagePathsInput | string[]
     description: string
+    productStatus?: $Enums.ProductStatus
     isAvailable?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11950,12 +13367,13 @@ export namespace Prisma {
   }
 
   export type ProductUncheckedCreateWithoutOrderItemsInput = {
-    id?: string
+    id: string
     name: string
     priceInGrosz: number
     priceInCents: number
     imagePaths?: ProductCreateimagePathsInput | string[]
     description: string
+    productStatus?: $Enums.ProductStatus
     isAvailable?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12026,6 +13444,7 @@ export namespace Prisma {
     priceInCents?: IntFieldUpdateOperationsInput | number
     imagePaths?: ProductUpdateimagePathsInput | string[]
     description?: StringFieldUpdateOperationsInput | string
+    productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12039,6 +13458,7 @@ export namespace Prisma {
     priceInCents?: IntFieldUpdateOperationsInput | number
     imagePaths?: ProductUpdateimagePathsInput | string[]
     description?: StringFieldUpdateOperationsInput | string
+    productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
