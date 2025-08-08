@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/products";
-import { ChevronDown } from "lucide-react";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -16,7 +15,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const priceInPLN = (product.priceInGrosz / 100).toFixed(2);
-  const priceInEUR = (product.priceInCents / 100).toFixed(2);
 
   return (
     <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 lg:items-start lg:gap-x-8">
@@ -32,9 +30,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               className="bg-[#F1F1F1] object-cover p-24"
               sizes="50vw"
               priority
-              unoptimized={product.imagePaths[0]?.includes(
-                "res.cloudinary.com",
-              )}
             />
           </div>
 
@@ -48,7 +43,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   fill
                   className="object-cover"
                   sizes="50vw"
-                  unoptimized={imagePath?.includes("res.cloudinary.com")}
                 />
               </div>
             ))}
@@ -63,9 +57,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   fill
                   className="object-cover"
                   sizes="50vw"
-                  unoptimized={product.imagePaths[0]?.includes(
-                    "res.cloudinary.com",
-                  )}
                 />
               </div>
               <div className="relative h-screen w-full">
@@ -75,9 +66,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   fill
                   className="object-cover"
                   sizes="50vw"
-                  unoptimized={product.imagePaths[0]?.includes(
-                    "res.cloudinary.com",
-                  )}
                 />
               </div>
             </>
@@ -142,7 +130,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <details className="border-b border-black pb-1">
                   <summary className="flex cursor-pointer items-center justify-between text-xs tracking-wider uppercase">
                     <span>PRODUCT DESCRIPTION</span>
-                    <ChevronDown className="h-4 w-4" />
+                    <span className="text-base">⌄</span>
                   </summary>
                   <div className="mt-3 text-xs leading-relaxed text-gray-600">
                     <p>
@@ -161,7 +149,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <details className="border-b border-black pb-1">
                   <summary className="flex cursor-pointer items-center justify-between text-xs tracking-wider uppercase">
                     <span>PRODUCT DETAILS</span>
-                    <ChevronDown className="h-4 w-4" />
+                    <span className="text-base">⌄</span>
                   </summary>
                   <div className="mt-3 text-xs leading-relaxed text-gray-600">
                     <ul className="space-y-1">
@@ -178,7 +166,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <details className="border-b border-black pb-1">
                   <summary className="flex cursor-pointer items-center justify-between text-xs tracking-wider uppercase">
                     <span>MATERIAL</span>
-                    <ChevronDown className="h-4 w-4" />
+                    <span className="text-base">⌄</span>
                   </summary>
                   <div className="mt-3 text-xs leading-relaxed text-gray-600">
                     <ul className="space-y-1">
@@ -195,7 +183,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <details className="border-b border-black pb-1">
                   <summary className="flex cursor-pointer items-center justify-between text-xs tracking-wider uppercase">
                     <span>CARE INSTRUCTIONS</span>
-                    <ChevronDown className="h-4 w-4" />
+                    <span className="text-base">⌄</span>
                   </summary>
                   <div className="mt-3 text-xs leading-relaxed text-gray-600">
                     <ul className="space-y-1">

@@ -9,7 +9,6 @@ import {
   TrendingUp,
   TrendingDown,
   Activity,
-  Star,
 } from "lucide-react";
 import {
   DashboardStats as DashboardStatsType,
@@ -166,50 +165,6 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
           </CardContent>
         </Card>
       </div>
-
-      {/* Top Selling Products */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Star className="mr-2 h-5 w-5" />
-            Top Selling Products
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {stats.topSellingProducts.length > 0 ? (
-              stats.topSellingProducts.map((product, index) => (
-                <div
-                  key={product.id}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="bg-primary/10 text-primary flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold">
-                      {index + 1}
-                    </div>
-                    <div>
-                      <p className="font-medium">{product.name}</p>
-                      <p className="text-muted-foreground text-sm">
-                        {product.totalSold} units sold
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold">
-                      {formatPrice(product.revenue)}
-                    </p>
-                    <p className="text-muted-foreground text-sm">Revenue</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-muted-foreground py-4 text-center">
-                No sales data available
-              </p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

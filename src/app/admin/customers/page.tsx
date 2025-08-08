@@ -6,7 +6,7 @@ export default async function CustomersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="mx-auto flex max-w-5xl items-center justify-between">
         <h1 className="text-3xl font-bold">Customers</h1>
         <div className="text-sm text-gray-600">
           Total: {customers.length} customers

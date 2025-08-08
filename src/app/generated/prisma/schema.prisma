@@ -48,6 +48,7 @@ model Product {
   description    String
   productStatus  ProductStatus @default(SHOP)
   isAvailable    Boolean       @default(true)
+  isFeatured     Boolean       @default(false)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   imagePublicIds String[]

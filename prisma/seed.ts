@@ -133,6 +133,7 @@ async function main() {
         imagePublicIds: ["diamond-ring-1", "diamond-ring-2"],
         productStatus: ProductStatus.SHOP,
         isAvailable: true,
+        isFeatured: true,
       },
     }),
     prisma.product.create({
@@ -149,6 +150,7 @@ async function main() {
         imagePublicIds: ["pearl-necklace-1"],
         productStatus: ProductStatus.ORDERED,
         isAvailable: false,
+        isFeatured: false,
       },
     }),
     prisma.product.create({
@@ -166,6 +168,7 @@ async function main() {
         imagePublicIds: ["gold-hoops-1", "gold-hoops-2"],
         productStatus: ProductStatus.SOLD,
         isAvailable: false,
+        isFeatured: false,
       },
     }),
     prisma.product.create({
@@ -182,6 +185,7 @@ async function main() {
         imagePublicIds: ["silver-bracelet-1"],
         productStatus: ProductStatus.ORDERED,
         isAvailable: false,
+        isFeatured: false,
       },
     }),
     prisma.product.create({
@@ -199,6 +203,7 @@ async function main() {
         imagePublicIds: ["emerald-pendant-1", "emerald-pendant-2"],
         productStatus: ProductStatus.SHOP,
         isAvailable: true,
+        isFeatured: true,
       },
     }),
     prisma.product.create({
@@ -215,6 +220,7 @@ async function main() {
         imagePublicIds: ["rose-gold-watch-1"],
         productStatus: ProductStatus.SHOP,
         isAvailable: true,
+        isFeatured: true,
       },
     }),
     prisma.product.create({
@@ -231,6 +237,7 @@ async function main() {
         imagePublicIds: ["sapphire-studs-1"],
         productStatus: ProductStatus.SHOP,
         isAvailable: true,
+        isFeatured: false,
       },
     }),
     prisma.product.create({
@@ -247,6 +254,7 @@ async function main() {
         imagePublicIds: ["vintage-brooch-1"],
         productStatus: ProductStatus.SHOP,
         isAvailable: false, // Example of SHOP product that's temporarily unavailable
+        isFeatured: false,
       },
     }),
   ]);

@@ -1675,6 +1675,7 @@ export namespace Prisma {
     description: string | null
     productStatus: $Enums.ProductStatus | null
     isAvailable: boolean | null
+    isFeatured: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1687,6 +1688,7 @@ export namespace Prisma {
     description: string | null
     productStatus: $Enums.ProductStatus | null
     isAvailable: boolean | null
+    isFeatured: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1700,6 +1702,7 @@ export namespace Prisma {
     description: number
     productStatus: number
     isAvailable: number
+    isFeatured: number
     createdAt: number
     updatedAt: number
     imagePublicIds: number
@@ -1725,6 +1728,7 @@ export namespace Prisma {
     description?: true
     productStatus?: true
     isAvailable?: true
+    isFeatured?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1737,6 +1741,7 @@ export namespace Prisma {
     description?: true
     productStatus?: true
     isAvailable?: true
+    isFeatured?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1750,6 +1755,7 @@ export namespace Prisma {
     description?: true
     productStatus?: true
     isAvailable?: true
+    isFeatured?: true
     createdAt?: true
     updatedAt?: true
     imagePublicIds?: true
@@ -1851,6 +1857,7 @@ export namespace Prisma {
     description: string
     productStatus: $Enums.ProductStatus
     isAvailable: boolean
+    isFeatured: boolean
     createdAt: Date
     updatedAt: Date
     imagePublicIds: string[]
@@ -1884,6 +1891,7 @@ export namespace Prisma {
     description?: boolean
     productStatus?: boolean
     isAvailable?: boolean
+    isFeatured?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     imagePublicIds?: boolean
@@ -1900,6 +1908,7 @@ export namespace Prisma {
     description?: boolean
     productStatus?: boolean
     isAvailable?: boolean
+    isFeatured?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     imagePublicIds?: boolean
@@ -1914,6 +1923,7 @@ export namespace Prisma {
     description?: boolean
     productStatus?: boolean
     isAvailable?: boolean
+    isFeatured?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     imagePublicIds?: boolean
@@ -1928,12 +1938,13 @@ export namespace Prisma {
     description?: boolean
     productStatus?: boolean
     isAvailable?: boolean
+    isFeatured?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     imagePublicIds?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "priceInGrosz" | "priceInCents" | "imagePaths" | "description" | "productStatus" | "isAvailable" | "createdAt" | "updatedAt" | "imagePublicIds", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "priceInGrosz" | "priceInCents" | "imagePaths" | "description" | "productStatus" | "isAvailable" | "isFeatured" | "createdAt" | "updatedAt" | "imagePublicIds", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
@@ -1955,6 +1966,7 @@ export namespace Prisma {
       description: string
       productStatus: $Enums.ProductStatus
       isAvailable: boolean
+      isFeatured: boolean
       createdAt: Date
       updatedAt: Date
       imagePublicIds: string[]
@@ -2390,6 +2402,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Product", 'String'>
     readonly productStatus: FieldRef<"Product", 'ProductStatus'>
     readonly isAvailable: FieldRef<"Product", 'Boolean'>
+    readonly isFeatured: FieldRef<"Product", 'Boolean'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
     readonly imagePublicIds: FieldRef<"Product", 'String[]'>
@@ -9765,6 +9778,7 @@ export namespace Prisma {
     description: 'description',
     productStatus: 'productStatus',
     isAvailable: 'isAvailable',
+    isFeatured: 'isFeatured',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     imagePublicIds: 'imagePublicIds'
@@ -10040,6 +10054,7 @@ export namespace Prisma {
     description?: StringFilter<"Product"> | string
     productStatus?: EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
     isAvailable?: BoolFilter<"Product"> | boolean
+    isFeatured?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     imagePublicIds?: StringNullableListFilter<"Product">
@@ -10055,6 +10070,7 @@ export namespace Prisma {
     description?: SortOrder
     productStatus?: SortOrder
     isAvailable?: SortOrder
+    isFeatured?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     imagePublicIds?: SortOrder
@@ -10073,6 +10089,7 @@ export namespace Prisma {
     description?: StringFilter<"Product"> | string
     productStatus?: EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
     isAvailable?: BoolFilter<"Product"> | boolean
+    isFeatured?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     imagePublicIds?: StringNullableListFilter<"Product">
@@ -10088,6 +10105,7 @@ export namespace Prisma {
     description?: SortOrder
     productStatus?: SortOrder
     isAvailable?: SortOrder
+    isFeatured?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     imagePublicIds?: SortOrder
@@ -10110,6 +10128,7 @@ export namespace Prisma {
     description?: StringWithAggregatesFilter<"Product"> | string
     productStatus?: EnumProductStatusWithAggregatesFilter<"Product"> | $Enums.ProductStatus
     isAvailable?: BoolWithAggregatesFilter<"Product"> | boolean
+    isFeatured?: BoolWithAggregatesFilter<"Product"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     imagePublicIds?: StringNullableListFilter<"Product">
@@ -10607,6 +10626,7 @@ export namespace Prisma {
     description: string
     productStatus?: $Enums.ProductStatus
     isAvailable?: boolean
+    isFeatured?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     imagePublicIds?: ProductCreateimagePublicIdsInput | string[]
@@ -10622,6 +10642,7 @@ export namespace Prisma {
     description: string
     productStatus?: $Enums.ProductStatus
     isAvailable?: boolean
+    isFeatured?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     imagePublicIds?: ProductCreateimagePublicIdsInput | string[]
@@ -10637,6 +10658,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imagePublicIds?: ProductUpdateimagePublicIdsInput | string[]
@@ -10652,6 +10674,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imagePublicIds?: ProductUpdateimagePublicIdsInput | string[]
@@ -10667,6 +10690,7 @@ export namespace Prisma {
     description: string
     productStatus?: $Enums.ProductStatus
     isAvailable?: boolean
+    isFeatured?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     imagePublicIds?: ProductCreateimagePublicIdsInput | string[]
@@ -10681,6 +10705,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imagePublicIds?: ProductUpdateimagePublicIdsInput | string[]
@@ -10695,6 +10720,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imagePublicIds?: ProductUpdateimagePublicIdsInput | string[]
@@ -11300,6 +11326,7 @@ export namespace Prisma {
     description?: SortOrder
     productStatus?: SortOrder
     isAvailable?: SortOrder
+    isFeatured?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     imagePublicIds?: SortOrder
@@ -11318,6 +11345,7 @@ export namespace Prisma {
     description?: SortOrder
     productStatus?: SortOrder
     isAvailable?: SortOrder
+    isFeatured?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11330,6 +11358,7 @@ export namespace Prisma {
     description?: SortOrder
     productStatus?: SortOrder
     isAvailable?: SortOrder
+    isFeatured?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13361,6 +13390,7 @@ export namespace Prisma {
     description: string
     productStatus?: $Enums.ProductStatus
     isAvailable?: boolean
+    isFeatured?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     imagePublicIds?: ProductCreateimagePublicIdsInput | string[]
@@ -13375,6 +13405,7 @@ export namespace Prisma {
     description: string
     productStatus?: $Enums.ProductStatus
     isAvailable?: boolean
+    isFeatured?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     imagePublicIds?: ProductCreateimagePublicIdsInput | string[]
@@ -13446,6 +13477,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imagePublicIds?: ProductUpdateimagePublicIdsInput | string[]
@@ -13460,6 +13492,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     productStatus?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     imagePublicIds?: ProductUpdateimagePublicIdsInput | string[]

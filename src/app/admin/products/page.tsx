@@ -9,7 +9,7 @@ export default async function ProductsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="mx-auto flex max-w-5xl items-center justify-between">
         <h1 className="text-3xl font-bold">Products</h1>
         <div className="flex items-center space-x-4">
           <div className="text-sm text-gray-600">

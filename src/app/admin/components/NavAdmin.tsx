@@ -7,6 +7,14 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,8 +24,12 @@ const navItems = [
   { name: "Orders", href: "/admin/orders" },
   { name: "Customers", href: "/admin/customers" },
   { name: "Products", href: "/admin/products" },
-  { name: "CMS", href: "/admin/cms/hero" },
   { name: "Settings", href: "/admin/settings" },
+];
+
+const cmsItems = [
+  { name: "Landing Page", href: "/admin/cms/hero" },
+  { name: "Gallery", href: "/admin/cms" },
 ];
 
 export default function NavAdmin() {
@@ -28,6 +40,10 @@ export default function NavAdmin() {
       return pathname === "/admin";
     }
     return pathname.startsWith(href);
+  };
+
+  const isCmsActive = () => {
+    return pathname.startsWith("/admin/cms");
   };
 
   return (
@@ -51,6 +67,36 @@ export default function NavAdmin() {
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               ))}
+
+              {/* CMS Dropdown */}
+              <NavigationMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className={cn(
+                        navigationMenuTriggerStyle(),
+                        "flex items-center space-x-1",
+                        isCmsActive()
+                          ? "bg-gray-100 font-medium text-gray-900"
+                          : "text-gray-700 hover:text-gray-900",
+                      )}
+                    >
+                      <span>CMS</span>
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="center">
+                    {cmsItems.map((item) => (
+                      <DropdownMenuItem key={item.name} asChild>
+                        <Link href={item.href} className="w-full">
+                          {item.name}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
