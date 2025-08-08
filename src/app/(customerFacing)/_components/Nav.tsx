@@ -72,7 +72,7 @@ export default function Nav() {
           <div className="flex justify-center">
             <Link
               href="/"
-              className={`text-xl uppercase text-gray-900 antialiased ${stalinistOne.className}`}
+              className={`text-xl text-gray-900 uppercase antialiased ${stalinistOne.className}`}
             >
               Klejnoty Maksa
             </Link>

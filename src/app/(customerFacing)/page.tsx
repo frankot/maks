@@ -7,7 +7,7 @@ export default function Home() {
     <main>
       <Hero />
       <FeaturedProducts />
-      <Title text="Jewelry" imagePath="./bg1.jpg" />  
+      <Title text="Jewelry" imagePath="./bg1.jpg" />
     </main>
   );
 }

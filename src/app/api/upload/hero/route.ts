@@ -20,19 +20,22 @@ export async function POST(request: NextRequest) {
     const maxSize = 9 * 1024 * 1024; // 9MB in bytes
     if (file.size > maxSize) {
       return NextResponse.json(
-        { 
-          error: `File size too large. Maximum size is 9MB. Your file is ${(file.size / 1024 / 1024).toFixed(1)}MB.` 
+        {
+          error: `File size too large. Maximum size is 9MB. Your file is ${(file.size / 1024 / 1024).toFixed(1)}MB.`,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Check file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: "Invalid file type. Only JPEG, PNG, and WebP files are allowed." },
-        { status: 400 }
+        {
+          error:
+            "Invalid file type. Only JPEG, PNG, and WebP files are allowed.",
+        },
+        { status: 400 },
       );
     }
 
