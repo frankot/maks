@@ -41,7 +41,7 @@ export default function HeroPreview({
 
   return (
     <>
-      <div className="sticky top-0 z-10 border-b border-gray-200 bg-white p-4">
+      <div className="sticky top-0 z-10 border-b border-stone-800 mr-4 bg-white p-4">
         <div className="flex items-center space-x-2">
           <Eye className="h-5 w-5 text-gray-700" />
           <h2 className="text-xl font-bold">Landing Page Preview</h2>

@@ -53,20 +53,12 @@ export default function Cms() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="mx-auto my-10 flex max-w-5xl items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">CMS</h1>
-          <p className="text-gray-600">Landing Page</p>
-        </div>
-        <div className="text-sm text-gray-600">
-          Manage your homepage content
-        </div>
-      </div>
+    <div className="space-y-6 mt-16">
+  
 
-      <div className="flex h-screen overflow-y-auto">
+      <div className="flex  overflow-y-auto">
         {/* LEFT SIDE - LIVE PREVIEW (2/3) */}
-        <div className="w-2/3 bg-white">
+        <div className="w-2/3 pl-4 bg-white">
           <HeroPreview
             heroContent={heroContent}
             featuredProducts={featuredProducts}
@@ -74,8 +66,8 @@ export default function Cms() {
         </div>
 
         {/* RIGHT SIDE - EDITING CONTROLS (1/3) */}
-        <div className="w-1/3 border-l border-gray-200 bg-gray-50">
-          <div className="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 p-4">
+        <div className="w-1/3 pr-4 border-l border-gray-200 bg-gray-50">
+          <div className="sticky top-0 z-10 border-b border-stone-800 ml-4 bg-gray-50 p-4">
             <div className="flex items-center space-x-2">
               <Edit className="h-5 w-5 text-gray-700" />
               <h2 className="text-xl font-bold">Edit Content</h2>

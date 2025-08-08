@@ -81,6 +81,41 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
+
+// Simple Card variant for image + title (for category cards)
+import Image from "next/image";
+
+export interface SimpleCardProps {
+  title: string;
+  image: string;
+  height?: string;
+  className?: string;
+}
+
+export function SimpleCard({ title, image, height = "410px", className = "" }: SimpleCardProps) {
+  return (
+    <div
+      className={`w-full overflow-hidden border-t border-black group bg-white flex flex-col ${className}`}
+      style={{ height }}
+    >
+      {/* Image section */}
+      <div className="relative w-full flex-1 bg-white" style={{ height: `calc(${height} - 75px)` }}>
+        <Image
+          src={image || "/placeholder.jpg"}
+          alt={title}
+          fill
+          className="object-contain group-hover:scale-105 transition-transform duration-300 ease-in-out"
+          sizes="360px"
+        />
+      </div>
+      {/* Title section */}
+      <div className="flex h-[54px] items-center justify-center bg-[#F1F1F1] px-4">
+        <h3 className="w-full truncate text-center text-sm font-semibold text-gray-900">{title}</h3>
+      </div>
+    </div>
+  );
+}
+
 export {
   Card,
   CardHeader,
