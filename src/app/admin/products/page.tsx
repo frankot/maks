@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { getProducts } from "@/lib/products";
 import { ProductsTable } from "./_components/ProductsTable";
 import Link from "next/link";
+import AdminPageWrapper from "../components/AdminPageWrapper";
 
 export default async function ProductsPage() {
   const products = await getProducts();
 
   return (
-    <div className="space-y-6">
+    <AdminPageWrapper>
       <div className="mx-auto flex max-w-5xl items-center justify-between">
         <h1 className="text-3xl font-bold">Products</h1>
         <div className="flex items-center space-x-4">
@@ -25,6 +26,6 @@ export default async function ProductsPage() {
       </div>
 
       <ProductsTable products={products} />
-    </div>
+    </AdminPageWrapper>
   );
 }

@@ -16,7 +16,11 @@ export default function Home() {
           ALL PRODUCTS
         </h4>
       </Link>
-      
+            <FeaturedProducts />
+
+      <FeaturedProducts />
+
+
     </main>
   );
 }
