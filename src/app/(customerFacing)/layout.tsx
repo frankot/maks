@@ -1,3 +1,4 @@
+import Footer from "./_components/Footer";
 import Nav from "./_components/Nav";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
@@ -12,6 +13,7 @@ export default function CustomerFacingLayout({
       <ErrorBoundary>
         {children}
       </ErrorBoundary>
+      <Footer/>
     </>
   );
 }

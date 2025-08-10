@@ -3,6 +3,7 @@ import FeaturedProducts from './_components/FeaturedProducts';
 import Title from './_components/Title';
 import Sections from './_components/Sections';
 import Link from 'next/link';
+import StudioStatement from '@/components/ui/StudioStatement';
 
 export default function Home() {
   return (
@@ -19,7 +20,9 @@ export default function Home() {
             <FeaturedProducts />
 
       <FeaturedProducts />
-
+      <Title text="GALLERY" imagePath="./title2.jpg" />
+      <StudioStatement
+text="In 06.33.11 we believe that jewelry should be one of a kind, just as our audience is. Jewelry should be celebrated, and wearing it should make you feel special. So in our studio you will not find two identical pieces."      />
 
     </main>
   );
