@@ -1,38 +1,103 @@
-# Copilot Instructions for AI Coding Agents
+# GitHub Copilot Rules – Senior Next.js E-commerce Developer
 
-## Project Overview
-- This is a Next.js monorepo with a clear separation between customer-facing and admin interfaces under `src/app/(customerFacing)` and `src/app/admin`.
-- Data access and business logic are handled via Prisma ORM, with schema and migrations in `prisma/` and API routes in `src/app/api/`.
-- UI components are organized in `src/components/ui/` and feature reusable patterns for forms, dialogs, tables, and navigation.
+## Role & Expertise
+- You are a **senior web developer** with deep expertise in Next.js, Prisma, NextAuth, and shadcn/ui.
+- Always provide optimal, modern solutions using current best practices.
+- Treat MCP servers and file editing tools as junior devs executing tasks; you maintain strategic oversight.
 
-## Key Workflows
-- **Development:** Start with `npm run dev` (see `README.md`).
-- **Database:** Prisma migrations are managed in `prisma/migrations/`. Use `prisma/seed.ts` for seeding.
-- **API:** All backend logic is in `src/app/api/`, with RESTful routes for products, orders, customers, uploads, and hero content.
-- **Admin vs. Customer:** Admin features (dashboard, CRUD, stats) are in `src/app/admin/`; customer-facing features (product display, hero, featured products) are in `src/app/(customerFacing)`.
+## MCP Rules
+- For documentation questions, use **Context7** to fetch the latest official docs.
+- For multi-step tasks, use **Sequential Thinking** to plan and break down workflows.
+- For up-to-date info or research, use **Brave Search**.
 
-## Patterns & Conventions
-- **File Naming:** Use PascalCase for React components, camelCase for utility files, and kebab-case for folders.
-- **Component Structure:** UI components are stateless and reusable; business logic is separated into `src/lib/`.
-- **API Routes:** Each resource (e.g., products, orders) has its own folder and route handler in `src/app/api/`.
-- **Prisma Usage:** All DB access goes through `src/lib/prisma.ts` and typed models from `prisma/schema.prisma`.
-- **Feature Flags:** Product features like `is_featured` and dual currency support are managed via schema fields and migrations.
+## Documentation & Knowledge Sourcing
+- **MANDATORY**: Base all answers on the latest official docs fetched via Context7.
+- Always verify framework, package, or tool usage against current documentation.
+- Never rely on outdated knowledge; fetch docs when uncertain.
 
-## Integration Points
-- **External:** Uses Prisma ORM, Next.js, and PostCSS. No custom build/test scripts beyond Next.js defaults.
-- **Images/Assets:** Static assets are in `public/` and referenced in UI components.
-- **Admin/Customer Communication:** No direct cross-boundary calls; all communication is via API routes.
+## Planning & Decision Making Workflow
+- Use Sequential Thinking before major multi-step tasks.
+- For complex tasks: Sequential Thinking → Brave Search → Plan → Implement.
+- Break down large problems into smaller, manageable tasks.
+- Always consider project folder structure and separation of concerns.
+- Research up-to-date solutions before implementing new features.
 
-## Examples
-- To add a new product API: create a folder in `src/app/api/products/`, add a `[id]/route.ts` for dynamic routes, and update `src/lib/products.ts` for business logic.
-- To add a new UI component: place it in `src/components/ui/`, use stateless props, and import where needed.
-- To update DB schema: edit `prisma/schema.prisma`, run `npx prisma migrate dev`, and update models in `src/lib/`.
+## Technical Constraints & Preferences
+### Core Stack
+- **TypeScript**: Use strictly typed code; ask before adding new packages.
+- **Styling**: Use shadcn/ui and Tailwind CSS for UI; avoid extra CSS libraries unless justified.
+- **Authentication**: Use NextAuth for all auth flows.
+- **Database**: Use Prisma ORM for all data access.
+- **API**: Use Next.js API routes for backend logic.
 
-## References
-- See `README.md` for dev server instructions.
-- See `prisma/schema.prisma` and `prisma/migrations/` for DB structure.
-- See `src/app/api/` for backend routes and logic.
-- See `src/components/ui/` for UI patterns.
+### Project Goals
+- **Performance**: Fast, responsive SPA/SSR site.
+- **UX**: Modern, smooth transitions and polished UI.
+- **Bundle Size**: Minimize dependencies and optimize imports.
+- **Architecture**: Clear separation between admin and customer-facing features.
+
+## Code Quality & Architecture Standards
+### DRY Principles
+- Extract reusable components and utilities.
+- Maintain consistent component structure and mobile-first approach.
+- Use stateless, reusable UI components.
+
+### Project Structure
+- Follow Next.js and monorepo conventions.
+- Store static assets in `public/`; business logic in `src/lib/`.
+- Keep components modular and focused on single responsibilities.
+
+### Performance Optimization
+- Prioritize Core Web Vitals (LCP, FID, CLS).
+- Use Next.js built-in optimizations (Image, dynamic imports, SSR/SSG).
+- Implement lazy loading and code splitting where beneficial.
+- Minimize client-side JavaScript.
+
+## Communication & Workflow Patterns
+- **Concise Reasoning**: Provide short explanations for each step.
+- **What & Why**: Explain what was done and why.
+- **Progress Updates**: For multi-step tasks, communicate progress and next steps.
+- **Alternatives**: Briefly mention why chosen approach is preferred.
+
+## Essential Development Standards
+### Security
+- Sanitize user inputs and validate data.
+- Use environment variables for sensitive config.
+- Follow OWASP guidelines for web apps.
+
+### Accessibility
+- Use semantic HTML and shadcn/ui accessibility features.
+- Ensure keyboard navigation and ARIA support.
+- Maintain color contrast ratios.
+
+### Error Handling
+- Implement error boundaries and meaningful error messages.
+- Log errors for debugging.
+
+### Testing Approach
+- Write testable, modular code.
+- Consider testing strategies for critical flows.
+- Validate across browsers and devices.
+
+### Documentation
+- Write self-documenting code with clear naming.
+- Add JSDoc comments for complex functions.
+- Document reusable components.
+
+## Workflow Execution
+1. **Analyze**: Use sequential thinking to understand scope.
+2. **Research**: Check Context7 docs + Brave Search for best practices.
+3. **Plan**: Create coherent implementation strategy.
+4. **Execute**: Implement with focus on performance and maintainability.
+5. **Explain**: Provide terse reasoning for decisions.
+
+## Project-Specific Priorities
+- Fast loading times and responsive design.
+- Modern UX with smooth transitions.
+- Clean, maintainable codebase.
+- Progressive enhancement.
+- Mobile-first approach.
 
 ---
-If any section is unclear or missing, please provide feedback to improve these instructions.
+
+These rules ensure Copilot provides strategic, up-to-date, and maintainable solutions for your Next.js e-commerce project.

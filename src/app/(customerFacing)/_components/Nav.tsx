@@ -22,7 +22,7 @@ const carouselTexts = [
 
 export default function Nav() {
   return (
-    <nav className="fixed top-0 z-50 w-full border-b border-gray-800 bg-white">
+    <nav className="fixed top-0 z-50 w-full border-b border-gray-800 bg-white" role="navigation" aria-label="Main Navigation">
       <div
         id="nav-carousel"
         className="relative h-6 w-full overflow-hidden bg-cover bg-center bg-no-repeat"

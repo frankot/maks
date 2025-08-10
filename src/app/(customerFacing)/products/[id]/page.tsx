@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/products";
+import ProductDetailsSection from "@/components/ui/ProductDetailsSection";
+import { formatPriceInPLN } from "@/lib/utils";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -14,7 +16,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  const priceInPLN = (product.priceInGrosz / 100).toFixed(2);
+  const priceInPLN = formatPriceInPLN(product.priceInGrosz);
 
   return (
     <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 lg:items-start lg:gap-x-8">
@@ -23,27 +25,39 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="space-y-0 border-r border-black">
           {/* Main product image */}
           <div className="relative h-screen w-full">
-            <Image
-              src={product.imagePaths[0] || "/placeholder.jpg"}
-              alt={product.name}
-              fill
-              className="bg-[#F1F1F1] object-cover p-24"
-              sizes="50vw"
-              priority
-            />
+            {product.imagePaths[0] ? (
+              <Image
+                src={product.imagePaths[0]}
+                alt={product.name}
+                fill
+                className="bg-[#F1F1F1] object-cover p-24"
+                sizes="50vw"
+                priority
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full w-full bg-white">
+                <span className="text-gray-400 text-lg font-medium">LOADING</span>
+              </div>
+            )}
           </div>
 
           {/* Additional images - each taking full screen height */}
           {product.imagePaths.length > 1 &&
             product.imagePaths.slice(1).map((imagePath, index) => (
               <div key={index} className="relative h-screen w-full">
-                <Image
-                  src={imagePath}
-                  alt={`${product.name} ${index + 2}`}
-                  fill
-                  className="object-cover"
-                  sizes="50vw"
-                />
+                {imagePath ? (
+                  <Image
+                    src={imagePath}
+                    alt={`${product.name} ${index + 2}`}
+                    fill
+                    className="object-cover"
+                    sizes="50vw"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full w-full bg-white">
+                    <span className="text-gray-400 text-lg font-medium">LOADING</span>
+                  </div>
+                )}
               </div>
             ))}
 
@@ -51,22 +65,34 @@ export default async function ProductPage({ params }: ProductPageProps) {
           {product.imagePaths.length === 1 && (
             <>
               <div className="relative h-screen w-full">
-                <Image
-                  src={product.imagePaths[0] || "/placeholder.jpg"}
-                  alt={`${product.name} detail`}
-                  fill
-                  className="object-cover"
-                  sizes="50vw"
-                />
+                {product.imagePaths[0] ? (
+                  <Image
+                    src={product.imagePaths[0]}
+                    alt={`${product.name} detail`}
+                    fill
+                    className="object-cover"
+                    sizes="50vw"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full w-full bg-white">
+                    <span className="text-gray-400 text-lg font-medium">LOADING</span>
+                  </div>
+                )}
               </div>
               <div className="relative h-screen w-full">
-                <Image
-                  src={product.imagePaths[0] || "/placeholder.jpg"}
-                  alt={`${product.name} close-up`}
-                  fill
-                  className="object-cover"
-                  sizes="50vw"
-                />
+                {product.imagePaths[0] ? (
+                  <Image
+                    src={product.imagePaths[0]}
+                    alt={`${product.name} close-up`}
+                    fill
+                    className="object-cover"
+                    sizes="50vw"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full w-full bg-white">
+                    <span className="text-gray-400 text-lg font-medium">LOADING</span>
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -127,74 +153,47 @@ export default async function ProductPage({ params }: ProductPageProps) {
               {/* Collapsible Sections */}
               <div className="mt-10 space-y-3">
                 {/* Product Description */}
-                <details className="border-b border-black pb-1">
-                  <summary className="flex cursor-pointer items-center justify-between text-xs tracking-wider uppercase">
-                    <span>PRODUCT DESCRIPTION</span>
-                    <span className="text-base">⌄</span>
-                  </summary>
-                  <div className="mt-3 text-xs leading-relaxed text-gray-600">
-                    <p>
-                      Handcrafted with precision and attention to detail. This
-                      piece embodies the organic yet bold aesthetic of 06.33.11
-                      Studio.
-                    </p>
-                    <p className="mt-2">
-                      Made from premium materials sourced responsibly, each
-                      piece tells a unique story of craftsmanship and artistry.
-                    </p>
-                  </div>
-                </details>
+                <ProductDetailsSection title="PRODUCT DESCRIPTION">
+                  <p>
+                    Handcrafted with precision and attention to detail. This
+                    piece embodies the organic yet bold aesthetic of 06.33.11
+                    Studio.
+                  </p>
+                  <p className="mt-2">
+                    Made from premium materials sourced responsibly, each
+                    piece tells a unique story of craftsmanship and artistry.
+                  </p>
+                </ProductDetailsSection>
 
-                {/* Product Details */}
-                <details className="border-b border-black pb-1">
-                  <summary className="flex cursor-pointer items-center justify-between text-xs tracking-wider uppercase">
-                    <span>PRODUCT DETAILS</span>
-                    <span className="text-base">⌄</span>
-                  </summary>
-                  <div className="mt-3 text-xs leading-relaxed text-gray-600">
-                    <ul className="space-y-1">
-                      <li>• Handmade in Warsaw, Poland</li>
-                      <li>• Limited edition piece</li>
-                      <li>• Comes with authenticity certificate</li>
-                      <li>• Gift box included</li>
-                      <li>• 1-year warranty</li>
-                    </ul>
-                  </div>
-                </details>
+                <ProductDetailsSection title="PRODUCT DETAILS">
+                  <ul className="space-y-1">
+                    <li> Handmade in Warsaw, Poland</li>
+                    <li> Limited edition piece</li>
+                    <li> Comes with authenticity certificate</li>
+                    <li> Gift box included</li>
+                    <li> 1-year warranty</li>
+                  </ul>
+                </ProductDetailsSection>
 
-                {/* Material */}
-                <details className="border-b border-black pb-1">
-                  <summary className="flex cursor-pointer items-center justify-between text-xs tracking-wider uppercase">
-                    <span>MATERIAL</span>
-                    <span className="text-base">⌄</span>
-                  </summary>
-                  <div className="mt-3 text-xs leading-relaxed text-gray-600">
-                    <ul className="space-y-1">
-                      <li>• 925 Sterling Silver</li>
-                      <li>• Natural gemstones</li>
-                      <li>• Hypoallergenic materials</li>
-                      <li>• Ethically sourced</li>
-                      <li>• Tarnish resistant coating</li>
-                    </ul>
-                  </div>
-                </details>
+                <ProductDetailsSection title="MATERIAL">
+                  <ul className="space-y-1">
+                    <li> 925 Sterling Silver</li>
+                    <li> Natural gemstones</li>
+                    <li> Hypoallergenic materials</li>
+                    <li> Ethically sourced</li>
+                    <li> Tarnish resistant coating</li>
+                  </ul>
+                </ProductDetailsSection>
 
-                {/* Care Instructions */}
-                <details className="border-b border-black pb-1">
-                  <summary className="flex cursor-pointer items-center justify-between text-xs tracking-wider uppercase">
-                    <span>CARE INSTRUCTIONS</span>
-                    <span className="text-base">⌄</span>
-                  </summary>
-                  <div className="mt-3 text-xs leading-relaxed text-gray-600">
-                    <ul className="space-y-1">
-                      <li>• Clean with soft cloth</li>
-                      <li>• Avoid contact with chemicals</li>
-                      <li>• Store in provided pouch</li>
-                      <li>• Remove before swimming</li>
-                      <li>• Professional cleaning recommended</li>
-                    </ul>
-                  </div>
-                </details>
+                <ProductDetailsSection title="CARE INSTRUCTIONS">
+                  <ul className="space-y-1">
+                    <li> Clean with soft cloth</li>
+                    <li> Avoid contact with chemicals</li>
+                    <li> Store in provided pouch</li>
+                    <li> Remove before swimming</li>
+                    <li> Professional cleaning recommended</li>
+                  </ul>
+                </ProductDetailsSection>
               </div>
             </div>
           </div>

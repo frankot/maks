@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Plus, Upload, X, Trash2 } from "lucide-react";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
+  AlertDialogTrigger,
   AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import { Trash2, Upload, Plus, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import type { HeroContent } from "@/app/generated/prisma";
 
@@ -28,12 +28,41 @@ export default function HeroImagesManager({
   heroContent,
   onUpdate,
 }: HeroImagesManagerProps) {
-  const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [deletingSlideIndex, setDeletingSlideIndex] = useState<number | null>(
-    null,
-  );
+  const [deletingSlideIndex, setDeletingSlideIndex] = useState<number | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
   const [pendingImages, setPendingImages] = useState<File[]>([]);
+  const handleImageSelection = (fileList: FileList | null) => {
+    if (!fileList) return;
+    const files = Array.from(fileList).slice(0, 2);
+    setPendingImages(files);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const files = Array.from(e.dataTransfer.files).slice(0, 2);
+    setPendingImages(files);
+  };
+
+  const handleConfirmUpload = async () => {
+    if (pendingImages.length !== 2) {
+      toast.error("Please select exactly 2 images for a slide");
+      return;
+    }
+    await handleFilesSelected(pendingImages);
+    setPendingImages([]);
+  };
 
   const imagePairs = [];
   if (heroContent) {
@@ -47,44 +76,16 @@ export default function HeroImagesManager({
     }
   }
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const files = e.dataTransfer.files;
-    handleImageSelection(files);
-  };
-
-  const handleImageSelection = (files: FileList | null) => {
-    if (!files) return;
-
-    const newFiles = Array.from(files);
-    const updatedPending = [...pendingImages, ...newFiles].slice(0, 2);
-
-    if (updatedPending.length > 2) {
-      toast.error("Maximum 2 images allowed per slide");
+  const handleFilesSelected = async (files: File[]) => {
+    if (files.length !== 2) {
+      toast.error("Please select exactly 2 images for a slide");
       return;
     }
-
-    setPendingImages(updatedPending);
-  };
-
-  const handleConfirmUpload = async () => {
-    if (pendingImages.length !== 2) return;
 
     setIsUploading(true);
     toast.loading("Uploading images...");
 
-    const uploadPromises = pendingImages.map(async (file) => {
+    const uploadPromises = files.map(async (file) => {
       const formData = new FormData();
       formData.append("file", file);
       const response = await fetch("/api/upload/hero", {
@@ -129,7 +130,6 @@ export default function HeroImagesManager({
 
       onUpdate();
       toast.success("Images uploaded!");
-      setPendingImages([]);
     } catch {
       toast.error("Upload failed");
     } finally {
@@ -137,6 +137,8 @@ export default function HeroImagesManager({
       toast.dismiss();
     }
   };
+
+
 
   const handleCancelUpload = () => {
     setPendingImages([]);

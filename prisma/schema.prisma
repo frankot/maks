@@ -142,3 +142,22 @@ model HeroContent {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
+
+model GalleryCategory {
+  id        String         @id @default(uuid())
+  name      String         @unique
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  images    GalleryImage[]
+}
+
+model GalleryImage {
+  id         String          @id @default(uuid())
+  name       String
+  imagePath  String
+  publicId   String
+  categoryId String
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  category   GalleryCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}

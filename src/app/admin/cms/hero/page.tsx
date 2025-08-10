@@ -1,5 +1,5 @@
-import Cms from "../_components/Cms";
+import HeroCms from "../_components/HeroCms";
 
-export default function HeroCms() {
-  return <Cms />;
+export default function HeroPage() {
+  return <HeroCms />;
 }

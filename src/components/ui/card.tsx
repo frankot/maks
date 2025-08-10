@@ -110,7 +110,7 @@ export function SimpleCard({ title, image, height = "410px", className = "" }: S
       </div>
       {/* Title section */}
       <div className="flex h-[54px] items-center justify-center bg-[#F1F1F1] px-4">
-        <h3 className="w-full truncate text-center text-sm font-semibold text-gray-900">{title}</h3>
+        <h3 className="w-full truncate text-center text-sm  text-gray-900">{title}</h3>
       </div>
     </div>
   );

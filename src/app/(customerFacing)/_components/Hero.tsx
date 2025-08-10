@@ -8,6 +8,7 @@ export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchHeroContent();
@@ -31,11 +32,11 @@ export default function Hero() {
         const data = await response.json();
         setHeroContent(data);
       } else {
-        console.error("Failed to fetch hero content:", response.status);
+        setError(`Failed to fetch hero content: ${response.status}`);
         setHeroContent(null);
       }
-    } catch (error) {
-      console.error("Error fetching hero content:", error);
+    } catch {
+      setError("Error fetching hero content. Please try again later.");
       setHeroContent(null);
     } finally {
       setIsLoading(false);
@@ -47,6 +48,15 @@ export default function Hero() {
     return (
       <div className="relative mt-16 flex h-[635px] w-full items-center justify-center bg-gray-100">
         <div className="text-gray-500">Loading...</div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="relative mt-16 flex h-[635px] w-full items-center justify-center bg-white">
+        <div className="text-red-500 text-lg font-semibold">{error}</div>
       </div>
     );
   }
