@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getProducts } from "@/lib/products";

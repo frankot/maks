@@ -5,6 +5,7 @@ import {
   PaymentStatus,
   AddressType,
   ProductStatus,
+  Category,
 } from "../src/app/generated/prisma";
 
 const prisma = new PrismaClient();
@@ -134,6 +135,7 @@ async function main() {
         productStatus: ProductStatus.SHOP,
         isAvailable: true,
         isFeatured: true,
+        category: Category.RINGS,
       },
     }),
     prisma.product.create({
@@ -151,6 +153,7 @@ async function main() {
         productStatus: ProductStatus.ORDERED,
         isAvailable: false,
         isFeatured: false,
+        category: Category.NECKLACES,
       },
     }),
     prisma.product.create({
@@ -169,6 +172,7 @@ async function main() {
         productStatus: ProductStatus.SOLD,
         isAvailable: false,
         isFeatured: false,
+        category: Category.EARRINGS,
       },
     }),
     prisma.product.create({
@@ -186,6 +190,7 @@ async function main() {
         productStatus: ProductStatus.ORDERED,
         isAvailable: false,
         isFeatured: false,
+        category: Category.RINGS,
       },
     }),
     prisma.product.create({
@@ -204,6 +209,7 @@ async function main() {
         productStatus: ProductStatus.SHOP,
         isAvailable: true,
         isFeatured: true,
+        category: Category.NECKLACES,
       },
     }),
     prisma.product.create({
@@ -221,6 +227,7 @@ async function main() {
         productStatus: ProductStatus.SHOP,
         isAvailable: true,
         isFeatured: true,
+        category: Category.RINGS,
       },
     }),
     prisma.product.create({
@@ -238,6 +245,7 @@ async function main() {
         productStatus: ProductStatus.SHOP,
         isAvailable: true,
         isFeatured: false,
+        category: Category.EARRINGS,
       },
     }),
     prisma.product.create({
@@ -255,6 +263,7 @@ async function main() {
         productStatus: ProductStatus.SHOP,
         isAvailable: false, // Example of SHOP product that's temporarily unavailable
         isFeatured: false,
+        category: Category.RINGS,
       },
     }),
   ]);

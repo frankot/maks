@@ -40,6 +40,12 @@ enum ProductStatus {
   SOLD
 }
 
+enum Category {
+  NECKLACES
+  RINGS
+  EARRINGS
+}
+
 model Product {
   id             String        @id
   name           String
@@ -50,6 +56,7 @@ model Product {
   productStatus  ProductStatus @default(SHOP)
   isAvailable    Boolean       @default(true)
   isFeatured     Boolean       @default(false)
+  category       Category      @default(RINGS)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   imagePublicIds String[]

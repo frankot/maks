@@ -1,141 +1,134 @@
 "use client";
 
 import Link from "next/link";
-import { Stalinist_One } from "next/font/google";
-
-const stalinistOne = Stalinist_One({
-  weight: "400",
-  subsets: ["latin"],
-});
+import { useEffect, useRef, useState } from "react";
 
 const navLinks = [
-  { href: "/shop", label: "SHOP" },
-  { href: "/about", label: "ABOUT" },
-  { href: "/gallery", label: "GALLERY" },
-];
-
-const carouselTexts = [
-  "10% ALWAYS GOES TO CHARITY",
-  "WE MOSTLY USE STERLING SILVER",
-  "WE BELIEVE THAT JEWELRY SHOULD BE ONE OF A KIND",
+  { href: "/shop", label: "Shop" },
+  { href: "/about", label: "About" },
+  { href: "/gallery", label: "Gallery" },
 ];
 
 export default function Nav() {
-  return (
-    <nav className="fixed top-0 z-50 w-full border-b border-gray-800 bg-white" role="navigation" aria-label="Main Navigation">
-      <div
-        id="nav-carousel"
-        className="relative h-6 w-full overflow-hidden bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage:
-            'url("https://images.unsplash.com/photo-1734215330444-679ebd7150ba?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/50"></div>
+  const [showFloating, setShowFloating] = useState(false);
+  const lastY = useRef(0);
+  const ticking = useRef(false);
 
-        {/* Carousel Text */}
-        <div className="absolute inset-0 flex items-center">
-          <div className="animate-scroll flex whitespace-nowrap">
-            {/* Repeat the text 3 times to ensure seamless loop */}
-            {Array.from({ length: 3 }).map((_, groupIndex) => (
-              <div key={groupIndex} className="flex">
-                {carouselTexts.map((text, index) => (
-                  <span
-                    key={`${groupIndex}-${index}`}
-                    className="mx-8 mr-32 text-[11px] tracking-wider text-white uppercase"
-                  >
-                    {text}
-                  </span>
+  useEffect(() => {
+    lastY.current = window.scrollY;
+
+    const onScroll = () => {
+      const current = window.scrollY;
+      if (ticking.current) return;
+      ticking.current = true;
+      window.requestAnimationFrame(() => {
+        const delta = current - lastY.current;
+        const passed = current > 120; // show only after scrolling down a bit
+
+        if (!passed) {
+          setShowFloating(false);
+        } else if (delta < -6) {
+          // scrolling up
+          setShowFloating(true);
+        } else if (delta > 6) {
+          // scrolling down
+          setShowFloating(false);
+        }
+
+        lastY.current = current;
+        ticking.current = false;
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <>
+      {/* Floating small nav that appears on scroll up */}
+      <div
+        className={`fixed top-0 left-0 right-0 z-50  bg-white/90 backdrop-blur transition-transform duration-300 ${
+          showFloating ? "translate-y-0" : "-translate-y-full"
+        }`}
+        role="navigation"
+        aria-label="Quick Navigation"
+      >
+        <div className="mx-auto  px-4">
+          <div className="flex h-14 items-center justify-between">
+            {/* Left 1/2 - Small brand */}
+            <div className="w-1/2 pr-3">
+              <Link href="/" className="block text-black text-lg md:text-xl font-bold uppercase tracking-tight">
+                SPLOT STUDIO
+              </Link>
+            </div>
+            {/* Right 1/2 - Split: links (1/2) and cart (1/2) */}
+            <div className="w-1/2 pl-3 flex items-center justify-between">
+              <div className="w-1/2 flex items-center gap-6">
+                {navLinks.map((l) => (
+                  <Link key={l.href} href={l.href} className="text-xs md:text-sm uppercase tracking-wider text-black/90 hover:text-black">
+                    {l.label}
+                  </Link>
                 ))}
               </div>
-            ))}
+              <div className="w-1/2 flex items-center justify-end">
+                <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
+                  <CartIcon size={18} />
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid h-10 grid-cols-3 items-center">
-          {/* Left - Navigation Links */}
-          <div className="flex items-center justify-start space-x-6">
-            {navLinks.map((link) => (
+      {/* Static main nav at the top of the page */}
+      <nav className="w-full  bg-white" role="navigation" aria-label="Main Navigation">
+        <div className="mx-auto  px-4">
+          <div className="flex items-start justify-between py-8 md:py-10">
+            {/* Left 1/2 - Big brand */}
+            <div className="w-1/2 pr-3">
               <Link
-                key={link.href}
-                href={link.href}
-                className="font-base text-xs tracking-wider text-black uppercase transition-colors hover:text-gray-600"
+                href="/"
+                className="block text-black font-extrabold uppercase leading-[0.9] whitespace-nowrap text-4xl sm:text-5xl md:text-6xl lg:text-8xl"
               >
-                {link.label}
+                SPLOT STUDIO
               </Link>
-            ))}
-          </div>
-
-          {/* Center - Logo */}
-          <div className="flex justify-center">
-            <Link
-              href="/"
-              className={`text-xl text-gray-900 uppercase antialiased ${stalinistOne.className}`}
-            >
-              Klejnoty Maksa
-            </Link>
-          </div>
-
-          {/* Right - Contact and Cart */}
-          <div className="flex items-center justify-end space-x-6">
-            <Link
-              href="/contact"
-              className="text-xs tracking-wider text-black uppercase transition-colors hover:text-gray-600"
-            >
-              CONTACT
-            </Link>
-            <Link
-              href="/cart"
-              className="text-black transition-colors hover:text-gray-600"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g id="shop=bag">
-                  <rect
-                    id="Rectangle 2"
-                    x="5"
-                    y="7"
-                    width="14"
-                    height="12"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    id="Rectangle 2_2"
-                    d="M8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </g>
-              </svg>
-            </Link>
+            </div>
+            {/* Right 1/2 - Split: links (1/2) and cart (1/2) */}
+            <div className="w-1/2 pl-3 flex items-center justify-between">
+              <div className="w-1/2 flex items-center gap-8">
+                {navLinks.map((l) => (
+                  <Link key={l.href} href={l.href} className="text-sm md:text-base uppercase tracking-wider text-black/90 hover:text-black">
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+              <div className="w-1/2 flex  items-center justify-end lg:pr-10">
+                <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
+                  <CartIcon size={32} />
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
+    </>
+  );
+}
 
-      <style jsx>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-33.333%);
-          }
-        }
-
-        .animate-scroll {
-          animation: scroll 40s linear infinite;
-        }
-      `}</style>
-    </nav>
+function CartIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g>
+        <rect x="5" y="7" width="14" height="12" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+    </svg>
   );
 }

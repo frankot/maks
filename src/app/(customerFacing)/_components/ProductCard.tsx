@@ -16,11 +16,11 @@ export default function ProductCard({
 
   return (
     <div
-      className={`h-[555px] w-full overflow-hidden border-t border-black bg-[#F1F1F1] ${!isLast ? "border-r" : ""}`}
+      className={`h-[460px] w-full overflow-hidden  bg-[#F1F1F1] `}
     >
       <Link href={`/products/${product.id}`} className="block h-full">
         {/* Image section - 80% height */}
-        <div className="relative h-[480px] overflow-hidden">
+        <div className="relative h-[380px] overflow-hidden">
           <Image
             src={product.imagePaths[0] || "/placeholder.jpg"}
             alt={product.name}
@@ -32,8 +32,8 @@ export default function ProductCard({
         </div>
 
         {/* Product info section - 20% height */}
-        <div className="flex h-[75px] flex-col items-center justify-center bg-white px-4">
-          <h3 className="mb-1 w-full truncate text-center text-sm font-semibold text-gray-900">
+        <div className="flex h-[75px] flex-col items-center justify-center px-4">
+          <h3 className="mb-1 w-full truncate text-center uppercase text-sm font-semibold text-gray-900">
             {product.name}
           </h3>
           <p className="text-xs text-gray-600">{priceInPLN} zł</p>

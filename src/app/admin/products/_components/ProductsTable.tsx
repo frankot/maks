@@ -134,6 +134,15 @@ export function ProductsTable({ products }: ProductsTableProps) {
       render: (product) => <div className="font-medium">{product.name}</div>,
     },
     {
+      key: "category",
+      label: "Category",
+      render: (product) => (
+        <span className="rounded-md border px-2 py-0.5 text-xs uppercase tracking-wide">
+          {product.category}
+        </span>
+      ),
+    },
+    {
       key: "pricePln",
       label: "Price (PLN)",
       render: (product) => formatPrice(product.priceInGrosz),

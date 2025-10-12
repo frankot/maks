@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:backfill:categories": "tsx scripts/backfill-categories.ts",
+    "db:backfill:categories:random": "tsx scripts/backfill-categories-random.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.11.1",

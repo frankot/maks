@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import type { Category } from "@/app/generated/prisma";
 import { Switch } from "@/components/ui/switch";
 import { X, Upload, Loader2, Link2, RefreshCw } from "lucide-react";
 import Image from "next/image";
@@ -46,6 +47,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     priceInCents: "",
     description: "",
     isAvailable: true,
+    category: "RINGS" as Category,
   });
   const [isIdManuallyEdited, setIsIdManuallyEdited] = useState(false);
 
@@ -65,6 +67,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
               priceInCents: (product.priceInCents / 100).toString(),
               description: product.description,
               isAvailable: product.isAvailable,
+              category: (product.category ?? "RINGS") as Category,
             });
             setIsIdManuallyEdited(true); // Existing product ID should not auto-update
 
@@ -168,6 +171,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         priceInCents: Math.round(parseFloat(formData.priceInCents) * 100),
         description: formData.description,
         isAvailable: formData.isAvailable,
+        category: formData.category,
         imagePaths: images.map((img) => img.url),
         imagePublicIds: images.map((img) => img.publicId),
       };
@@ -259,6 +263,19 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
               {formData.isAvailable ? "Available" : "Unavailable"}
             </Label>
           </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="category">Category</Label>
+          <select
+            id="category"
+            className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+            value={formData.category}
+            onChange={(e) => handleInputChange("category", e.target.value as Category)}
+          >
+            <option value="RINGS">Rings</option>
+            <option value="NECKLACES">Necklaces</option>
+            <option value="EARRINGS">Earrings</option>
+          </select>
         </div>
       </div>
 

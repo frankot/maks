@@ -152,6 +152,15 @@ export function ProductDetailsModal({
                     </div>
                   </div>
                   <div className="flex items-center">
+                    <Package className="mr-3 h-5 w-5 text-gray-400" />
+                    <div>
+                      <p className="text-sm text-gray-500">Category</p>
+                      <p className="font-medium text-gray-900 uppercase">
+                        {product.category}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
                     <ToggleRight className="mr-3 h-5 w-5 text-gray-400" />
                     <div>
                       <p className="text-sm text-gray-500">Status</p>

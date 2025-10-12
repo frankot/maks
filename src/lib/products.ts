@@ -1,5 +1,5 @@
 import { prisma } from "./prisma";
-import type { Product, OrderItem, ProductStatus } from "@/app/generated/prisma";
+import type { Product, OrderItem, ProductStatus, Category } from "@/app/generated/prisma";
 
 // Extended Product type with orderItems
 export type ProductWithOrderItems = Product & {
@@ -98,6 +98,7 @@ export async function createProduct(data: {
   imagePublicIds?: string[];
   productStatus?: ProductStatus;
   isAvailable?: boolean;
+  category?: Category;
 }): Promise<Product> {
   // Use provided ID or generate one from name
   const id = data.id || (await getUniqueProductId(data.name));
@@ -124,6 +125,7 @@ export async function createProduct(data: {
       imagePublicIds: data.imagePublicIds || [],
       productStatus: data.productStatus || "SHOP",
       isAvailable: data.isAvailable ?? true,
+      category: data.category ?? undefined,
     },
   });
   return product;
@@ -140,6 +142,7 @@ export async function updateProduct(
     imagePublicIds?: string[];
     productStatus?: ProductStatus;
     isAvailable?: boolean;
+    category?: Category;
   },
 ): Promise<Product> {
   const product = await prisma.product.update({
@@ -155,12 +158,13 @@ export async function deleteProduct(id: string): Promise<void> {
   });
 }
 
-export async function getFeaturedProducts(): Promise<Product[]> {
+export async function getFeaturedProducts(category?: Category): Promise<Product[]> {
   try {
     const products = await prisma.product.findMany({
       where: {
         isAvailable: true,
         productStatus: "SHOP",
+        ...(category ? { category } : {}),
       },
       orderBy: {
         createdAt: "desc",
@@ -170,6 +174,24 @@ export async function getFeaturedProducts(): Promise<Product[]> {
     return products;
   } catch (error) {
     console.error("Error fetching featured products:", error);
+    return [];
+  }
+}
+
+export async function getProductsByCategory(category: Category, take = 24): Promise<Product[]> {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        category,
+        isAvailable: true,
+        productStatus: "SHOP",
+      },
+      orderBy: { createdAt: "desc" },
+      take,
+    });
+    return products;
+  } catch (error) {
+    console.error(`Error fetching products for category ${category}:`, error);
     return [];
   }
 }
