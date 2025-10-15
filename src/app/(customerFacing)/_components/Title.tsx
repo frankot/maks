@@ -12,7 +12,7 @@ export default function Title({ text, onPrev, onNext }: TitleProps) {
       <div className="flex items-center justify-between py-6 md:py-8">
         {/* Left 1/2 - Big category title */}
         <div className="w-1/2 pr-3">
-          <h2 className="font-neubold text-4xl leading-[0.9] whitespace-nowrap text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">
+          <h2 className="font-extrabold text-4xl leading-[0.9] whitespace-nowrap text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">
             {text}
           </h2>
         </div>

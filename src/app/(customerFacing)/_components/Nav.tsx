@@ -106,7 +106,7 @@ export default function Nav() {
             <div className="w-1/2 pr-3">
               <Link
                 href="/"
-                className="block text-4xl leading-[0.9] font-extrabold whitespace-nowrap text-black uppercase sm:text-5xl md:text-6xl lg:text-8xl"
+                className="block text-4xl leading-[0.9] font-extrabold whitespace-nowrap text-black uppercase sm:text-5xl md:text-6xl lg:text-5xl"
               >
                 <span className="inline-flex items-center align-middle">
                   <span className="font-neubold -mr-10">SPLOT</span>
