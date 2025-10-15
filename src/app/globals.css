@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -109,6 +109,12 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
+/* 
+@theme {
+  --color-white: oklch(0.96 0.01 285.823);
+  --color-black: oklch(0.15 0.01 285.823); 
+} 
+*/
 
 @layer base {
   * {
@@ -116,6 +122,50 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Local fonts */
+@font-face {
+  font-family: 'NeuBoldLocal';
+  src: url('/fonts/NeuBold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer utilities {
+  .font-neubold {
+    font-family:
+      'NeuBoldLocal',
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial;
+  }
+}
+
+/* NeuMedium default font */
+@font-face {
+  font-family: 'NeuMediumLocal';
+  src: url('/fonts/NeuMedium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  body {
+    font-family:
+      'NeuMediumLocal',
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial;
   }
 }
 

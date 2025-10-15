@@ -1,8 +1,8 @@
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import { getProductById } from "@/lib/products";
-import ProductDetailsSection from "@/components/ui/ProductDetailsSection";
-import { formatPriceInPLN } from "@/lib/utils";
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import { getProductById } from '@/lib/products';
+import ProductDetailsSection from '@/components/ui/ProductDetailsSection';
+import { formatPriceInPLN } from '@/lib/utils';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -35,8 +35,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 priority
               />
             ) : (
-              <div className="flex items-center justify-center h-full w-full bg-white">
-                <span className="text-gray-400 text-lg font-medium">LOADING</span>
+              <div className="flex h-full w-full items-center justify-center bg-white">
+                <span className="text-lg font-medium text-gray-400">LOADING</span>
               </div>
             )}
           </div>
@@ -54,8 +54,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     sizes="50vw"
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-full w-full bg-white">
-                    <span className="text-gray-400 text-lg font-medium">LOADING</span>
+                  <div className="flex h-full w-full items-center justify-center bg-white">
+                    <span className="text-lg font-medium text-gray-400">LOADING</span>
                   </div>
                 )}
               </div>
@@ -74,8 +74,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     sizes="50vw"
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-full w-full bg-white">
-                    <span className="text-gray-400 text-lg font-medium">LOADING</span>
+                  <div className="flex h-full w-full items-center justify-center bg-white">
+                    <span className="text-lg font-medium text-gray-400">LOADING</span>
                   </div>
                 )}
               </div>
@@ -89,8 +89,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     sizes="50vw"
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-full w-full bg-white">
-                    <span className="text-gray-400 text-lg font-medium">LOADING</span>
+                  <div className="flex h-full w-full items-center justify-center bg-white">
+                    <span className="text-lg font-medium text-gray-400">LOADING</span>
                   </div>
                 )}
               </div>
@@ -155,13 +155,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 {/* Product Description */}
                 <ProductDetailsSection title="PRODUCT DESCRIPTION">
                   <p>
-                    Handcrafted with precision and attention to detail. This
-                    piece embodies the organic yet bold aesthetic of 06.33.11
-                    Studio.
+                    Handcrafted with precision and attention to detail. This piece embodies the
+                    organic yet bold aesthetic of 06.33.11 Studio.
                   </p>
                   <p className="mt-2">
-                    Made from premium materials sourced responsibly, each
-                    piece tells a unique story of craftsmanship and artistry.
+                    Made from premium materials sourced responsibly, each piece tells a unique story
+                    of craftsmanship and artistry.
                   </p>
                 </ProductDetailsSection>
 

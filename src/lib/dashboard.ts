@@ -1,4 +1,4 @@
-import { prisma } from "./prisma";
+import { prisma } from './prisma';
 
 export interface DashboardStats {
   totalProducts: number;
@@ -39,9 +39,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 
     // Calculate product availability percentage
     const productAvailabilityPercentage =
-      totalProducts > 0
-        ? Math.round((availableProducts / totalProducts) * 100)
-        : 0;
+      totalProducts > 0 ? Math.round((availableProducts / totalProducts) * 100) : 0;
 
     // Get total revenue
     const revenueResult = await prisma.order.aggregate({
@@ -53,7 +51,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 
     // Get orders by status
     const orderStatusCounts = await prisma.order.groupBy({
-      by: ["status"],
+      by: ['status'],
       _count: {
         status: true,
       },
@@ -98,20 +96,18 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     ]);
 
     const recentOrdersGrowth =
-      previousOrders > 0
-        ? Math.round(((recentOrders - previousOrders) / previousOrders) * 100)
-        : 0;
+      previousOrders > 0 ? Math.round(((recentOrders - previousOrders) / previousOrders) * 100) : 0;
 
     // Get top selling products
     const topSellingProducts = await prisma.orderItem.groupBy({
-      by: ["productId"],
+      by: ['productId'],
       _sum: {
         quantity: true,
         priceInGrosz: true,
       },
       orderBy: {
         _sum: {
-          quantity: "desc",
+          quantity: 'desc',
         },
       },
       take: 5,
@@ -125,11 +121,11 @@ export async function getDashboardStats(): Promise<DashboardStats> {
         });
         return {
           id: item.productId,
-          name: product?.name || "Unknown Product",
+          name: product?.name || 'Unknown Product',
           totalSold: item._sum.quantity || 0,
           revenue: item._sum.priceInGrosz || 0,
         };
-      }),
+      })
     );
 
     return {
@@ -144,32 +140,32 @@ export async function getDashboardStats(): Promise<DashboardStats> {
       topSellingProducts: topSellingProductsWithNames,
     };
   } catch (error) {
-    console.error("Error fetching dashboard stats:", error);
-    throw new Error("Failed to fetch dashboard statistics");
+    console.error('Error fetching dashboard stats:', error);
+    throw new Error('Failed to fetch dashboard statistics');
   }
 }
 
 export function formatPrice(priceInGrosz: number): string {
-  return new Intl.NumberFormat("pl-PL", {
-    style: "currency",
-    currency: "PLN",
+  return new Intl.NumberFormat('pl-PL', {
+    style: 'currency',
+    currency: 'PLN',
     minimumFractionDigits: 2,
   }).format(priceInGrosz / 100);
 }
 
 export function getStatusColor(status: string): string {
   switch (status.toLowerCase()) {
-    case "pending":
-      return "text-yellow-600 bg-yellow-50";
-    case "processing":
-      return "text-blue-600 bg-blue-50";
-    case "shipped":
-      return "text-purple-600 bg-purple-50";
-    case "delivered":
-      return "text-green-600 bg-green-50";
-    case "cancelled":
-      return "text-red-600 bg-red-50";
+    case 'pending':
+      return 'text-yellow-600 bg-yellow-50';
+    case 'processing':
+      return 'text-blue-600 bg-blue-50';
+    case 'shipped':
+      return 'text-purple-600 bg-purple-50';
+    case 'delivered':
+      return 'text-green-600 bg-green-50';
+    case 'cancelled':
+      return 'text-red-600 bg-red-50';
     default:
-      return "text-gray-600 bg-gray-50";
+      return 'text-gray-600 bg-gray-50';
   }
 }

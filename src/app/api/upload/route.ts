@@ -1,5 +1,5 @@
-import { v2 as cloudinary } from "cloudinary";
-import { NextRequest, NextResponse } from "next/server";
+import { v2 as cloudinary } from 'cloudinary';
+import { NextRequest, NextResponse } from 'next/server';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -10,10 +10,10 @@ cloudinary.config({
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const file = formData.get("file") as File;
+    const file = formData.get('file') as File;
 
     if (!file) {
-      return NextResponse.json({ error: "No file provided" }, { status: 400 });
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
     // Convert file to buffer
@@ -31,12 +31,12 @@ export async function POST(request: NextRequest) {
       cloudinary.uploader
         .upload_stream(
           {
-            resource_type: "image",
-            folder: "maks",
+            resource_type: 'image',
+            folder: 'maks',
             transformation: [
-              { width: 800, height: 800, crop: "limit" },
-              { quality: "auto" },
-              { format: "webp" },
+              { width: 800, height: 800, crop: 'limit' },
+              { quality: 'auto' },
+              { format: 'webp' },
             ],
             secure: true,
           },
@@ -51,9 +51,9 @@ export async function POST(request: NextRequest) {
                 format: result.format,
               });
             } else {
-              reject(new Error("Upload failed"));
+              reject(new Error('Upload failed'));
             }
-          },
+          }
         )
         .end(buffer);
     });
@@ -66,11 +66,8 @@ export async function POST(request: NextRequest) {
       format: uploadResult.format,
     });
   } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json(
-      { error: "Failed to upload image" },
-      { status: 500 },
-    );
+    console.error('Upload error:', error);
+    return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
   }
 }
 
@@ -79,20 +76,14 @@ export async function DELETE(request: NextRequest) {
     const { publicId } = await request.json();
 
     if (!publicId) {
-      return NextResponse.json(
-        { error: "No public ID provided" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'No public ID provided' }, { status: 400 });
     }
 
     await cloudinary.uploader.destroy(publicId);
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Delete error:", error);
-    return NextResponse.json(
-      { error: "Failed to delete image" },
-      { status: 500 },
-    );
+    console.error('Delete error:', error);
+    return NextResponse.json({ error: 'Failed to delete image' }, { status: 500 });
   }
 }

@@ -1,5 +1,5 @@
-import { v2 as cloudinary } from "cloudinary";
-import { NextRequest, NextResponse } from "next/server";
+import { v2 as cloudinary } from 'cloudinary';
+import { NextRequest, NextResponse } from 'next/server';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -10,10 +10,10 @@ cloudinary.config({
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const file = formData.get("file") as File;
+    const file = formData.get('file') as File;
 
     if (!file) {
-      return NextResponse.json({ error: "No file provided" }, { status: 400 });
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
     // Check file size (9MB limit)
@@ -23,19 +23,18 @@ export async function POST(request: NextRequest) {
         {
           error: `File size too large. Maximum size is 9MB. Your file is ${(file.size / 1024 / 1024).toFixed(1)}MB.`,
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
     // Check file type
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
         {
-          error:
-            "Invalid file type. Only JPEG, PNG, and WebP files are allowed.",
+          error: 'Invalid file type. Only JPEG, PNG, and WebP files are allowed.',
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -54,12 +53,12 @@ export async function POST(request: NextRequest) {
       cloudinary.uploader
         .upload_stream(
           {
-            resource_type: "image",
-            folder: "maks/hero",
+            resource_type: 'image',
+            folder: 'maks/hero',
             transformation: [
-              { width: 1920, height: 1080, crop: "limit" }, // Full HD limit
-              { quality: "auto:best" }, // Best quality
-              { format: "webp" }, // Modern format for better compression
+              { width: 1920, height: 1080, crop: 'limit' }, // Full HD limit
+              { quality: 'auto:best' }, // Best quality
+              { format: 'webp' }, // Modern format for better compression
             ],
             secure: true,
           },
@@ -74,9 +73,9 @@ export async function POST(request: NextRequest) {
                 format: result.format,
               });
             } else {
-              reject(new Error("Upload failed"));
+              reject(new Error('Upload failed'));
             }
-          },
+          }
         )
         .end(buffer);
     });
@@ -89,11 +88,8 @@ export async function POST(request: NextRequest) {
       format: uploadResult.format,
     });
   } catch (error) {
-    console.error("Hero upload error:", error);
-    return NextResponse.json(
-      { error: "Failed to upload hero image" },
-      { status: 500 },
-    );
+    console.error('Hero upload error:', error);
+    return NextResponse.json({ error: 'Failed to upload hero image' }, { status: 500 });
   }
 }
 
@@ -102,20 +98,14 @@ export async function DELETE(request: NextRequest) {
     const { publicId } = await request.json();
 
     if (!publicId) {
-      return NextResponse.json(
-        { error: "No public ID provided" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'No public ID provided' }, { status: 400 });
     }
 
     await cloudinary.uploader.destroy(publicId);
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Hero delete error:", error);
-    return NextResponse.json(
-      { error: "Failed to delete hero image" },
-      { status: 500 },
-    );
+    console.error('Hero delete error:', error);
+    return NextResponse.json({ error: 'Failed to delete hero image' }, { status: 500 });
   }
 }

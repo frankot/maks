@@ -1,48 +1,36 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getProductById, updateProduct } from "@/lib/products";
-import type { Category } from "@/app/generated/prisma";
-import { errorHandler } from "@/lib/errorHandler";
+import { NextRequest, NextResponse } from 'next/server';
+import { getProductById, updateProduct } from '@/lib/products';
+import type { Category } from '@/app/generated/prisma';
+import { errorHandler } from '@/lib/errorHandler';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: productId } = await params;
 
     if (!productId) {
-      return NextResponse.json(
-        { error: "Product ID is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Product ID is required' }, { status: 400 });
     }
 
     const product = await getProductById(productId);
 
     if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
     return NextResponse.json(product);
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error('Error fetching product:', error);
     return errorHandler(error);
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: productId } = await params;
     const body = await request.json();
 
     if (!productId) {
-      return NextResponse.json(
-        { error: "Product ID is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Product ID is required' }, { status: 400 });
     }
 
     const {
@@ -83,7 +71,7 @@ export async function PUT(
 
     return NextResponse.json(product);
   } catch (error) {
-    console.error("Error updating product:", error);
+    console.error('Error updating product:', error);
     return errorHandler(error);
   }
 }

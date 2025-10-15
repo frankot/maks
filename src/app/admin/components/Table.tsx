@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 
 export interface TableColumn<T> {
   key: string;
@@ -27,7 +27,7 @@ interface AdminTableProps<T> {
 export function AdminTable<T>({
   columns,
   data,
-  emptyMessage = "No data found",
+  emptyMessage = 'No data found',
   keyExtractor,
 }: AdminTableProps<T>) {
   return (

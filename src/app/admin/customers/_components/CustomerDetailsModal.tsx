@@ -1,17 +1,13 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { DetailsModal } from "@/app/admin/components/DetailsModal";
-import {
-  formatCustomerName,
-  calculateTotalSpent,
-  formatPrice,
-} from "@/lib/customers";
-import { getStatusVariant, getStatusLabel } from "@/lib/orders";
-import { OrderDetailsModal } from "../../orders/_components/OrderDetailsModal";
-import type { User, Order, OrderItem, Address } from "@/app/generated/prisma";
+import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
+import { DetailsModal } from '@/app/admin/components/DetailsModal';
+import { formatCustomerName, calculateTotalSpent, formatPrice } from '@/lib/customers';
+import { getStatusVariant, getStatusLabel } from '@/lib/orders';
+import { OrderDetailsModal } from '../../orders/_components/OrderDetailsModal';
+import type { User, Order, OrderItem, Address } from '@/app/generated/prisma';
 import {
   User as UserIcon,
   Mail,
@@ -21,7 +17,7 @@ import {
   DollarSign,
   MapPin,
   Package,
-} from "lucide-react";
+} from 'lucide-react';
 
 interface CustomerDetailsModalProps {
   customerId: string;
@@ -46,10 +42,7 @@ interface CustomerWithDetails extends User {
   };
 }
 
-export function CustomerDetailsModal({
-  customerId,
-  onClose,
-}: CustomerDetailsModalProps) {
+export function CustomerDetailsModal({ customerId, onClose }: CustomerDetailsModalProps) {
   const [customer, setCustomer] = useState<CustomerWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -76,8 +69,8 @@ export function CustomerDetailsModal({
         const customerData = await response.json();
         setCustomer(customerData as CustomerWithDetails);
       } catch (err) {
-        setError("Failed to fetch customer details");
-        console.error("Error fetching customer details:", err);
+        setError('Failed to fetch customer details');
+        console.error('Error fetching customer details:', err);
       } finally {
         setLoading(false);
       }
@@ -88,7 +81,7 @@ export function CustomerDetailsModal({
 
   const title = customer
     ? `${formatCustomerName(customer.firstName, customer.lastName)}`
-    : "Loading Customer Details";
+    : 'Loading Customer Details';
 
   return (
     <>
@@ -110,12 +103,8 @@ export function CustomerDetailsModal({
                     <ShoppingBag className="h-6 w-6 text-white" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-blue-600">
-                      Total Orders
-                    </p>
-                    <p className="text-2xl font-bold text-blue-900">
-                      {customer._count.orders}
-                    </p>
+                    <p className="text-sm font-medium text-blue-600">Total Orders</p>
+                    <p className="text-2xl font-bold text-blue-900">{customer._count.orders}</p>
                   </div>
                 </div>
               </div>
@@ -126,9 +115,7 @@ export function CustomerDetailsModal({
                     <DollarSign className="h-6 w-6 text-white" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-green-600">
-                      Total Spent
-                    </p>
+                    <p className="text-sm font-medium text-green-600">Total Spent</p>
                     <p className="text-2xl font-bold text-green-900">
                       {formatPrice(calculateTotalSpent(customer.orders))}
                     </p>
@@ -142,15 +129,10 @@ export function CustomerDetailsModal({
                     <Package className="h-6 w-6 text-white" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-purple-600">
-                      Avg Order
-                    </p>
+                    <p className="text-sm font-medium text-purple-600">Avg Order</p>
                     <p className="text-2xl font-bold text-purple-900">
                       {customer._count.orders > 0
-                        ? formatPrice(
-                            calculateTotalSpent(customer.orders) /
-                              customer._count.orders,
-                          )
+                        ? formatPrice(calculateTotalSpent(customer.orders) / customer._count.orders)
                         : formatPrice(0)}
                     </p>
                   </div>
@@ -163,11 +145,9 @@ export function CustomerDetailsModal({
                     <Calendar className="h-6 w-6 text-white" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-amber-600">
-                      Member Since
-                    </p>
+                    <p className="text-sm font-medium text-amber-600">Member Since</p>
                     <p className="text-xl font-bold text-amber-900">
-                      {format(new Date(customer.createdAt), "MMM yyyy")}
+                      {format(new Date(customer.createdAt), 'MMM yyyy')}
                     </p>
                   </div>
                 </div>
@@ -181,9 +161,7 @@ export function CustomerDetailsModal({
                 <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                   <div className="mb-6 flex items-center">
                     <UserIcon className="mr-3 h-6 w-6 text-gray-600" />
-                    <h3 className="text-xl font-semibold text-gray-900">
-                      Customer Information
-                    </h3>
+                    <h3 className="text-xl font-semibold text-gray-900">Customer Information</h3>
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-center">
@@ -191,10 +169,7 @@ export function CustomerDetailsModal({
                       <div>
                         <p className="text-sm text-gray-500">Full Name</p>
                         <p className="font-medium text-gray-900">
-                          {formatCustomerName(
-                            customer.firstName,
-                            customer.lastName,
-                          )}
+                          {formatCustomerName(customer.firstName, customer.lastName)}
                         </p>
                       </div>
                     </div>
@@ -202,9 +177,7 @@ export function CustomerDetailsModal({
                       <Mail className="mr-3 h-5 w-5 text-gray-400" />
                       <div>
                         <p className="text-sm text-gray-500">Email</p>
-                        <p className="font-medium text-gray-900">
-                          {customer.email}
-                        </p>
+                        <p className="font-medium text-gray-900">{customer.email}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
@@ -212,7 +185,7 @@ export function CustomerDetailsModal({
                       <div>
                         <p className="text-sm text-gray-500">Phone</p>
                         <p className="font-medium text-gray-900">
-                          {customer.phoneNumber || "Not provided"}
+                          {customer.phoneNumber || 'Not provided'}
                         </p>
                       </div>
                     </div>
@@ -221,7 +194,7 @@ export function CustomerDetailsModal({
                       <div>
                         <p className="text-sm text-gray-500">Joined</p>
                         <p className="font-medium text-gray-900">
-                          {format(new Date(customer.createdAt), "dd MMM yyyy")}
+                          {format(new Date(customer.createdAt), 'dd MMM yyyy')}
                         </p>
                       </div>
                     </div>
@@ -233,9 +206,7 @@ export function CustomerDetailsModal({
                   <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                     <div className="mb-6 flex items-center">
                       <MapPin className="mr-3 h-6 w-6 text-gray-600" />
-                      <h3 className="text-xl font-semibold text-gray-900">
-                        Addresses
-                      </h3>
+                      <h3 className="text-xl font-semibold text-gray-900">Addresses</h3>
                     </div>
                     <div className="space-y-4">
                       {customer.addresses.map((address) => (
@@ -272,9 +243,7 @@ export function CustomerDetailsModal({
                 <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                   <div className="mb-6 flex items-center">
                     <ShoppingBag className="mr-3 h-6 w-6 text-gray-600" />
-                    <h3 className="text-xl font-semibold text-gray-900">
-                      Order History
-                    </h3>
+                    <h3 className="text-xl font-semibold text-gray-900">Order History</h3>
                     <span className="ml-auto text-sm text-gray-500">
                       {customer.orders.length} orders
                     </span>
@@ -331,10 +300,7 @@ export function CustomerDetailsModal({
                                 {formatPrice(order.pricePaid)}
                               </td>
                               <td className="px-4 py-4 text-right text-gray-600">
-                                {format(
-                                  new Date(order.createdAt),
-                                  "dd MMM yyyy",
-                                )}
+                                {format(new Date(order.createdAt), 'dd MMM yyyy')}
                               </td>
                               <td className="px-4 py-4 text-right text-gray-600">
                                 {order.orderItems.length} items
@@ -353,10 +319,7 @@ export function CustomerDetailsModal({
       </DetailsModal>
 
       {selectedOrderId && (
-        <OrderDetailsModal
-          orderId={selectedOrderId}
-          onClose={handleCloseOrderModal}
-        />
+        <OrderDetailsModal orderId={selectedOrderId} onClose={handleCloseOrderModal} />
       )}
     </>
   );

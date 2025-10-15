@@ -1,44 +1,60 @@
-import Image from "next/image";
-import Link from "next/link";
-import { Product } from "@/app/generated/prisma";
+import Image from 'next/image';
+import Link from 'next/link';
+// ShoppingCart removed — not used anymore
+import { Product } from '@/app/generated/prisma';
 
 interface ProductCardProps {
   product: Product;
-  isLast?: boolean;
 }
 
-export default function ProductCard({
-  product,
-  isLast = false,
-}: ProductCardProps) {
+export default function ProductCard({ product }: ProductCardProps) {
   // Convert price from grosz to PLN
   const priceInPLN = (product.priceInGrosz / 100).toFixed(2);
 
+  // Get a very short materials description
+  // Prefer a `materials` property if present on product, otherwise extract a short phrase from description
+  const prodWithMaterials = product as unknown as { materials?: string };
+  const materials = prodWithMaterials.materials
+    ? prodWithMaterials.materials
+    : product.description
+        ?.split(/\.|,|;|\n/)
+        .map((s) => s.trim())
+        .find(Boolean)
+        ?.slice(0, 80);
+
   return (
-    <div
-      className={`h-[460px] w-full overflow-hidden  bg-[#F1F1F1] `}
-    >
-      <Link href={`/products/${product.id}`} className="block h-full">
-        {/* Image section - 80% height */}
-        <div className="relative h-[380px] overflow-hidden">
+    <div className={`w-full`}>
+      {/* Image section - clickable */}
+      <Link href={`/products/${product.id}`} className="block">
+        <div className="relative aspect-[4/5] overflow-hidden">
           <Image
-            src={product.imagePaths[0] || "/placeholder.jpg"}
+            src={product.imagePaths[0] || '/placeholder.jpg'}
             alt={product.name}
             fill
             className="object-cover transition-transform duration-300 hover:scale-110"
             sizes="360px"
-            unoptimized={product.imagePaths[0]?.includes("res.cloudinary.com")}
+            unoptimized={product.imagePaths[0]?.includes('res.cloudinary.com')}
           />
         </div>
-
-        {/* Product info section - 20% height */}
-        <div className="flex h-[75px] flex-col items-center justify-center px-4">
-          <h3 className="mb-1 w-full truncate text-center uppercase text-sm font-semibold text-gray-900">
-            {product.name}
-          </h3>
-          <p className="text-xs text-gray-600">{priceInPLN} zł</p>
-        </div>
       </Link>
+
+      {/* Product info */}
+      <div className="flex items-center justify-between px-4 pb-3">
+        <div>
+          <Link href={`/products/${product.id}`} className="block">
+            <h3 className="w-full truncate text-left text-sm font-semibold text-gray-900 uppercase">
+              {product.name}
+            </h3>
+          </Link>
+    <p className="  text-xs leading-tight text-gray-500 capitalize">
+          {materials || 'White gold, sterling silver, crystal base'}
+        </p>
+ 
+        </div>
+             <div className="mt-1 mr-6 flex items-center justify-between">
+            <p className="text-xs text-gray-600">{priceInPLN} zł </p>
+          </div>
+      </div>
     </div>
   );
 }

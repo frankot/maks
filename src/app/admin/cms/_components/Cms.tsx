@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Edit } from "lucide-react";
-import type { HeroContent, Product } from "@/app/generated/prisma";
-import HeroPreview from "./HeroPreview";
-import HeroImagesManager from "./HeroImagesManager";
-import HeroTextEditor from "./HeroTextEditor";
-import FeaturedProductsManager from "./FeaturedProductsManager";
+import { useState, useEffect } from 'react';
+import { Edit } from 'lucide-react';
+import type { HeroContent, Product } from '@/app/generated/prisma';
+import HeroPreview from './HeroPreview';
+import HeroImagesManager from './HeroImagesManager';
+import HeroTextEditor from './HeroTextEditor';
+import FeaturedProductsManager from './FeaturedProductsManager';
 
 export default function Cms() {
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
@@ -20,12 +20,11 @@ export default function Cms() {
 
   const fetchData = async () => {
     try {
-      const [heroResponse, productsResponse, featuredResponse] =
-        await Promise.all([
-          fetch("/api/hero"),
-          fetch("/api/products"),
-          fetch("/api/products?featured=true"),
-        ]);
+      const [heroResponse, productsResponse, featuredResponse] = await Promise.all([
+        fetch('/api/hero'),
+        fetch('/api/products'),
+        fetch('/api/products?featured=true'),
+      ]);
 
       if (heroResponse.ok) {
         const heroData = await heroResponse.json();
@@ -42,7 +41,7 @@ export default function Cms() {
         setFeaturedProducts(featuredData);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     } finally {
       setIsLoading(false);
     }
@@ -53,21 +52,16 @@ export default function Cms() {
   }
 
   return (
-    <div className="space-y-6 mt-16">
-  
-
-      <div className="flex  overflow-y-auto">
+    <div className="mt-16 space-y-6">
+      <div className="flex overflow-y-auto">
         {/* LEFT SIDE - LIVE PREVIEW (2/3) */}
-        <div className="w-2/3 pl-4 bg-white">
-          <HeroPreview
-            heroContent={heroContent}
-            featuredProducts={featuredProducts}
-          />
+        <div className="w-2/3 bg-white pl-4">
+          <HeroPreview heroContent={heroContent} featuredProducts={featuredProducts} />
         </div>
 
         {/* RIGHT SIDE - EDITING CONTROLS (1/3) */}
-        <div className="w-1/3 pr-4 border-l border-gray-200 bg-gray-50">
-          <div className="sticky top-0 z-10 border-b border-stone-800 ml-4 bg-gray-50 p-4">
+        <div className="w-1/3 border-l border-gray-200 bg-gray-50 pr-4">
+          <div className="sticky top-0 z-10 ml-4 border-b border-stone-800 bg-gray-50 p-4">
             <div className="flex items-center space-x-2">
               <Edit className="h-5 w-5 text-gray-700" />
               <h2 className="text-xl font-bold">Edit Content</h2>

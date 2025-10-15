@@ -1,4 +1,4 @@
-import { prisma } from "./prisma";
+import { prisma } from './prisma';
 
 export async function getCustomers() {
   try {
@@ -19,13 +19,13 @@ export async function getCustomers() {
         },
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc',
       },
     });
     return customers;
   } catch (error) {
-    console.error("Error fetching customers:", error);
-    throw new Error("Failed to fetch customers");
+    console.error('Error fetching customers:', error);
+    throw new Error('Failed to fetch customers');
   }
 }
 
@@ -51,7 +51,7 @@ export async function getCustomerById(customerId: string) {
             shippingAddress: true,
           },
           orderBy: {
-            createdAt: "desc",
+            createdAt: 'desc',
           },
         },
         addresses: true,
@@ -64,8 +64,8 @@ export async function getCustomerById(customerId: string) {
     });
     return customer;
   } catch (error) {
-    console.error("Error fetching customer by ID:", error);
-    throw new Error("Failed to fetch customer details");
+    console.error('Error fetching customer by ID:', error);
+    throw new Error('Failed to fetch customer details');
   }
 }
 
@@ -75,38 +75,30 @@ export async function deleteCustomer(customerId: string) {
       where: { id: customerId },
     });
   } catch (error) {
-    console.error("Error deleting customer:", error);
-    throw new Error("Failed to delete customer");
+    console.error('Error deleting customer:', error);
+    throw new Error('Failed to delete customer');
   }
 }
 
-export function formatCustomerName(
-  firstName: string | null,
-  lastName: string | null,
-): string {
-  if (!firstName && !lastName) return "N/A";
-  return `${firstName || ""} ${lastName || ""}`.trim();
+export function formatCustomerName(firstName: string | null, lastName: string | null): string {
+  if (!firstName && !lastName) return 'N/A';
+  return `${firstName || ''} ${lastName || ''}`.trim();
 }
 
-export function calculateTotalSpent(
-  orders: Array<{ pricePaid: number }>,
-): number {
+export function calculateTotalSpent(orders: Array<{ pricePaid: number }>): number {
   return orders.reduce((total, order) => total + order.pricePaid, 0);
 }
 
-export function formatPrice(
-  priceInGrosz: number,
-  currency: string = "PLN",
-): string {
-  if (currency === "EUR") {
-    return new Intl.NumberFormat("en-EU", {
-      style: "currency",
-      currency: "EUR",
+export function formatPrice(priceInGrosz: number, currency: string = 'PLN'): string {
+  if (currency === 'EUR') {
+    return new Intl.NumberFormat('en-EU', {
+      style: 'currency',
+      currency: 'EUR',
     }).format(priceInGrosz / 100);
   }
 
-  return new Intl.NumberFormat("pl-PL", {
-    style: "currency",
-    currency: "PLN",
+  return new Intl.NumberFormat('pl-PL', {
+    style: 'currency',
+    currency: 'PLN',
   }).format(priceInGrosz / 100);
 }

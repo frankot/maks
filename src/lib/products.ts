@@ -1,5 +1,5 @@
-import { prisma } from "./prisma";
-import type { Product, OrderItem, ProductStatus, Category } from "@/app/generated/prisma";
+import { prisma } from './prisma';
+import type { Product, OrderItem, ProductStatus, Category } from '@/app/generated/prisma';
 
 // Extended Product type with orderItems
 export type ProductWithOrderItems = Product & {
@@ -7,27 +7,27 @@ export type ProductWithOrderItems = Product & {
 };
 
 export function formatPrice(priceInGrosz: number): string {
-  return new Intl.NumberFormat("pl-PL", {
-    style: "currency",
-    currency: "PLN",
+  return new Intl.NumberFormat('pl-PL', {
+    style: 'currency',
+    currency: 'PLN',
     minimumFractionDigits: 2,
   }).format(priceInGrosz / 100);
 }
 
 export function formatPriceEur(priceInCents: number): string {
-  return new Intl.NumberFormat("en-EU", {
-    style: "currency",
-    currency: "EUR",
+  return new Intl.NumberFormat('en-EU', {
+    style: 'currency',
+    currency: 'EUR',
     minimumFractionDigits: 2,
   }).format(priceInCents / 100);
 }
 
 export function getAvailabilityBadgeVariant(isAvailable: boolean) {
-  return isAvailable ? "default" : "destructive";
+  return isAvailable ? 'default' : 'destructive';
 }
 
 export function getAvailabilityLabel(isAvailable: boolean) {
-  return isAvailable ? "Available" : "Unavailable";
+  return isAvailable ? 'Available' : 'Unavailable';
 }
 
 export async function getProducts(): Promise<ProductWithOrderItems[]> {
@@ -37,12 +37,12 @@ export async function getProducts(): Promise<ProductWithOrderItems[]> {
         orderItems: true,
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc',
       },
     });
     return products;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error('Error fetching products:', error);
     return [];
   }
 }
@@ -54,7 +54,7 @@ export async function getProductById(id: string): Promise<Product | null> {
     });
     return product;
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error('Error fetching product:', error);
     return null;
   }
 }
@@ -63,10 +63,10 @@ function generateProductId(name: string): string {
   return name
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9\s-]/g, "") // Remove special characters except spaces and hyphens
-    .replace(/\s+/g, "-") // Replace spaces with hyphens
-    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
-    .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
 }
 
 async function getUniqueProductId(name: string): Promise<string> {
@@ -123,7 +123,7 @@ export async function createProduct(data: {
       description: data.description,
       imagePaths: data.imagePaths || [],
       imagePublicIds: data.imagePublicIds || [],
-      productStatus: data.productStatus || "SHOP",
+      productStatus: data.productStatus || 'SHOP',
       isAvailable: data.isAvailable ?? true,
       category: data.category ?? undefined,
     },
@@ -143,7 +143,7 @@ export async function updateProduct(
     productStatus?: ProductStatus;
     isAvailable?: boolean;
     category?: Category;
-  },
+  }
 ): Promise<Product> {
   const product = await prisma.product.update({
     where: { id },
@@ -163,17 +163,17 @@ export async function getFeaturedProducts(category?: Category): Promise<Product[
     const products = await prisma.product.findMany({
       where: {
         isAvailable: true,
-        productStatus: "SHOP",
+        productStatus: 'SHOP',
         ...(category ? { category } : {}),
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc',
       },
       take: 4,
     });
     return products;
   } catch (error) {
-    console.error("Error fetching featured products:", error);
+    console.error('Error fetching featured products:', error);
     return [];
   }
 }
@@ -184,9 +184,9 @@ export async function getProductsByCategory(category: Category, take = 24): Prom
       where: {
         category,
         isAvailable: true,
-        productStatus: "SHOP",
+        productStatus: 'SHOP',
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
       take,
     });
     return products;

@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import { DetailsModal } from "@/app/admin/components/DetailsModal";
+import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
+import Image from 'next/image';
+import { Badge } from '@/components/ui/badge';
+import { DetailsModal } from '@/app/admin/components/DetailsModal';
 import {
   formatPrice,
   formatPriceEur,
   getAvailabilityBadgeVariant,
   getAvailabilityLabel,
-} from "@/lib/products";
-import type { Product } from "@/app/generated/prisma";
+} from '@/lib/products';
+import type { Product } from '@/app/generated/prisma';
 import {
   Package,
   DollarSign,
@@ -20,17 +20,14 @@ import {
   ImageIcon,
   ToggleLeft,
   ToggleRight,
-} from "lucide-react";
+} from 'lucide-react';
 
 interface ProductDetailsModalProps {
   productId: string;
   onClose: () => void;
 }
 
-export function ProductDetailsModal({
-  productId,
-  onClose,
-}: ProductDetailsModalProps) {
+export function ProductDetailsModal({ productId, onClose }: ProductDetailsModalProps) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,18 +42,15 @@ export function ProductDetailsModal({
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to fetch product");
+          throw new Error(errorData.error || 'Failed to fetch product');
         }
 
         const productData = await response.json();
         setProduct(productData);
       } catch (err) {
-        const errorMessage =
-          err instanceof Error
-            ? err.message
-            : "Failed to fetch product details";
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch product details';
         setError(errorMessage);
-        console.error("Error fetching product details:", err);
+        console.error('Error fetching product details:', err);
       } finally {
         setLoading(false);
       }
@@ -65,7 +59,7 @@ export function ProductDetailsModal({
     fetchProduct();
   }, [productId]);
 
-  const title = product ? product.name : "Loading Product Details";
+  const title = product ? product.name : 'Loading Product Details';
 
   return (
     <DetailsModal
@@ -100,9 +94,7 @@ export function ProductDetailsModal({
                   <DollarSign className="h-6 w-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-green-600">
-                    Price EUR
-                  </p>
+                  <p className="text-sm font-medium text-green-600">Price EUR</p>
                   <p className="text-2xl font-bold text-green-900">
                     {formatPriceEur(product.priceInCents)}
                   </p>
@@ -137,27 +129,21 @@ export function ProductDetailsModal({
               <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div className="mb-6 flex items-center">
                   <Package className="mr-3 h-6 w-6 text-gray-600" />
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    Product Information
-                  </h3>
+                  <h3 className="text-xl font-semibold text-gray-900">Product Information</h3>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center">
                     <Package className="mr-3 h-5 w-5 text-gray-400" />
                     <div>
                       <p className="text-sm text-gray-500">Name</p>
-                      <p className="font-medium text-gray-900">
-                        {product.name}
-                      </p>
+                      <p className="font-medium text-gray-900">{product.name}</p>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <Package className="mr-3 h-5 w-5 text-gray-400" />
                     <div>
                       <p className="text-sm text-gray-500">Category</p>
-                      <p className="font-medium text-gray-900 uppercase">
-                        {product.category}
-                      </p>
+                      <p className="font-medium text-gray-900 uppercase">{product.category}</p>
                     </div>
                   </div>
                   <div className="flex items-center">
@@ -165,9 +151,7 @@ export function ProductDetailsModal({
                     <div>
                       <p className="text-sm text-gray-500">Status</p>
                       <Badge
-                        variant={getAvailabilityBadgeVariant(
-                          product.isAvailable,
-                        )}
+                        variant={getAvailabilityBadgeVariant(product.isAvailable)}
                         className="mt-1"
                       >
                         {getAvailabilityLabel(product.isAvailable)}
@@ -178,9 +162,7 @@ export function ProductDetailsModal({
                     <FileText className="mr-3 h-5 w-5 text-gray-400" />
                     <div>
                       <p className="text-sm text-gray-500">Product ID</p>
-                      <p className="font-mono text-sm font-medium text-gray-900">
-                        {product.id}
-                      </p>
+                      <p className="font-mono text-sm font-medium text-gray-900">{product.id}</p>
                     </div>
                   </div>
                 </div>
@@ -190,9 +172,7 @@ export function ProductDetailsModal({
               <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div className="mb-6 flex items-center">
                   <DollarSign className="mr-3 h-6 w-6 text-gray-600" />
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    Pricing
-                  </h3>
+                  <h3 className="text-xl font-semibold text-gray-900">Pricing</h3>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center">
@@ -221,14 +201,10 @@ export function ProductDetailsModal({
             <div className="h-fit rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
               <div className="mb-6 flex items-center">
                 <FileText className="mr-3 h-6 w-6 text-gray-600" />
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Description
-                </h3>
+                <h3 className="text-xl font-semibold text-gray-900">Description</h3>
               </div>
               <div className="rounded-lg bg-gray-50 p-4">
-                <p className="leading-relaxed text-gray-700">
-                  {product.description}
-                </p>
+                <p className="leading-relaxed text-gray-700">{product.description}</p>
               </div>
             </div>
 
@@ -238,9 +214,7 @@ export function ProductDetailsModal({
               <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div className="mb-6 flex items-center">
                   <ImageIcon className="mr-3 h-6 w-6 text-gray-600" />
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    Images
-                  </h3>
+                  <h3 className="text-xl font-semibold text-gray-900">Images</h3>
                   <span className="ml-auto text-sm text-gray-500">
                     {product.imagePaths.length} images
                   </span>
@@ -251,7 +225,7 @@ export function ProductDetailsModal({
                       <div
                         key={index}
                         className="group relative cursor-pointer overflow-hidden rounded-lg border transition-all hover:shadow-lg"
-                        onClick={() => window.open(path, "_blank")}
+                        onClick={() => window.open(path, '_blank')}
                       >
                         <div className="relative h-32 w-full">
                           <Image
@@ -276,9 +250,7 @@ export function ProductDetailsModal({
               <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div className="mb-6 flex items-center">
                   <Calendar className="mr-3 h-6 w-6 text-gray-600" />
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    Timestamps
-                  </h3>
+                  <h3 className="text-xl font-semibold text-gray-900">Timestamps</h3>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center">
@@ -286,10 +258,7 @@ export function ProductDetailsModal({
                     <div>
                       <p className="text-sm text-gray-500">Created</p>
                       <p className="font-medium text-gray-900">
-                        {format(
-                          new Date(product.createdAt),
-                          "dd MMM yyyy, HH:mm",
-                        )}
+                        {format(new Date(product.createdAt), 'dd MMM yyyy, HH:mm')}
                       </p>
                     </div>
                   </div>
@@ -298,10 +267,7 @@ export function ProductDetailsModal({
                     <div>
                       <p className="text-sm text-gray-500">Last Updated</p>
                       <p className="font-medium text-gray-900">
-                        {format(
-                          new Date(product.updatedAt),
-                          "dd MMM yyyy, HH:mm",
-                        )}
+                        {format(new Date(product.updatedAt), 'dd MMM yyyy, HH:mm')}
                       </p>
                     </div>
                   </div>

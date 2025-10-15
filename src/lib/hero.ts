@@ -1,16 +1,16 @@
-import { prisma } from "./prisma";
-import type { HeroContent } from "@/app/generated/prisma";
+import { prisma } from './prisma';
+import type { HeroContent } from '@/app/generated/prisma';
 
 export async function getHeroContent(): Promise<HeroContent | null> {
   try {
     // Get the most recent hero content
     const heroContent = await prisma.heroContent.findFirst({
-      orderBy: { updatedAt: "desc" },
+      orderBy: { updatedAt: 'desc' },
     });
 
     return heroContent;
   } catch (error) {
-    console.error("Error fetching hero content:", error);
+    console.error('Error fetching hero content:', error);
     throw error;
   }
 }
@@ -29,7 +29,7 @@ export async function createHeroContent(data: {
 
     return heroContent;
   } catch (error) {
-    console.error("Error creating hero content:", error);
+    console.error('Error creating hero content:', error);
     throw error;
   }
 }
@@ -42,7 +42,7 @@ export async function updateHeroContent(
     imagePublicIds?: string[];
     href?: string;
     textHref?: string;
-  },
+  }
 ): Promise<HeroContent> {
   try {
     const heroContent = await prisma.heroContent.update({
@@ -52,7 +52,7 @@ export async function updateHeroContent(
 
     return heroContent;
   } catch (error) {
-    console.error("Error updating hero content:", error);
+    console.error('Error updating hero content:', error);
     throw error;
   }
 }
@@ -63,7 +63,7 @@ export async function deleteHeroContent(id: string): Promise<void> {
       where: { id },
     });
   } catch (error) {
-    console.error("Error deleting hero content:", error);
+    console.error('Error deleting hero content:', error);
     throw error;
   }
 }

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   AlertDialog,
@@ -9,8 +9,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Loader2, AlertCircle } from "lucide-react";
+} from '@/components/ui/alert-dialog';
+import { Loader2, AlertCircle } from 'lucide-react';
 
 interface DeleteConfirmationModalProps {
   open: boolean;
@@ -35,8 +35,7 @@ export function DeleteConfirmationModal({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Product</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete &quot;{productName}&quot;? This
-            action will:
+            Are you sure you want to delete &quot;{productName}&quot;? This action will:
             <br />
             <br />
             • Remove the product from your catalog
@@ -66,7 +65,7 @@ export function DeleteConfirmationModal({
                 Deleting...
               </>
             ) : (
-              "Delete Product"
+              'Delete Product'
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

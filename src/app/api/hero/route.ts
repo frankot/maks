@@ -1,20 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import {
-  getHeroContent,
-  createHeroContent,
-  updateHeroContent,
-} from "@/lib/hero";
+import { NextRequest, NextResponse } from 'next/server';
+import { getHeroContent, createHeroContent, updateHeroContent } from '@/lib/hero';
 
 export async function GET() {
   try {
     const heroContent = await getHeroContent();
     return NextResponse.json(heroContent);
   } catch (error) {
-    console.error("Error fetching hero content:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    console.error('Error fetching hero content:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -24,10 +17,7 @@ export async function POST(request: NextRequest) {
     const { description, imagePaths, imagePublicIds, href, textHref } = body;
 
     if (!description || !imagePaths || !Array.isArray(imagePaths)) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const heroContent = await createHeroContent({
@@ -40,25 +30,18 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(heroContent, { status: 201 });
   } catch (error) {
-    console.error("Error creating hero content:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    console.error('Error creating hero content:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, description, imagePaths, imagePublicIds, href, textHref } =
-      body;
+    const { id, description, imagePaths, imagePublicIds, href, textHref } = body;
 
     if (!id) {
-      return NextResponse.json(
-        { error: "Hero content ID is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Hero content ID is required' }, { status: 400 });
     }
 
     const heroContent = await updateHeroContent(id, {
@@ -71,10 +54,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(heroContent);
   } catch (error) {
-    console.error("Error updating hero content:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    console.error('Error updating hero content:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

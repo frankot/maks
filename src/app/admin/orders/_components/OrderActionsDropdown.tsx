@@ -1,26 +1,23 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { MoreHorizontal, Eye, Truck, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { MoreHorizontal, Eye, Truck, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { markAsShippedAction, deleteOrderAction } from "../actions";
+} from '@/components/ui/dropdown-menu';
+import { markAsShippedAction, deleteOrderAction } from '../actions';
 
 interface OrderActionsDropdownProps {
   orderId: string;
   onViewDetails: (orderId: string) => void;
 }
 
-export function OrderActionsDropdown({
-  orderId,
-  onViewDetails,
-}: OrderActionsDropdownProps) {
+export function OrderActionsDropdown({ orderId, onViewDetails }: OrderActionsDropdownProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleMarkAsShipped = async () => {
@@ -28,25 +25,25 @@ export function OrderActionsDropdown({
     try {
       const result = await markAsShippedAction(orderId);
       if (!result.success) {
-        console.error("Failed to mark as shipped:", result.error);
+        console.error('Failed to mark as shipped:', result.error);
       }
     } catch (error) {
-      console.error("Error marking as shipped:", error);
+      console.error('Error marking as shipped:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this order?")) {
+    if (window.confirm('Are you sure you want to delete this order?')) {
       setIsLoading(true);
       try {
         const result = await deleteOrderAction(orderId);
         if (!result.success) {
-          console.error("Failed to delete order:", result.error);
+          console.error('Failed to delete order:', result.error);
         }
       } catch (error) {
-        console.error("Error deleting order:", error);
+        console.error('Error deleting order:', error);
       } finally {
         setIsLoading(false);
       }

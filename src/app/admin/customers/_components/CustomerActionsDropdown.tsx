@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { MoreHorizontal, Eye, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { MoreHorizontal, Eye, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { deleteCustomerAction } from "../actions";
+} from '@/components/ui/dropdown-menu';
+import { deleteCustomerAction } from '../actions';
 
 interface CustomerActionsDropdownProps {
   customerId: string;
@@ -26,17 +26,17 @@ export function CustomerActionsDropdown({
   const handleDelete = async () => {
     if (
       window.confirm(
-        "Are you sure you want to delete this customer? This will also delete all their orders.",
+        'Are you sure you want to delete this customer? This will also delete all their orders.'
       )
     ) {
       setIsLoading(true);
       try {
         const result = await deleteCustomerAction(customerId);
         if (!result.success) {
-          console.error("Failed to delete customer:", result.error);
+          console.error('Failed to delete customer:', result.error);
         }
       } catch (error) {
-        console.error("Error deleting customer:", error);
+        console.error('Error deleting customer:', error);
       } finally {
         setIsLoading(false);
       }

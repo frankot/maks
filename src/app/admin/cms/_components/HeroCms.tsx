@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import type { HeroContent, Product } from "@/app/generated/prisma";
-import HeroPreview from "./HeroPreview";
-import HeroImagesManager from "./HeroImagesManager";
-import HeroTextEditor from "./HeroTextEditor";
-import FeaturedProductsManager from "./FeaturedProductsManager";
-import CmsLayout from "./shared/CmsLayout";
+import { useState, useEffect } from 'react';
+import type { HeroContent, Product } from '@/app/generated/prisma';
+import HeroPreview from './HeroPreview';
+import HeroImagesManager from './HeroImagesManager';
+import HeroTextEditor from './HeroTextEditor';
+import FeaturedProductsManager from './FeaturedProductsManager';
+import CmsLayout from './shared/CmsLayout';
 
 export default function HeroCms() {
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
@@ -20,12 +20,11 @@ export default function HeroCms() {
 
   const fetchData = async () => {
     try {
-      const [heroResponse, productsResponse, featuredResponse] =
-        await Promise.all([
-          fetch("/api/hero"),
-          fetch("/api/products"),
-          fetch("/api/products?featured=true"),
-        ]);
+      const [heroResponse, productsResponse, featuredResponse] = await Promise.all([
+        fetch('/api/hero'),
+        fetch('/api/products'),
+        fetch('/api/products?featured=true'),
+      ]);
 
       if (heroResponse.ok) {
         const heroData = await heroResponse.json();
@@ -42,7 +41,7 @@ export default function HeroCms() {
         setFeaturedProducts(featuredData);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     } finally {
       setIsLoading(false);
     }
@@ -52,12 +51,7 @@ export default function HeroCms() {
     return <div className="p-8 text-center">Loading...</div>;
   }
 
-  const preview = (
-    <HeroPreview
-      heroContent={heroContent}
-      featuredProducts={featuredProducts}
-    />
-  );
+  const preview = <HeroPreview heroContent={heroContent} featuredProducts={featuredProducts} />;
 
   return (
     <CmsLayout title="Edit Hero Content" preview={preview}>

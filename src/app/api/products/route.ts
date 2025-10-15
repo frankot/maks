@@ -1,15 +1,15 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createProduct, getProducts } from "@/lib/products";
-import type { Category } from "@/app/generated/prisma";
-import { errorHandler } from "@/lib/errorHandler";
+import { NextRequest, NextResponse } from 'next/server';
+import { createProduct, getProducts } from '@/lib/products';
+import type { Category } from '@/app/generated/prisma';
+import { errorHandler } from '@/lib/errorHandler';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const featured = searchParams.get("featured");
+    const featured = searchParams.get('featured');
 
-    if (featured === "true") {
-      const { getFeaturedProducts } = await import("@/lib/products");
+    if (featured === 'true') {
+      const { getFeaturedProducts } = await import('@/lib/products');
       const products = await getFeaturedProducts();
       return NextResponse.json(products);
     } else {
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(products);
     }
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error('Error fetching products:', error);
     return errorHandler(error);
   }
 }
@@ -51,14 +51,11 @@ export async function POST(request: NextRequest) {
     const priceG = Number(priceInGrosz);
     const priceC = Number(priceInCents);
     if (!name || !Number.isFinite(priceG) || !Number.isFinite(priceC) || !description) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     // sanitize category if provided (ensure uppercase enum value)
-    const sanitizedCategory = category ? String(category).toUpperCase() as Category : undefined;
+    const sanitizedCategory = category ? (String(category).toUpperCase() as Category) : undefined;
 
     const product = await createProduct({
       id,
@@ -74,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
-    console.error("Error creating product:", error);
+    console.error('Error creating product:', error);
     return errorHandler(error);
   }
 }

@@ -1,4 +1,4 @@
-import { ProductForm } from "../../_components/ProductForm";
+import { ProductForm } from '../../_components/ProductForm';
 
 interface EditProductPageProps {
   params: Promise<{
@@ -6,9 +6,7 @@ interface EditProductPageProps {
   }>;
 }
 
-export default async function EditProductPage({
-  params,
-}: EditProductPageProps) {
+export default async function EditProductPage({ params }: EditProductPageProps) {
   const { id } = await params;
 
   return (

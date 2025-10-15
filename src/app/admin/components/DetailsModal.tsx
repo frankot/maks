@@ -1,10 +1,5 @@
-import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import React from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface DetailsModalProps {
   isOpen: boolean;
@@ -13,17 +8,17 @@ interface DetailsModalProps {
   children: React.ReactNode;
   loading?: boolean;
   error?: string | null;
-  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
 }
 
 const sizeClasses = {
-  sm: "max-w-md",
-  md: "max-w-lg",
-  lg: "max-w-2xl",
-  xl: "max-w-4xl",
-  "2xl": "max-w-6xl",
-  "3xl": "max-w-7xl",
-  full: "max-w-[95vw]",
+  sm: 'max-w-md',
+  md: 'max-w-lg',
+  lg: 'max-w-2xl',
+  xl: 'max-w-4xl',
+  '2xl': 'max-w-6xl',
+  '3xl': 'max-w-7xl',
+  full: 'max-w-[95vw]',
 };
 
 export function DetailsModal({
@@ -33,7 +28,7 @@ export function DetailsModal({
   children,
   loading = false,
   error = null,
-  size = "3xl",
+  size = '3xl',
 }: DetailsModalProps) {
   const sizeClass = sizeClasses[size];
 
@@ -66,9 +61,7 @@ export function DetailsModal({
           showCloseButton={true}
         >
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-red-600">
-              Error
-            </DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-red-600">Error</DialogTitle>
           </DialogHeader>
           <div className="py-12 text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
@@ -86,9 +79,7 @@ export function DetailsModal({
                 />
               </svg>
             </div>
-            <p className="mb-2 text-lg font-medium text-red-600">
-              Something went wrong
-            </p>
+            <p className="mb-2 text-lg font-medium text-red-600">Something went wrong</p>
             <p className="text-gray-600">{error}</p>
           </div>
         </DialogContent>
@@ -105,9 +96,7 @@ export function DetailsModal({
         {/* Header */}
         <div className="border-b bg-gradient-to-r from-blue-50 to-indigo-50 px-8 py-6">
           <DialogHeader>
-            <DialogTitle className="text-3xl font-bold text-gray-900">
-              {title}
-            </DialogTitle>
+            <DialogTitle className="text-3xl font-bold text-gray-900">{title}</DialogTitle>
           </DialogHeader>
         </div>
 

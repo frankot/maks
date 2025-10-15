@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { X, Upload, Loader2 } from "lucide-react";
-import Image from "next/image";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { X, Upload, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 interface ProductFormProps {
   productId?: string;
@@ -29,10 +29,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
   const [uploadingImages, setUploadingImages] = useState<string[]>([]);
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [formData, setFormData] = useState({
-    name: "",
-    priceInGrosz: "",
-    priceInCents: "",
-    description: "",
+    name: '',
+    priceInGrosz: '',
+    priceInCents: '',
+    description: '',
     isAvailable: false,
   });
 
@@ -61,29 +61,27 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
                   url: product.imagePaths[index],
                   width: 800,
                   height: 800,
-                  format: "webp",
-                }),
+                  format: 'webp',
+                })
               );
               setImages(existingImages);
             }
           }
         } catch (error) {
-          console.error("Error fetching product:", error);
+          console.error('Error fetching product:', error);
         }
       };
       fetchProduct();
     }
   }, [productId]);
 
-  const handleImageUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
     // Check if adding this file would exceed the limit
     if (images.length + uploadingImages.length >= 4) {
-      alert("Maximum 4 images allowed");
+      alert('Maximum 4 images allowed');
       return;
     }
 
@@ -94,10 +92,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
 
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append('file', file);
 
-      const response = await fetch("/api/upload", {
-        method: "POST",
+      const response = await fetch('/api/upload', {
+        method: 'POST',
         body: formData,
       });
 
@@ -105,24 +103,24 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         const result = await response.json();
         setImages((prev) => [...prev, result]);
       } else {
-        console.error("Upload failed");
+        console.error('Upload failed');
       }
     } catch (error) {
-      console.error("Upload error:", error);
+      console.error('Upload error:', error);
     } finally {
       setUploadingImages((prev) => prev.filter((id) => id !== fileId));
     }
 
     // Reset file input
-    event.target.value = "";
+    event.target.value = '';
   };
 
   const handleImageDelete = async (publicId: string) => {
     try {
-      const response = await fetch("/api/upload", {
-        method: "DELETE",
+      const response = await fetch('/api/upload', {
+        method: 'DELETE',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ publicId }),
       });
@@ -130,10 +128,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
       if (response.ok) {
         setImages((prev) => prev.filter((img) => img.publicId !== publicId));
       } else {
-        console.error("Delete failed");
+        console.error('Delete failed');
       }
     } catch (error) {
-      console.error("Delete error:", error);
+      console.error('Delete error:', error);
     }
   };
 
@@ -155,17 +153,17 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
       let response;
       if (isEditing && productId) {
         response = await fetch(`/api/products/${productId}`, {
-          method: "PUT",
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(productData),
         });
       } else {
-        response = await fetch("/api/products", {
-          method: "POST",
+        response = await fetch('/api/products', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(productData),
         });
@@ -175,14 +173,14 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         if (onSuccess) {
           onSuccess();
         } else {
-          router.push("/admin/products");
+          router.push('/admin/products');
         }
       } else {
         const errorData = await response.json();
-        console.error("Error saving product:", errorData.error);
+        console.error('Error saving product:', errorData.error);
       }
     } catch (error) {
-      console.error("Error saving product:", error);
+      console.error('Error saving product:', error);
     } finally {
       setLoading(false);
     }
@@ -204,7 +202,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             id="name"
             type="text"
             value={formData.name}
-            onChange={(e) => handleInputChange("name", e.target.value)}
+            onChange={(e) => handleInputChange('name', e.target.value)}
             required
             placeholder="Enter product name"
           />
@@ -216,12 +214,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             <Switch
               id="isAvailable"
               checked={formData.isAvailable}
-              onCheckedChange={(checked) =>
-                handleInputChange("isAvailable", checked)
-              }
+              onCheckedChange={(checked) => handleInputChange('isAvailable', checked)}
             />
             <Label htmlFor="isAvailable" className="text-sm text-gray-600">
-              {formData.isAvailable ? "Available" : "Unavailable"}
+              {formData.isAvailable ? 'Available' : 'Unavailable'}
             </Label>
           </div>
         </div>
@@ -236,7 +232,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             step="0.01"
             min="0"
             value={formData.priceInGrosz}
-            onChange={(e) => handleInputChange("priceInGrosz", e.target.value)}
+            onChange={(e) => handleInputChange('priceInGrosz', e.target.value)}
             required
             placeholder="0.00"
           />
@@ -250,7 +246,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             step="0.01"
             min="0"
             value={formData.priceInCents}
-            onChange={(e) => handleInputChange("priceInCents", e.target.value)}
+            onChange={(e) => handleInputChange('priceInCents', e.target.value)}
             required
             placeholder="0.00"
           />
@@ -262,7 +258,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         <Textarea
           id="description"
           value={formData.description}
-          onChange={(e) => handleInputChange("description", e.target.value)}
+          onChange={(e) => handleInputChange('description', e.target.value)}
           required
           placeholder="Enter product description"
           rows={4}
@@ -353,13 +349,13 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         <Button
           type="button"
           variant="outline"
-          onClick={() => router.push("/admin/products")}
+          onClick={() => router.push('/admin/products')}
           disabled={loading}
         >
           Cancel
         </Button>
         <Button type="submit" disabled={loading || uploadingImages.length > 0}>
-          {loading ? "Saving..." : isEditing ? "Update Product" : "Add Product"}
+          {loading ? 'Saving...' : isEditing ? 'Update Product' : 'Add Product'}
         </Button>
       </div>
     </form>

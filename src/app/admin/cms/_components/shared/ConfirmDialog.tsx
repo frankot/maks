@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   AlertDialog,
@@ -10,9 +10,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
 
 interface ConfirmDialogProps {
   title: string;
@@ -20,24 +20,24 @@ interface ConfirmDialogProps {
   onConfirm: () => void;
   confirmText?: string;
   cancelText?: string;
-  variant?: "destructive" | "default";
+  variant?: 'destructive' | 'default';
   triggerText?: string;
   icon?: React.ReactNode;
   disabled?: boolean;
-  size?: "sm" | "default" | "lg";
+  size?: 'sm' | 'default' | 'lg';
 }
 
 export default function ConfirmDialog({
   title,
   description,
   onConfirm,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
-  variant = "destructive",
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  variant = 'destructive',
   triggerText,
   icon = <Trash2 className="h-4 w-4" />,
   disabled = false,
-  size = "sm",
+  size = 'sm',
 }: ConfirmDialogProps) {
   return (
     <AlertDialog>
@@ -45,11 +45,7 @@ export default function ConfirmDialog({
         <Button
           variant="ghost"
           size={size}
-          className={
-            variant === "destructive"
-              ? "text-red-600 hover:text-red-700"
-              : undefined
-          }
+          className={variant === 'destructive' ? 'text-red-600 hover:text-red-700' : undefined}
           disabled={disabled}
         >
           {icon}
@@ -65,11 +61,7 @@ export default function ConfirmDialog({
           <AlertDialogCancel>{cancelText}</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            className={
-              variant === "destructive"
-                ? "bg-red-600 hover:bg-red-700"
-                : undefined
-            }
+            className={variant === 'destructive' ? 'bg-red-600 hover:bg-red-700' : undefined}
           >
             {confirmText}
           </AlertDialogAction>
