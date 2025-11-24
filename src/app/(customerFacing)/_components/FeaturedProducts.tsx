@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useMemo, useRef } from 'react';
 import type { Product } from '@/app/generated/prisma';
@@ -8,9 +8,10 @@ import Title from './Title';
 interface FeaturedProductsProps {
   title: string;
   products: Product[];
+  header?: (args: { title: string; onPrev: () => void; onNext: () => void }) => React.ReactNode;
 }
 
-export default function FeaturedProducts({ title, products }: FeaturedProductsProps) {
+export default function FeaturedProducts({ title, products, header }: FeaturedProductsProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   const cardWidth = 300; // approximate min card width in px
@@ -37,7 +38,9 @@ export default function FeaturedProducts({ title, products }: FeaturedProductsPr
   if (!products?.length) {
     return (
       <section className="mx-auto max-w-7xl px-4 py-10">
-        <Title text={title} onPrev={handlePrev} onNext={handleNext} />
+        {header ? header({ title, onPrev: handlePrev, onNext: handleNext }) : (
+          <Title text={title} onPrev={handlePrev} onNext={handleNext} />
+        )}
         <div className="py-8 text-center text-gray-500">No products found.</div>
       </section>
     );
@@ -45,7 +48,9 @@ export default function FeaturedProducts({ title, products }: FeaturedProductsPr
 
   return (
     <section className="mx-auto mt-10 py-10">
-      <Title text={title} onPrev={handlePrev} onNext={handleNext} />
+      {header ? header({ title, onPrev: handlePrev, onNext: handleNext }) : (
+        <Title text={title} onPrev={handlePrev} onNext={handleNext} />
+      )}
       {/* Horizontal scroller like Hero */}
       <div className="relative w-full overflow-x-hidden">
         <div

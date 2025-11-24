@@ -1,17 +1,32 @@
-'use client';
+"use client";
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import type { HeroContent } from '@/app/generated/prisma';
 
 export default function Hero() {
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     void fetchHeroContent();
   }, []);
+
+  // number of pairs to rotate through (fallback to local pairs when no content)
+  useEffect(() => {
+    const fallbackPairsCount = 2; // ['/hero1.jpg','/hero2.jpg'], ['/hero3.png','/maxHor2.jpg']
+    const pairCount = heroContent && heroContent.imagePaths.length >= 2
+      ? Math.floor(heroContent.imagePaths.length / 2)
+      : fallbackPairsCount;
+
+    if (pairCount > 0) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % pairCount);
+      }, 4000);
+      return () => clearInterval(interval);
+    }
+  }, [heroContent]);
 
   const fetchHeroContent = async () => {
     try {
@@ -20,11 +35,11 @@ export default function Hero() {
         const data = await response.json();
         setHeroContent(data);
       } else {
-        setError(`Failed to fetch hero content: ${response.status}`);
+        console.error('Failed to fetch hero content:', response.status);
         setHeroContent(null);
       }
-    } catch {
-      setError('Error fetching hero content. Please try again later.');
+    } catch (error) {
+      console.error('Error fetching hero content:', error);
       setHeroContent(null);
     } finally {
       setIsLoading(false);
@@ -34,61 +49,69 @@ export default function Hero() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="relative mt-16 flex h-[635px] w-full items-center justify-center bg-gray-100">
+      <div className="relative  flex h-[635px] w-full items-center justify-center bg-gray-100">
         <div className="text-gray-500">Loading...</div>
       </div>
     );
   }
 
-  // Show error state
-  if (error) {
-    return (
-      <div className="relative mt-16 flex h-[635px] w-full items-center justify-center bg-white">
-        <div className="text-lg font-semibold text-red-500">{error}</div>
-      </div>
-    );
-  }
-
-  // Resolve images to render (fallback to local images if none)
-  const defaultFallbackImages = ['/hero1.jpg', '/hero2.jpg', '/title2.jpg', '/heroImg.png'];
-
-  const images: string[] = heroContent?.imagePaths?.length
-    ? heroContent.imagePaths
-    : defaultFallbackImages; // extended fallback list
+  // Build image pairs: prefer CMS content; fallback to two local pairs
+  const imagePairs: string[][] = (() => {
+    const fallback: string[][] = [
+      ['/hero1.jpg', '/hero2.jpg'],
+      ['/hero3.png', '/maxVert3.jpg'],
+    ];
+    if (!heroContent || heroContent.imagePaths.length < 2) return fallback;
+    const pairs: string[][] = [];
+    for (let i = 0; i < heroContent.imagePaths.length; i += 2) {
+      if (i + 1 < heroContent.imagePaths.length) {
+        pairs.push([heroContent.imagePaths[i]!, heroContent.imagePaths[i + 1]!]);
+      }
+    }
+    return pairs.length > 0 ? pairs : fallback;
+  })();
 
   return (
     <>
-      {/* Outer wrapper hides the horizontal overflow edges */}
-      <div className="relative h-[635px] w-full overflow-x-hidden md:h-[720px]">
-        <div className="pointer-events-none absolute top-0 left-0 z-10 h-full w-full" />
+      <div className="relative  flex h-[635px] w-full overflow-hidden">
+        <div className="absolute top-0 left-0 z-10 h-full w-full bg-black/5" />
 
-        {/* Scrollable row of vertical images with padding and snap */}
-        <div
-          aria-label="Horizontal image gallery"
-          tabIndex={0}
-          className="relative h-full w-full touch-pan-x overflow-x-auto overflow-y-hidden [-ms-overflow-style:'none'] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          <div className="flex h-full w-max snap-x snap-mandatory items-stretch gap-4 pr-6 pl-0 md:pr-10 md:pl-0 lg:pr-12 lg:pl-0">
-            {images.map((src, index) => (
-              <div
-                key={`${src}-${index}`}
-                className="relative aspect-[3/4] h-full min-w-[260px] snap-start sm:min-w-[300px] md:min-w-[340px] lg:min-w-[380px]"
-              >
-                <Image
-                  src={src}
-                  alt={`Hero image ${index + 1}`}
-                  fill
-                  className="object-cover"
-                  priority={index < 2}
-                  unoptimized={true}
-                />
-              </div>
-            ))}
+        {imagePairs.map((pair, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 flex transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <div className="relative w-1/2">
+              <Image
+                src={pair[0]}
+                alt="Hero Image 1"
+                fill
+                className="object-cover"
+                priority={index === 0}
+                unoptimized={true}
+              />
+            </div>
+            <div className="relative w-1/2">
+              <Image
+                src={pair[1]}
+                alt="Hero Image 2"
+                fill
+                className="object-cover"
+                priority={index === 0}
+                unoptimized={true}
+              />
+            </div>
           </div>
-        </div>
+        ))}
       </div>
 
-      {/* Marquee + CTA moved to separate component */}
+      {heroContent?.description ? (
+        <div className="mx-auto max-w-7xl px-4 py-10">
+          <h2 className="mb-4 text-center text-[32px] leading-9 font-[500] uppercase">
+            {heroContent.description}
+          </h2>
+        </div>
+      ) : null}
     </>
   );
 }

@@ -56,9 +56,9 @@ export default function Nav() {
         aria-label="Quick Navigation"
       >
         <div className="mx-auto px-4">
-          <div className="flex h-20 items-center justify-between">
-            {/* Left 1/2 - Small brand */}
-            <div className="flex w-1/2 pr-3">
+          <div className="relative flex h-20 items-center md:pr-16">
+            {/* Center group: brand + nav (desktop centered) */}
+            <div className="flex w-full items-center justify-between gap-4 md:justify-center md:gap-8">
               <Link
                 href="/"
                 className="block text-lg font-extrabold tracking-tight whitespace-nowrap text-black uppercase md:text-4xl"
@@ -75,7 +75,9 @@ export default function Nav() {
                   <span className="font-neubold -ml-4">STUDIO</span>
                 </span>
               </Link>
-              <div className="flex w-1/2 items-center gap-6">
+
+              {/* Desktop nav links, hidden on mobile */}
+              <div className="hidden md:flex items-center gap-6">
                 {navLinks.map((l) => (
                   <Link
                     key={l.href}
@@ -86,10 +88,17 @@ export default function Nav() {
                   </Link>
                 ))}
               </div>
-            </div>
-            {/* Right 1/2 - Split: links (1/2) and cart (1/2) */}
 
-            <div className="flex w-1/2 items-center justify-end">
+              {/* Mobile cart (in-flow) */}
+              <div className="md:hidden">
+                <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
+                  <CartIcon size={18} />
+                </Link>
+              </div>
+            </div>
+
+            {/* Desktop cart: absolute at right-6 */}
+            <div className="absolute right-6 inset-y-0 hidden md:flex items-center">
               <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
                 <CartIcon size={18} />
               </Link>
@@ -98,51 +107,59 @@ export default function Nav() {
         </div>
       </div>
 
-      {/* Static main nav at the top of the page */}
-      <nav className="w-full bg-white" role="navigation" aria-label="Main Navigation">
-        <div className="mx-auto px-4">
-          <div className="flex items-start justify-between py-8 md:py-10">
-            {/* Left 1/2 - Big brand */}
-            <div className="w-1/2 pr-3">
-              <Link
-                href="/"
-                className="block text-4xl leading-[0.9] font-extrabold whitespace-nowrap text-black uppercase sm:text-5xl md:text-6xl lg:text-5xl"
-              >
-                <span className="inline-flex items-center align-middle">
-                  <span className="font-neubold -mr-10">SPLOT</span>
-                  <Image
-                    src="/sun.png"
-                    alt=""
-                    width={300}
-                    height={300}
-                    className="inline-block align-middle sm:size-10 md:size-12 lg:size-44"
-                  />
-                  <span className="font-neubold -ml-8">STUDIO</span>
-                </span>
-              </Link>
-            </div>
-            {/* Right 1/2 - Split: links (1/2) and cart (1/2) */}
-            <div className="flex w-1/2 items-center justify-between pl-3">
-              <div className="flex w-1/2 items-center gap-8">
-                {navLinks.map((l) => (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    className="text-sm tracking-wider text-black/90 uppercase hover:text-black md:text-base"
-                  >
-                    {l.label}
+        {/* Static main nav replaced with small nav structure */}
+        <nav className="w-full bg-white" role="navigation" aria-label="Main Navigation">
+          <div className="mx-auto px-4">
+            <div className="relative flex h-24 items-center md:pr-16">
+              {/* Center group: brand + nav (desktop centered) */}
+              <div className="flex w-full items-center justify-between gap-4 md:justify-center md:gap-8">
+                <Link
+                  href="/"
+                  className="block text-lg font-extrabold tracking-tight whitespace-nowrap text-black uppercase md:text-4xl"
+                >
+                  <span className="inline-flex items-center gap-2 align-middle lg:mr-10">
+                    <span className="font-neubold -mr-4">SPLOT</span>
+                    <Image
+                      src="/sun.png"
+                      alt=""
+                      width={50}
+                      height={50}
+                      className="inline-block size-4 align-middle md:size-16"
+                    />
+                    <span className="font-neubold -ml-4">STUDIO</span>
+                  </span>
+                </Link>
+
+                {/* Desktop nav links, hidden on mobile */}
+                <div className="hidden md:flex items-center gap-6">
+                  {navLinks.map((l) => (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      className="text-xs tracking-wider text-black/90 uppercase hover:text-black md:text-sm"
+                    >
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Mobile cart (in-flow) */}
+                <div className="md:hidden">
+                  <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
+                    <CartIcon size={18} />
                   </Link>
-                ))}
+                </div>
               </div>
-              <div className="flex w-1/2 items-center justify-end lg:pr-10">
+
+              {/* Desktop cart: absolute at right-6 */}
+              <div className="absolute right-6 inset-y-0 hidden md:flex items-center">
                 <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
-                  <CartIcon size={32} />
+                  <CartIcon size={18} />
                 </Link>
               </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
     </>
   );
 }
