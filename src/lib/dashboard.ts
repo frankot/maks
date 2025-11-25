@@ -1,4 +1,5 @@
 import { prisma } from './prisma';
+import type { OrderStatus } from '@prisma/client';
 
 export interface DashboardStats {
   totalProducts: number;
@@ -50,13 +51,12 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     const totalRevenue = revenueResult._sum.pricePaid || 0;
 
     // Get orders by status
-    const orderStatusCounts: Array<{ status: string; _count: { status: number } }> =
-      (await prisma.order.groupBy({
-        by: ['status'],
-        _count: {
-          status: true,
-        },
-      })) as any;
+    const orderStatusCounts = (await prisma.order.groupBy({
+      by: ['status'],
+      _count: {
+        status: true,
+      },
+    })) as unknown as Array<{ status: OrderStatus; _count: { status: number } }>;
 
     const ordersByStatus = {
       pending: 0,
@@ -115,7 +115,10 @@ export async function getDashboardStats(): Promise<DashboardStats> {
         },
       },
       take: 5,
-    })) as any;
+    })) as unknown as Array<{
+      productId: string;
+      _sum: { quantity: number | null; priceInGrosz: number | null };
+    }>;
 
     const topSellingProductsWithNames = await Promise.all(
       topSellingProducts.map(async (item) => {

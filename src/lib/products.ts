@@ -188,7 +188,7 @@ export async function updateProduct(
   }
 ): Promise<Product> {
   // If slug is provided, ensure it's assigned in update data
-  const updateData: any = { ...data };
+  const updateData = { ...data };
 
   const product = await prisma.product.update({
     where: { id },

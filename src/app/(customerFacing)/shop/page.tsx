@@ -3,6 +3,7 @@ import Image from 'next/image';
 import ProductsServer from '../_components/ProductsServer';
 import CollectionsBar from '../_components/CollectionsBar';
 import Nav from '../_components/Nav';
+import { Suspense } from 'react';
 
 interface ShopPageProps {
   searchParams: Promise<{ collection?: string }>;
@@ -13,7 +14,9 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
   return (
     <>
-      <Nav />
+      <Suspense fallback={null}>
+        <Nav />
+      </Suspense>
       <main className="pt-[var(--nav-height)]">
       {/* Hero Image */}
       <div className="relative h-[300px] w-full lg:h-[400px]">
@@ -28,7 +31,9 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       </div>
 
       {/* Sticky Collections Bar */}
-      <CollectionsBar />
+      <Suspense fallback={null}>
+        <CollectionsBar />
+      </Suspense>
 
       {/* Products Sections */}
       <ProductsServer category={'RINGS' as Category} title="Rings" collectionSlug={collection} />

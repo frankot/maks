@@ -4,6 +4,7 @@ import { getProductById, getProductBySlug } from '@/lib/products';
 import ProductDetailsSection from '@/components/ui/ProductDetailsSection';
 import { formatPriceInPLN } from '@/lib/utils';
 import Nav from '../../_components/Nav';
+import { Suspense } from 'react';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -26,7 +27,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      <Nav showCollectionsBar={true} />
+      <Suspense fallback={null}>
+        <Nav showCollectionsBar={true} />
+      </Suspense>
           <div className="mt-[calc(var(--nav-height)+var(--collections-bar-height)-7px)] grid grid-cols-1 border-t border-b border-black lg:grid-cols-2 lg:items-start lg:gap-x-8">
         {/* Left side - Images in natural flow */}
         <div className="lg:col-start-1 lg:row-start-1">

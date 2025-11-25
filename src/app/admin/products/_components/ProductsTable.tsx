@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Switch } from '@/components/ui/switch';
 import { AdminTable, TableColumn } from '../../components/Table';
 import { AdminDropdown, DropdownAction } from '../../components/Dropdown';
-import { formatPrice, formatPriceEur } from '@/lib/utils/products';
+import { formatPrice } from '@/lib/utils/products';
 import type { ProductWithOrderItems } from '@/lib/products';
 import { ProductDetailsModal } from './ProductDetailsModal';
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
@@ -131,7 +131,9 @@ export function ProductsTable({ products }: ProductsTableProps) {
       key: 'collection',
       label: 'Collection',
       render: (product) => {
-        const collectionName = (product as any).collection?.name;
+        type ProductWithCollection = ProductWithOrderItems & { collection?: { name?: string | null } };
+        const p = product as ProductWithCollection;
+        const collectionName = p.collection?.name;
         return collectionName ? (
           <span className="rounded-md bg-purple-50 px-2 py-0.5 text-xs text-purple-700">
             {collectionName}

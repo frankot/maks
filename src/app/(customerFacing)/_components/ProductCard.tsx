@@ -3,36 +3,40 @@ import Link from 'next/link';
 // ShoppingCart removed — not used anymore
 import { Product } from '@prisma/client';
 
+type ProductWithMaterials = Omit<Product, 'materials'> & {
+  materials?: string | null;
+};
+
 interface ProductCardProps {
-  product: Product;
+  product: ProductWithMaterials;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
   // Convert price from grosz to PLN
   const priceInPLN = (product.priceInGrosz / 100).toFixed(2);
 
-  // Get a very short materials description
-  // Prefer the real `materials` column; fall back to a short phrase from description
-  const materials = (product as unknown as { materials?: string }).materials
-    ? (product as unknown as { materials?: string }).materials
-    : product.description
-        ?.split(/\.|,|;|\n/)
-        .map((s) => s.trim())
-        .find(Boolean)
-        ?.slice(0, 80);
+  // Get a very short materials description — prefer `materials` field
+  const materials =
+    product.materials && product.materials.length > 0
+      ? product.materials
+      : product.description
+          ?.split(/\.|,|;|\n/)
+          .map((s) => s.trim())
+          .find(Boolean)
+          ?.slice(0, 80);
 
   return (
     <div className={`w-full`}>
       {/* Image section - clickable */}
-      <Link href={`/shop/${(product as any).slug || product.id}`} className="block">
+      <Link href={`/shop/${product.slug || product.id}`} className="block">
         <div className="relative aspect-[4/5] overflow-hidden">
           <Image
-            src={product.imagePaths[0] || '/placeholder.jpg'}
+            src={product.imagePaths?.[0] || '/placeholder.jpg'}
             alt={product.name}
             fill
             className="object-cover transition-transform duration-300 hover:scale-110"
             sizes="360px"
-            unoptimized={product.imagePaths[0]?.includes('res.cloudinary.com')}
+            unoptimized={product.imagePaths?.[0]?.includes('res.cloudinary.com') ?? false}
           />
         </div>
       </Link>
@@ -40,7 +44,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Product info */}
       <div className="flex items-center justify-between px-4 pb-3">
         <div>
-          <Link href={`/shop/${(product as any).slug || product.id}`} className="block">
+          <Link href={`/shop/${product.slug || product.id}`} className="block">
             <h3 className="w-full truncate text-left text-sm font-semibold text-gray-900 uppercase">
               {product.name}
             </h3>
