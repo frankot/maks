@@ -28,24 +28,30 @@ export async function POST(request: NextRequest) {
 
     const {
       id,
+      slug,
       name,
       priceInGrosz,
       priceInCents,
       description,
+      materials,
       imagePaths,
       imagePublicIds,
       isAvailable,
       category,
+      collectionId,
     } = body as {
       id?: string;
+      slug?: string;
       name: string;
       priceInGrosz: number | string;
       priceInCents: number | string;
       description: string;
+      materials?: string | null;
       imagePaths?: string[];
       imagePublicIds?: string[];
       isAvailable?: boolean;
       category?: Category;
+      collectionId?: string | null;
     };
 
     const priceG = Number(priceInGrosz);
@@ -59,14 +65,17 @@ export async function POST(request: NextRequest) {
 
     const product = await createProduct({
       id,
+      slug,
       name,
       priceInGrosz: priceG,
       priceInCents: priceC,
       description,
+      materials: materials || null,
       imagePaths: imagePaths || [],
       imagePublicIds: imagePublicIds || [],
       isAvailable: isAvailable ?? true,
       category: sanitizedCategory,
+      collectionId: collectionId || null,
     });
 
     return NextResponse.json(product, { status: 201 });

@@ -185,3 +185,22 @@
     -webkit-line-clamp: 2;
   }
 }
+
+@layer utilities {
+  /* marquee animation for NavCarousel: infinite horizontal scroll */
+  .animate-scroll {
+    display: inline-flex;
+    align-items: center;
+    animation: marquee 60s linear infinite;
+    will-change: transform;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-33.3333%);
+    }
+  }
+}

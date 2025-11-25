@@ -35,6 +35,7 @@ export async function getProducts(): Promise<ProductWithOrderItems[]> {
     const products = await prisma.product.findMany({
       include: {
         orderItems: true,
+        collection: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -59,6 +60,18 @@ export async function getProductById(id: string): Promise<Product | null> {
   }
 }
 
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { slug },
+    });
+    return product;
+  } catch (error) {
+    console.error('Error fetching product by slug:', error);
+    return null;
+  }
+}
+
 function generateProductId(name: string): string {
   return name
     .toLowerCase()
@@ -67,6 +80,10 @@ function generateProductId(name: string): string {
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
     .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+}
+
+function generateSlug(name: string): string {
+  return generateProductId(name);
 }
 
 async function getUniqueProductId(name: string): Promise<string> {
@@ -88,20 +105,39 @@ async function getUniqueProductId(name: string): Promise<string> {
   }
 }
 
+async function getUniqueSlug(name: string): Promise<string> {
+  const base = generateSlug(name);
+  let unique = base;
+  let counter = 1;
+
+  while (true) {
+    const existing = await prisma.product.findUnique({ where: { slug: unique } });
+    if (!existing) return unique;
+    unique = `${base}-${counter}`;
+    counter++;
+  }
+}
+
 export async function createProduct(data: {
   id?: string;
+  slug?: string;
   name: string;
   priceInGrosz: number;
   priceInCents: number;
   description: string;
+  materials?: string | null;
   imagePaths?: string[];
   imagePublicIds?: string[];
   productStatus?: ProductStatus;
   isAvailable?: boolean;
   category?: Category;
+  collectionId?: string | null;
 }): Promise<Product> {
   // Use provided ID or generate one from name
   const id = data.id || (await getUniqueProductId(data.name));
+
+  // Resolve slug: provided or generated unique
+  const slug = data.slug ? data.slug : await getUniqueSlug(data.name);
 
   // Check if custom ID already exists
   if (data.id) {
@@ -117,15 +153,18 @@ export async function createProduct(data: {
   const product = await prisma.product.create({
     data: {
       id,
+      slug,
       name: data.name,
       priceInGrosz: data.priceInGrosz,
       priceInCents: data.priceInCents,
       description: data.description,
+      materials: data.materials ?? null,
       imagePaths: data.imagePaths || [],
       imagePublicIds: data.imagePublicIds || [],
       productStatus: data.productStatus || 'SHOP',
       isAvailable: data.isAvailable ?? true,
       category: data.category ?? undefined,
+      collectionId: data.collectionId ?? null,
     },
   });
   return product;
@@ -134,20 +173,26 @@ export async function createProduct(data: {
 export async function updateProduct(
   id: string,
   data: {
+    slug?: string;
     name?: string;
     priceInGrosz?: number;
     priceInCents?: number;
     description?: string;
+    materials?: string | null;
     imagePaths?: string[];
     imagePublicIds?: string[];
     productStatus?: ProductStatus;
     isAvailable?: boolean;
     category?: Category;
+    collectionId?: string | null;
   }
 ): Promise<Product> {
+  // If slug is provided, ensure it's assigned in update data
+  const updateData: any = { ...data };
+
   const product = await prisma.product.update({
     where: { id },
-    data,
+    data: updateData,
   });
   return product;
 }

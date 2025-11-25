@@ -12,10 +12,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   const priceInPLN = (product.priceInGrosz / 100).toFixed(2);
 
   // Get a very short materials description
-  // Prefer a `materials` property if present on product, otherwise extract a short phrase from description
-  const prodWithMaterials = product as unknown as { materials?: string };
-  const materials = prodWithMaterials.materials
-    ? prodWithMaterials.materials
+  // Prefer the real `materials` column; fall back to a short phrase from description
+  const materials = (product as unknown as { materials?: string }).materials
+    ? (product as unknown as { materials?: string }).materials
     : product.description
         ?.split(/\.|,|;|\n/)
         .map((s) => s.trim())
@@ -25,7 +24,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <div className={`w-full`}>
       {/* Image section - clickable */}
-      <Link href={`/products/${product.id}`} className="block">
+      <Link href={`/shop/${(product as any).slug || product.id}`} className="block">
         <div className="relative aspect-[4/5] overflow-hidden">
           <Image
             src={product.imagePaths[0] || '/placeholder.jpg'}
@@ -41,7 +40,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Product info */}
       <div className="flex items-center justify-between px-4 pb-3">
         <div>
-          <Link href={`/products/${product.id}`} className="block">
+          <Link href={`/shop/${(product as any).slug || product.id}`} className="block">
             <h3 className="w-full truncate text-left text-sm font-semibold text-gray-900 uppercase">
               {product.name}
             </h3>

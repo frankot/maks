@@ -33,6 +33,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     priceInGrosz: '',
     priceInCents: '',
     description: '',
+    materials: '',
     isAvailable: false,
   });
 
@@ -50,6 +51,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
               priceInGrosz: (product.priceInGrosz / 100).toString(),
               priceInCents: (product.priceInCents / 100).toString(),
               description: product.description,
+              materials: product.materials ?? '',
               isAvailable: product.isAvailable,
             });
 
@@ -145,6 +147,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         priceInGrosz: Math.round(parseFloat(formData.priceInGrosz) * 100),
         priceInCents: Math.round(parseFloat(formData.priceInCents) * 100),
         description: formData.description,
+        materials: formData.materials || null,
         isAvailable: formData.isAvailable,
         imagePaths: images.map((img) => img.url),
         imagePublicIds: images.map((img) => img.publicId),
@@ -262,6 +265,17 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
           required
           placeholder="Enter product description"
           rows={4}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="materials">Materials</Label>
+        <Input
+          id="materials"
+          type="text"
+          value={formData.materials}
+          onChange={(e) => handleInputChange('materials', e.target.value)}
+          placeholder="e.g. 18k gold, freshwater pearls"
         />
       </div>
 

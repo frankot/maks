@@ -34,23 +34,29 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     const {
+      slug,
       name,
       priceInGrosz,
       priceInCents,
       description,
+      materials,
       imagePaths,
       imagePublicIds,
       isAvailable,
       category,
+      collectionId,
     } = body as {
+      slug?: string | null;
       name?: string;
       priceInGrosz?: number | string;
       priceInCents?: number | string;
       description?: string;
+      materials?: string | null;
       imagePaths?: string[];
       imagePublicIds?: string[];
       isAvailable?: boolean;
       category?: Category;
+      collectionId?: string | null;
     };
 
     const priceG = priceInGrosz !== undefined ? Number(priceInGrosz) : undefined;
@@ -59,14 +65,17 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const sanitizedCategory = category ? (String(category).toUpperCase() as Category) : undefined;
 
     const product = await updateProduct(productId, {
+      ...(slug !== undefined && { slug: slug || undefined }),
       ...(name && { name }),
       ...(priceG !== undefined && Number.isFinite(priceG) && { priceInGrosz: priceG }),
       ...(priceC !== undefined && Number.isFinite(priceC) && { priceInCents: priceC }),
       ...(description && { description }),
+      ...(materials !== undefined && { materials: materials || null }),
       ...(imagePaths && { imagePaths }),
       ...(imagePublicIds && { imagePublicIds }),
       ...(isAvailable !== undefined && { isAvailable }),
       ...(sanitizedCategory && { category: sanitizedCategory }),
+      ...(collectionId !== undefined && { collectionId: collectionId || null }),
     });
 
     return NextResponse.json(product);

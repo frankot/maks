@@ -127,9 +127,18 @@ export function ProductsTable({ products }: ProductsTableProps) {
       render: (product) => formatPrice(product.priceInGrosz),
     },
     {
-      key: 'priceEur',
-      label: 'Price (EUR)',
-      render: (product) => formatPriceEur(product.priceInCents),
+      key: 'collection',
+      label: 'Collection',
+      render: (product) => {
+        const collectionName = (product as any).collection?.name;
+        return collectionName ? (
+          <span className="rounded-md bg-purple-50 px-2 py-0.5 text-xs text-purple-700">
+            {collectionName}
+          </span>
+        ) : (
+          <span className="text-xs text-gray-400">—</span>
+        );
+      },
     },
     {
       key: 'availability',

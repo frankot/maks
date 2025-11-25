@@ -24,6 +24,12 @@ interface UploadedImage {
   format: string;
 }
 
+interface Collection {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 // Function to generate URL-friendly ID from product name
 function generateProductId(name: string): string {
   return name
@@ -40,14 +46,18 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
   const [loading, setLoading] = useState(false);
   const [uploadingImages, setUploadingImages] = useState<string[]>([]);
   const [images, setImages] = useState<UploadedImage[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
   const [formData, setFormData] = useState({
     id: '',
+    slug: '',
     name: '',
     priceInGrosz: '',
     priceInCents: '',
     description: '',
+    materials: '',
     isAvailable: true,
     category: 'RINGS' as Category,
+    collectionId: '',
   });
   const [isIdManuallyEdited, setIsIdManuallyEdited] = useState(false);
 
@@ -62,12 +72,15 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             const product = await response.json();
             setFormData({
               id: product.id,
+              slug: product.slug || '',
               name: product.name,
               priceInGrosz: (product.priceInGrosz / 100).toString(),
               priceInCents: (product.priceInCents / 100).toString(),
               description: product.description,
+              materials: (product as { materials?: string | null }).materials || '',
               isAvailable: product.isAvailable,
               category: (product.category ?? 'RINGS') as Category,
+              collectionId: product.collectionId || '',
             });
             setIsIdManuallyEdited(true); // Existing product ID should not auto-update
 
@@ -93,13 +106,34 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     }
   }, [productId]);
 
+  // Fetch collections
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const response = await fetch('/api/collections');
+        if (response.ok) {
+          const data = await response.json();
+          setCollections(data);
+        }
+      } catch (error) {
+        console.error('Error fetching collections:', error);
+      }
+    };
+    fetchCollections();
+  }, []);
+
   // Auto-generate ID from name when name changes (only for new products or when not manually edited)
   useEffect(() => {
-    if (!isEditing && !isIdManuallyEdited && formData.name) {
-      const generatedId = generateProductId(formData.name);
-      setFormData((prev) => ({ ...prev, id: generatedId }));
+    if (!isIdManuallyEdited && formData.name) {
+      const generatedSlug = generateProductId(formData.name);
+      // For new products set slug, for editing do not overwrite unless manually allowed
+      if (!isEditing) {
+        setFormData((prev) => ({ ...prev, slug: generatedSlug, id: prev.id || generatedSlug }));
+      } else if (!formData.slug) {
+        setFormData((prev) => ({ ...prev, slug: generatedSlug }));
+      }
     }
-  }, [formData.name, isEditing, isIdManuallyEdited]);
+  }, [formData.name, formData.slug, isEditing, isIdManuallyEdited]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -160,16 +194,18 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const productData = {
-        id: formData.id,
+        id: formData.id || undefined,
+        slug: formData.slug || undefined,
         name: formData.name,
         priceInGrosz: Math.round(parseFloat(formData.priceInGrosz) * 100),
         priceInCents: Math.round(parseFloat(formData.priceInCents) * 100),
         description: formData.description,
+        materials: formData.materials || null,
         isAvailable: formData.isAvailable,
         category: formData.category,
+        collectionId: formData.collectionId || null,
         imagePaths: images.map((img) => img.url),
         imagePublicIds: images.map((img) => img.publicId),
       };
@@ -217,20 +253,22 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     }));
   };
 
-  const handleIdChange = (value: string) => {
+
+
+  const handleSlugChange = (value: string) => {
     setIsIdManuallyEdited(true);
-    handleInputChange('id', value);
+    handleInputChange('slug', value);
   };
 
   const handleRegenerateId = () => {
     if (formData.name) {
-      const generatedId = generateProductId(formData.name);
-      setFormData((prev) => ({ ...prev, id: generatedId }));
+      const generated = generateProductId(formData.name);
+      setFormData((prev) => ({ ...prev, slug: generated, id: prev.id || generated }));
       setIsIdManuallyEdited(false);
     }
   };
 
-  const previewUrl = formData.id ? `/products/${formData.id}` : '';
+  const previewUrl = formData.slug ? `/shop/${formData.slug}` : '';
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -273,6 +311,38 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             <option value="EARRINGS">Earrings</option>
           </select>
         </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="collection">Collection</Label>
+          <select
+            id="collection"
+            className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:outline-none"
+            value={formData.collectionId}
+            onChange={(e) => handleInputChange('collectionId', e.target.value)}
+          >
+            <option value="">No Collection</option>
+            {collections.map((collection) => (
+              <option key={collection.id} value={collection.id}>
+                {collection.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Materials */}
+      <div className="space-y-2">
+        <Label htmlFor="materials">Materials</Label>
+        <Input
+          id="materials"
+          type="text"
+          value={formData.materials}
+          onChange={(e) => handleInputChange('materials', e.target.value)}
+          placeholder="e.g. 18k white gold, diamonds"
+        />
+        <p className="text-xs text-gray-500">
+          Short materials description shown on product cards (optional).
+        </p>
       </div>
 
       {/* Product ID Section */}
@@ -281,27 +351,24 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         <div className="space-y-2">
           <div className="flex space-x-2">
             <Input
-              id="id"
+              id="slug"
               type="text"
-              value={formData.id}
-              onChange={(e) => handleIdChange(e.target.value)}
+              value={formData.slug}
+              onChange={(e) => handleSlugChange(e.target.value)}
               required
-              placeholder="product-id"
+              placeholder="product-slug"
               className="flex-1"
-              disabled={isEditing}
             />
-            {!isEditing && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleRegenerateId}
-                disabled={!formData.name}
-                className="px-3"
-              >
-                <RefreshCw className="h-4 w-4" />
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleRegenerateId}
+              disabled={!formData.name}
+              className="px-3"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
           </div>
 
           {/* URL Preview */}
@@ -314,9 +381,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
           )}
 
           <p className="text-xs text-gray-500">
-            {isEditing
-              ? 'Product ID cannot be changed for existing products'
-              : 'Auto-generated from product name. You can edit it manually.'}
+            {'Auto-generated from product name. You can edit it manually or regenerate.'}
           </p>
         </div>
       </div>

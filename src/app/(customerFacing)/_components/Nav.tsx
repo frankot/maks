@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import NavCarousel from './NavCarousel';
 
 const navLinks = [
   { href: '/shop', label: 'Shop' },
@@ -109,6 +110,7 @@ export default function Nav() {
 
         {/* Static main nav replaced with small nav structure */}
         <nav className="w-full bg-white" role="navigation" aria-label="Main Navigation">
+          <NavCarousel />
           <div className="mx-auto px-4">
             <div className="relative flex h-24 items-center md:pr-16">
               {/* Center group: brand + nav (desktop centered) */}

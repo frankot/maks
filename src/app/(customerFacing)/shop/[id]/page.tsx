@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getProductById } from '@/lib/products';
+import { getProductById, getProductBySlug } from '@/lib/products';
 import ProductDetailsSection from '@/components/ui/ProductDetailsSection';
 import { formatPriceInPLN } from '@/lib/utils';
 
@@ -10,7 +10,12 @@ interface ProductPageProps {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
-  const product = await getProductById(id);
+  // Support both slug and id lookup for backwards compatibility.
+  // Try slug first, then fallback to id.
+  let product = await getProductBySlug(id);
+  if (!product) {
+    product = await getProductById(id);
+  }
 
   if (!product) {
     notFound();
