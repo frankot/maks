@@ -7,9 +7,9 @@ export default function CTA() {
   return (
     <section className="relative mt-16 w-full">
       <div className="mx-auto">
-        <div className="grid grid-cols-1 items-stretch md:grid-cols-2">
+        <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Left: image (fills) */}
-          <div className="relative h-[70vh] w-full">
+          <div className="relative min-h-[70vh] w-full">
             <Image
               src="/maxvert3.jpg"
               alt="Unique handcrafted jewelry"
@@ -19,7 +19,7 @@ export default function CTA() {
           </div>
 
           {/* Right: text on stone-100 background */}
-          <div className="flex h-full w-full items-center bg-stone-100">
+          <div className="flex min-h-[70vh] w-full items-center bg-stone-100">
             <div className="max-w-lg p-8 md:p-16 lg:p-24">
               <h2 className="font-neubold text-3xl tracking-tight uppercase md:text-4xl lg:text-6xl">
                 Unique handcrafted jewelry

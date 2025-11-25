@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getProductById, getProductBySlug } from '@/lib/products';
 import ProductDetailsSection from '@/components/ui/ProductDetailsSection';
 import { formatPriceInPLN } from '@/lib/utils';
+import Nav from '../../_components/Nav';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -24,9 +25,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const priceInPLN = formatPriceInPLN(product.priceInGrosz);
 
   return (
-    <div className="mt-16 grid grid-cols-1 border-t border-b border-black lg:grid-cols-2 lg:items-start lg:gap-x-8">
-      {/* Left side - Images in natural flow */}
-      <div className="lg:col-start-1 lg:row-start-1">
+    <>
+      <Nav showCollectionsBar={true} />
+          <div className="mt-[calc(var(--nav-height)+var(--collections-bar-height)-7px)] grid grid-cols-1 border-t border-b border-black lg:grid-cols-2 lg:items-start lg:gap-x-8">
+        {/* Left side - Images in natural flow */}
+        <div className="lg:col-start-1 lg:row-start-1">
         <div className="space-y-0 border-r border-black">
           {/* Main product image */}
           <div className="relative h-screen w-full">
@@ -203,6 +206,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

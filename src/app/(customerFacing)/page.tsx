@@ -5,11 +5,14 @@ import FeaturedProductsServer from './_components/FeaturedProductsServer';
 import FeaturedProductsDynamicServer from './_components/FeaturedProductsDynamicServer';
 import type { Category } from '@prisma/client';
 import CTA from './_components/CTA';
+import Nav from './_components/Nav';
 
 export default function Home() {
   return (
-    <main>
-      <Hero />
+    <>
+      <Nav />
+      <main className="pt-[var(--nav-height)]">
+        <Hero />
       <Marquee />
 
       <FeaturedProductsServer category={'RINGS' as Category} title="Rings" />
@@ -19,7 +22,8 @@ export default function Home() {
 
       <FeaturedProductsDynamicServer initialCategory={'EARRINGS' as Category} />
 
-      <CTA />
-    </main>
+        <CTA />
+      </main>
+    </>
   );
 }
