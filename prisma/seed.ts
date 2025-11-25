@@ -6,7 +6,7 @@ import {
   AddressType,
   ProductStatus,
   Category,
-} from '../src/app/generated/prisma';
+} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
