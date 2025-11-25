@@ -60,7 +60,7 @@ export default function Hero() {
   const imagePairs: string[][] = (() => {
     const fallback: string[][] = [
       ['/hero1.jpg', '/hero2.jpg'],
-      ['/hero3.png', '/maxVert3.jpg'],
+      ['/hero3.png', '/maxvert3.jpg'],
     ];
     if (!heroContent || heroContent.imagePaths.length < 2) return fallback;
     const pairs: string[][] = [];
