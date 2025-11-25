@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import type { Category } from '@/app/generated/prisma';
+import type { Category } from '@prisma/client';
 import { Switch } from '@/components/ui/switch';
 import { X, Upload, Loader2, Link2, RefreshCw } from 'lucide-react';
 import Image from 'next/image';
@@ -252,8 +252,6 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
       [field]: value,
     }));
   };
-
-
 
   const handleSlugChange = (value: string) => {
     setIsIdManuallyEdited(true);

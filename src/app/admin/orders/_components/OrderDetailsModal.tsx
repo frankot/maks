@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { DetailsModal } from '@/app/admin/components/DetailsModal';
-import { formatPrice, getStatusVariant, getStatusLabel } from '@/lib/orders';
-import type { Order, OrderItem, Address } from '@/app/generated/prisma';
+import { formatPrice, getStatusVariant, getStatusLabel } from '@/lib/utils/orders';
+import type { Order, OrderItem, Address } from '@prisma/client';
 import {
   Package,
   User,

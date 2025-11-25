@@ -1,5 +1,5 @@
 import { prisma } from './prisma';
-import type { Collection } from '@/app/generated/prisma';
+import type { Collection } from '@prisma/client';
 
 function generateSlug(name: string): string {
   return name
@@ -62,10 +62,7 @@ export async function getCollectionBySlug(slug: string): Promise<Collection | nu
   }
 }
 
-export async function createCollection(data: {
-  name: string;
-  slug?: string;
-}): Promise<Collection> {
+export async function createCollection(data: { name: string; slug?: string }): Promise<Collection> {
   const slug = data.slug || (await getUniqueSlug(data.name));
 
   const collection = await prisma.collection.create({

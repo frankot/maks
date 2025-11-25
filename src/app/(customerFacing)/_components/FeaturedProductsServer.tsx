@@ -1,4 +1,4 @@
-import type { Category, Product, ProductStatus } from '@/app/generated/prisma';
+import type { Category, Product, ProductStatus } from '@prisma/client';
 import FeaturedProducts from './FeaturedProducts';
 
 interface Props {

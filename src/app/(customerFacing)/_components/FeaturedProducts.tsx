@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
 import React, { useMemo, useRef } from 'react';
-import type { Product } from '@/app/generated/prisma';
+import type { Product } from '@prisma/client';
 import ProductCard from './ProductCard';
 import Title from './Title';
 
@@ -38,7 +38,9 @@ export default function FeaturedProducts({ title, products, header }: FeaturedPr
   if (!products?.length) {
     return (
       <section className="mx-auto max-w-7xl px-4 py-10">
-        {header ? header({ title, onPrev: handlePrev, onNext: handleNext }) : (
+        {header ? (
+          header({ title, onPrev: handlePrev, onNext: handleNext })
+        ) : (
           <Title text={title} onPrev={handlePrev} onNext={handleNext} />
         )}
         <div className="py-8 text-center text-gray-500">No products found.</div>
@@ -48,7 +50,9 @@ export default function FeaturedProducts({ title, products, header }: FeaturedPr
 
   return (
     <section className="mx-auto mt-10 py-10">
-      {header ? header({ title, onPrev: handlePrev, onNext: handleNext }) : (
+      {header ? (
+        header({ title, onPrev: handlePrev, onNext: handleNext })
+      ) : (
         <Title text={title} onPrev={handlePrev} onNext={handleNext} />
       )}
       {/* Horizontal scroller like Hero */}

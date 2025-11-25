@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProductsByCategory } from '@/lib/products';
-import type { Category } from '@/app/generated/prisma';
+import type { Category } from '@prisma/client';
 
 export async function GET(
   request: NextRequest,
@@ -8,11 +8,11 @@ export async function GET(
 ) {
   try {
     const { category } = await params;
-    
+
     // Validate category
     const validCategories: Category[] = ['RINGS', 'NECKLACES', 'EARRINGS'];
     const upperCategory = category.toUpperCase() as Category;
-    
+
     if (!validCategories.includes(upperCategory)) {
       return NextResponse.json(
         { error: 'Invalid category. Must be one of: RINGS, NECKLACES, EARRINGS' },
@@ -24,9 +24,6 @@ export async function GET(
     return NextResponse.json(products);
   } catch (error) {
     console.error('Error in products/category API:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch products' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
   }
 }

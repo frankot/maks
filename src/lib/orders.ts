@@ -1,5 +1,5 @@
 import { prisma } from './prisma';
-import { OrderStatus } from '@/app/generated/prisma';
+import { OrderStatus } from '@prisma/client';
 
 export async function getOrders() {
   try {

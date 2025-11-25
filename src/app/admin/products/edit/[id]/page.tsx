@@ -10,7 +10,7 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
   const { id } = await params;
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto mt-16 max-w-5xl space-y-6 py-6">
       <div>
         <h1 className="text-3xl font-bold">Edit Product</h1>
         <p className="text-gray-600">Update product information</p>

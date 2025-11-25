@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProductById, updateProduct } from '@/lib/products';
-import type { Category } from '@/app/generated/prisma';
+import type { Category } from '@prisma/client';
 import { errorHandler } from '@/lib/errorHandler';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {

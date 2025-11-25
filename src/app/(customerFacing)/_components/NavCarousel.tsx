@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
 const carouselTexts = [
-  "Handmade jewelry — natural stones & gold vermeil",
-  "Free shipping in Poland over 300 zł — worldwide shipping available",
-  "Limited editions — small batches, sustainably made",
+  'Handmade jewelry — natural stones & gold vermeil',
+  'Free shipping in Poland over 300 zł — worldwide shipping available',
+  'Limited editions — small batches, sustainably made',
 ];
 
 export default function NavCarousel() {

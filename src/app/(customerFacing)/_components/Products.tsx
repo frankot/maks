@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import type { Product } from "@/app/generated/prisma";
-import ProductCard from "./ProductCard";
+import React from 'react';
+import type { Product } from '@prisma/client';
+import ProductCard from './ProductCard';
 
 interface ProductsProps {
   title: string;
@@ -17,7 +17,7 @@ export default function Products({ title, products }: ProductsProps) {
       <section id={sectionId} className="mx-auto max-w-7xl px-4 py-10">
         <div className="mx-auto px-4">
           <div className="py-6 md:py-8">
-            <h2 className="font-extrabold text-4xl leading-[0.9] whitespace-nowrap text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">
+            <h2 className="text-4xl leading-[0.9] font-extrabold whitespace-nowrap text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">
               {title}
             </h2>
           </div>
@@ -32,7 +32,7 @@ export default function Products({ title, products }: ProductsProps) {
       {/* Title */}
       <div className="mx-auto px-4">
         <div className="py-6 md:py-8">
-          <h2 className="font-extrabold text-4xl leading-[0.9] whitespace-nowrap text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">
+          <h2 className="text-4xl leading-[0.9] font-extrabold whitespace-nowrap text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">
             {title}
           </h2>
         </div>

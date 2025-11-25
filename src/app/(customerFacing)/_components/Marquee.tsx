@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { HeroContent } from '@/app/generated/prisma';
+import type { HeroContent } from '@prisma/client';
 
 interface MarqueeState {
   description?: string | null;

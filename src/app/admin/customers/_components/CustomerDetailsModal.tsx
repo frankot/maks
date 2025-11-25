@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { DetailsModal } from '@/app/admin/components/DetailsModal';
-import { formatCustomerName, calculateTotalSpent, formatPrice } from '@/lib/customers';
-import { getStatusVariant, getStatusLabel } from '@/lib/orders';
+import { formatCustomerName, calculateTotalSpent, formatPrice } from '@/lib/utils/customers';
+import { getStatusVariant, getStatusLabel } from '@/lib/utils/orders';
 import { OrderDetailsModal } from '../../orders/_components/OrderDetailsModal';
-import type { User, Order, OrderItem, Address } from '@/app/generated/prisma';
+import type { User, Order, OrderItem, Address } from '@prisma/client';
 import {
   User as UserIcon,
   Mail,

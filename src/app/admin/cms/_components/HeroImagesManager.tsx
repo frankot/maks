@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import type { HeroContent } from '@/app/generated/prisma';
+import type { HeroContent } from '@prisma/client';
 
 interface HeroImagesManagerProps {
   heroContent: HeroContent | null;

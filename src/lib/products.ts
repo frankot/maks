@@ -1,5 +1,5 @@
 import { prisma } from './prisma';
-import type { Product, OrderItem, ProductStatus, Category } from '@/app/generated/prisma';
+import type { Product, OrderItem, ProductStatus, Category } from '@prisma/client';
 
 // Extended Product type with orderItems
 export type ProductWithOrderItems = Product & {

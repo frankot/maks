@@ -7,9 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { AdminTable, TableColumn } from '../../components/Table';
 import { AdminDropdown, DropdownAction } from '../../components/Dropdown';
 import { OrderDetailsModal } from './OrderDetailsModal';
-import { formatPrice, getStatusVariant, getStatusLabel } from '@/lib/orders';
+import { formatPrice, getStatusVariant, getStatusLabel } from '@/lib/utils/orders';
 import { markAsShippedAction, deleteOrderAction } from '../actions';
-import type { Order } from '@/app/generated/prisma';
+import type { Order } from '@prisma/client';
 
 interface OrderWithUser extends Order {
   user: {

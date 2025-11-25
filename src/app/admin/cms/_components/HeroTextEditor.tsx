@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Edit2, Save, X } from 'lucide-react';
 import { toast } from 'sonner';
-import type { HeroContent } from '@/app/generated/prisma';
+import type { HeroContent } from '@prisma/client';
 
 interface HeroTextEditorProps {
   heroContent: HeroContent | null;

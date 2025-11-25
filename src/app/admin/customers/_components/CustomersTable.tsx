@@ -6,9 +6,9 @@ import { Eye, Trash2 } from 'lucide-react';
 import { AdminTable, TableColumn } from '../../components/Table';
 import { AdminDropdown, DropdownAction } from '../../components/Dropdown';
 import { CustomerDetailsModal } from './CustomerDetailsModal';
-import { formatCustomerName, calculateTotalSpent, formatPrice } from '@/lib/customers';
+import { formatCustomerName, calculateTotalSpent, formatPrice } from '@/lib/utils/customers';
 import { deleteCustomerAction } from '../actions';
-import type { User, OrderStatus } from '@/app/generated/prisma';
+import type { User, OrderStatus } from '@prisma/client';
 
 interface CustomerWithOrders extends User {
   orders: Array<{

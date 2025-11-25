@@ -44,6 +44,22 @@ export default function Nav() {
     fetchCollections();
   }, []);
 
+  // Handle scroll to section on page load if hash is present
+  useEffect(() => {
+    if (isShopPage && typeof window !== 'undefined') {
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        // Wait for content to load
+        setTimeout(() => {
+          const element = document.getElementById(hash);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    }
+  }, [isShopPage]);
+
   useEffect(() => {
     lastY.current = window.scrollY;
 
@@ -75,40 +91,46 @@ export default function Nav() {
   }, []);
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    // Check if we're on the shop page
+    if (pathname === '/shop') {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Navigate to shop page with hash for scroll target
+      window.location.href = `/shop#${id}`;
     }
   };
 
   const CollectionsBar = () => (
     <div className="pb-2">
-      <div className="mx-auto flex max-w-7xl items-center justify-center gap-8 px-4 overflow-x-auto scrollbar-hide">
+      <div className="scrollbar-hide mx-auto flex max-w-7xl items-center justify-center gap-8 overflow-x-auto px-4">
         {/* Categories */}
         <button
           onClick={() => scrollToSection('rings')}
-          className="whitespace-nowrap text-xs uppercase tracking-widest text-gray-500 hover:text-black transition-colors"
+          className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
         >
           Rings
         </button>
         <button
           onClick={() => scrollToSection('necklaces')}
-          className="whitespace-nowrap text-xs uppercase tracking-widest text-gray-500 hover:text-black transition-colors"
+          className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
         >
           Necklaces
         </button>
         <button
           onClick={() => scrollToSection('earrings')}
-          className="whitespace-nowrap text-xs uppercase tracking-widest text-gray-500 hover:text-black transition-colors"
+          className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
         >
           Earrings
         </button>
 
-        <div className="h-4 w-px bg-gray-300 mx-2" />
+        <div className="mx-2 h-4 w-px bg-gray-300" />
 
         <Link
           href="/shop"
-          className={`whitespace-nowrap text-xs uppercase tracking-widest transition-colors ${
+          className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
             !currentCollection ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
           }`}
         >
@@ -119,8 +141,10 @@ export default function Nav() {
           <Link
             key={c.id}
             href={`/shop?collection=${c.slug}`}
-            className={`whitespace-nowrap text-xs uppercase tracking-widest transition-colors ${
-              currentCollection === c.slug ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
+            className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
+              currentCollection === c.slug
+                ? 'font-bold text-black'
+                : 'text-gray-500 hover:text-black'
             }`}
           >
             {c.name}
@@ -163,7 +187,7 @@ export default function Nav() {
               </Link>
 
               {/* Desktop nav links, hidden on mobile */}
-              <div className="hidden md:flex items-center gap-6">
+              <div className="hidden items-center gap-6 md:flex">
                 {navLinks.map((l) => (
                   <Link
                     key={l.href}
@@ -184,7 +208,7 @@ export default function Nav() {
             </div>
 
             {/* Desktop cart: absolute at right-6 */}
-            <div className="absolute right-6 inset-y-0 hidden md:flex items-center">
+            <div className="absolute inset-y-0 right-6 hidden items-center md:flex">
               <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
                 <CartIcon size={18} />
               </Link>
@@ -194,61 +218,61 @@ export default function Nav() {
         {isShopPage && <CollectionsBar />}
       </div>
 
-        {/* Static main nav replaced with small nav structure */}
-        <nav className="w-full bg-white" role="navigation" aria-label="Main Navigation">
-          <NavCarousel />
-          <div className="mx-auto px-4">
-            <div className="relative flex h-24 items-center md:pr-16">
-              {/* Center group: brand + nav (desktop centered) */}
-              <div className="flex w-full items-center justify-between gap-4 md:justify-center md:gap-8">
-                <Link
-                  href="/"
-                  className="block text-lg font-extrabold tracking-tight whitespace-nowrap text-black uppercase md:text-4xl"
-                >
-                  <span className="inline-flex items-center gap-2 align-middle lg:mr-10">
-                    <span className="font-neubold -mr-4">SPLOT</span>
-                    <Image
-                      src="/sun.png"
-                      alt=""
-                      width={50}
-                      height={50}
-                      className="inline-block size-4 align-middle md:size-16"
-                    />
-                    <span className="font-neubold -ml-4">STUDIO</span>
-                  </span>
-                </Link>
+      {/* Static main nav replaced with small nav structure */}
+      <nav className="w-full bg-white" role="navigation" aria-label="Main Navigation">
+        <NavCarousel />
+        <div className="mx-auto px-4">
+          <div className="relative flex h-24 items-center md:pr-16">
+            {/* Center group: brand + nav (desktop centered) */}
+            <div className="flex w-full items-center justify-between gap-4 md:justify-center md:gap-8">
+              <Link
+                href="/"
+                className="block text-lg font-extrabold tracking-tight whitespace-nowrap text-black uppercase md:text-4xl"
+              >
+                <span className="inline-flex items-center gap-2 align-middle lg:mr-10">
+                  <span className="font-neubold -mr-4">SPLOT</span>
+                  <Image
+                    src="/sun.png"
+                    alt=""
+                    width={50}
+                    height={50}
+                    className="inline-block size-4 align-middle md:size-16"
+                  />
+                  <span className="font-neubold -ml-4">STUDIO</span>
+                </span>
+              </Link>
 
-                {/* Desktop nav links, hidden on mobile */}
-                <div className="hidden md:flex items-center gap-6">
-                  {navLinks.map((l) => (
-                    <Link
-                      key={l.href}
-                      href={l.href}
-                      className="text-xs tracking-wider text-black/90 uppercase hover:text-black md:text-sm"
-                    >
-                      {l.label}
-                    </Link>
-                  ))}
-                </div>
-
-                {/* Mobile cart (in-flow) */}
-                <div className="md:hidden">
-                  <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
-                    <CartIcon size={18} />
+              {/* Desktop nav links, hidden on mobile */}
+              <div className="hidden items-center gap-6 md:flex">
+                {navLinks.map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    className="text-xs tracking-wider text-black/90 uppercase hover:text-black md:text-sm"
+                  >
+                    {l.label}
                   </Link>
-                </div>
+                ))}
               </div>
 
-              {/* Desktop cart: absolute at right-6 */}
-              <div className="absolute right-6 inset-y-0 hidden md:flex items-center">
+              {/* Mobile cart (in-flow) */}
+              <div className="md:hidden">
                 <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
                   <CartIcon size={18} />
                 </Link>
               </div>
             </div>
+
+            {/* Desktop cart: absolute at right-6 */}
+            <div className="absolute inset-y-0 right-6 hidden items-center md:flex">
+              <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
+                <CartIcon size={18} />
+              </Link>
+            </div>
           </div>
-          {isShopPage && <CollectionsBar />}
-        </nav>
+        </div>
+        {isShopPage && <CollectionsBar />}
+      </nav>
     </>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import type { HeroContent, Product } from '@/app/generated/prisma';
+import type { HeroContent, Product } from '@prisma/client';
 import HeroPreview from './HeroPreview';
 import HeroImagesManager from './HeroImagesManager';
 import HeroTextEditor from './HeroTextEditor';

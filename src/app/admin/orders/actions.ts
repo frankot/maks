@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { updateOrderStatus, deleteOrder } from '@/lib/orders';
-import { OrderStatus } from '@/app/generated/prisma';
+import { OrderStatus } from '@prisma/client';
 
 export async function markAsShippedAction(orderId: string) {
   try {

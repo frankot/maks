@@ -10,7 +10,8 @@ import {
   TrendingDown,
   Activity,
 } from 'lucide-react';
-import { DashboardStats as DashboardStatsType, formatPrice, getStatusColor } from '@/lib/dashboard';
+import type { DashboardStats as DashboardStatsType } from '@/lib/dashboard';
+import { formatPrice, getStatusColor } from '@/lib/utils/dashboard';
 
 interface DashboardStatsProps {
   stats: DashboardStatsType;

@@ -50,12 +50,13 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     const totalRevenue = revenueResult._sum.pricePaid || 0;
 
     // Get orders by status
-    const orderStatusCounts = await prisma.order.groupBy({
-      by: ['status'],
-      _count: {
-        status: true,
-      },
-    });
+    const orderStatusCounts: Array<{ status: string; _count: { status: number } }> =
+      (await prisma.order.groupBy({
+        by: ['status'],
+        _count: {
+          status: true,
+        },
+      })) as any;
 
     const ordersByStatus = {
       pending: 0,
@@ -99,7 +100,10 @@ export async function getDashboardStats(): Promise<DashboardStats> {
       previousOrders > 0 ? Math.round(((recentOrders - previousOrders) / previousOrders) * 100) : 0;
 
     // Get top selling products
-    const topSellingProducts = await prisma.orderItem.groupBy({
+    const topSellingProducts: Array<{
+      productId: string;
+      _sum: { quantity: number | null; priceInGrosz: number | null };
+    }> = (await prisma.orderItem.groupBy({
       by: ['productId'],
       _sum: {
         quantity: true,
@@ -111,7 +115,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
         },
       },
       take: 5,
-    });
+    })) as any;
 
     const topSellingProductsWithNames = await Promise.all(
       topSellingProducts.map(async (item) => {

@@ -1,5 +1,5 @@
 import { prisma } from './prisma';
-import type { HeroContent } from '@/app/generated/prisma';
+import type { HeroContent } from '@prisma/client';
 
 export async function getHeroContent(): Promise<HeroContent | null> {
   try {

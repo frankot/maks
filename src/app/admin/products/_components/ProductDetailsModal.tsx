@@ -10,8 +10,8 @@ import {
   formatPriceEur,
   getAvailabilityBadgeVariant,
   getAvailabilityLabel,
-} from '@/lib/products';
-import type { Product } from '@/app/generated/prisma';
+} from '@/lib/utils/products';
+import type { Product } from '@prisma/client';
 import {
   Package,
   DollarSign,

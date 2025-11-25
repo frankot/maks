@@ -1,4 +1,4 @@
-import type { Category, Product, ProductStatus } from '@/app/generated/prisma';
+import type { Category, Product, ProductStatus } from '@prisma/client';
 import FeaturedProductsDynamic from './FeaturedProductsDynamic';
 
 interface Props {
@@ -8,7 +8,14 @@ interface Props {
 export default async function FeaturedProductsDynamicServer({ initialCategory }: Props) {
   const now = new Date();
 
-  const makeProduct = (id: string, name: string, image: string, materials: string, priceInGrosz: number, category: Category): Product =>
+  const makeProduct = (
+    id: string,
+    name: string,
+    image: string,
+    materials: string,
+    priceInGrosz: number,
+    category: Category
+  ): Product =>
     ({
       id,
       name,
@@ -33,12 +40,33 @@ export default async function FeaturedProductsDynamicServer({ initialCategory }:
 
   const necklaces: Product[] = [
     makeProduct('ex-n1', 'Necklace #1', '/neck1.png', '14k gold', 55900, 'NECKLACES' as Category),
-    makeProduct('ex-n2', 'Necklace #2', '/neck2.png', 'silver & crystal', 56900, 'NECKLACES' as Category),
+    makeProduct(
+      'ex-n2',
+      'Necklace #2',
+      '/neck2.png',
+      'silver & crystal',
+      56900,
+      'NECKLACES' as Category
+    ),
   ];
 
   const earrings: Product[] = [
-    makeProduct('ex-e1', 'Earring #1', '/earring1.png', 'gold vermeil', 45900, 'EARRINGS' as Category),
-    makeProduct('ex-e2', 'Earring #2', '/earring2.png', 'crystal with silver base', 46900, 'EARRINGS' as Category),
+    makeProduct(
+      'ex-e1',
+      'Earring #1',
+      '/earring1.png',
+      'gold vermeil',
+      45900,
+      'EARRINGS' as Category
+    ),
+    makeProduct(
+      'ex-e2',
+      'Earring #2',
+      '/earring2.png',
+      'crystal with silver base',
+      46900,
+      'EARRINGS' as Category
+    ),
   ];
 
   // Repeat placeholder data 3x per category to provide more content for scrolling

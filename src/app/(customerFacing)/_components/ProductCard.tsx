@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 // ShoppingCart removed — not used anymore
-import { Product } from '@/app/generated/prisma';
+import { Product } from '@prisma/client';
 
 interface ProductCardProps {
   product: Product;
@@ -45,14 +45,13 @@ export default function ProductCard({ product }: ProductCardProps) {
               {product.name}
             </h3>
           </Link>
-    <p className="  text-xs leading-tight text-gray-500 capitalize">
-          {materials || 'White gold, sterling silver, crystal base'}
-        </p>
- 
+          <p className="text-xs leading-tight text-gray-500 capitalize">
+            {materials || 'White gold, sterling silver, crystal base'}
+          </p>
         </div>
-             <div className="mt-1 mr-6 flex items-center justify-between whitespace-nowrap">
-            <p className="text-xs text-gray-600">{priceInPLN} zł </p>
-          </div>
+        <div className="mt-1 mr-6 flex items-center justify-between whitespace-nowrap">
+          <p className="text-xs text-gray-600">{priceInPLN} zł </p>
+        </div>
       </div>
     </div>
   );

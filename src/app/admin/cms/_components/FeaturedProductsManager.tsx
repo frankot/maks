@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
-import type { Product } from '@/app/generated/prisma';
+import type { Product } from '@prisma/client';
 
 interface FeaturedProductsManagerProps {
   allProducts: Product[];

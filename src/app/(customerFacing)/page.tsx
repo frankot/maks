@@ -3,7 +3,7 @@ import Mission from './_components/Mission';
 import Marquee from './_components/Marquee';
 import FeaturedProductsServer from './_components/FeaturedProductsServer';
 import FeaturedProductsDynamicServer from './_components/FeaturedProductsDynamicServer';
-import type { Category } from '@/app/generated/prisma';
+import type { Category } from '@prisma/client';
 import CTA from './_components/CTA';
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
       <FeaturedProductsServer category={'NECKLACES' as Category} title="Necklaces" />
       <Mission />
 
-  <FeaturedProductsDynamicServer initialCategory={'EARRINGS' as Category} />
+      <FeaturedProductsDynamicServer initialCategory={'EARRINGS' as Category} />
 
       <CTA />
     </main>

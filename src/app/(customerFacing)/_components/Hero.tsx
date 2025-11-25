@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import type { HeroContent } from '@/app/generated/prisma';
+import type { HeroContent } from '@prisma/client';
 
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -16,9 +16,10 @@ export default function Hero() {
   // number of pairs to rotate through (fallback to local pairs when no content)
   useEffect(() => {
     const fallbackPairsCount = 2; // ['/hero1.jpg','/hero2.jpg'], ['/hero3.png','/maxHor2.jpg']
-    const pairCount = heroContent && heroContent.imagePaths.length >= 2
-      ? Math.floor(heroContent.imagePaths.length / 2)
-      : fallbackPairsCount;
+    const pairCount =
+      heroContent && heroContent.imagePaths.length >= 2
+        ? Math.floor(heroContent.imagePaths.length / 2)
+        : fallbackPairsCount;
 
     if (pairCount > 0) {
       const interval = setInterval(() => {
@@ -49,7 +50,7 @@ export default function Hero() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="relative  flex h-[635px] w-full items-center justify-center bg-gray-100">
+      <div className="relative flex h-[635px] w-full items-center justify-center bg-gray-100">
         <div className="text-gray-500">Loading...</div>
       </div>
     );
@@ -73,7 +74,7 @@ export default function Hero() {
 
   return (
     <>
-      <div className="relative  flex h-[635px] w-full overflow-hidden">
+      <div className="relative flex h-[635px] w-full overflow-hidden">
         <div className="absolute top-0 left-0 z-10 h-full w-full bg-black/5" />
 
         {imagePairs.map((pair, index) => (

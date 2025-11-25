@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Plus, Eye } from 'lucide-react';
-import type { HeroContent, Product } from '@/app/generated/prisma';
+import type { HeroContent, Product } from '@prisma/client';
 
 interface HeroPreviewProps {
   heroContent: HeroContent | null;
