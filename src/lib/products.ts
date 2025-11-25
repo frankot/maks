@@ -223,13 +223,18 @@ export async function getFeaturedProducts(category?: Category): Promise<Product[
   }
 }
 
-export async function getProductsByCategory(category: Category, take = 24): Promise<Product[]> {
+export async function getProductsByCategory(
+  category: Category,
+  take = 24,
+  collectionSlug?: string
+): Promise<Product[]> {
   try {
     const products = await prisma.product.findMany({
       where: {
         category,
         isAvailable: true,
         productStatus: 'SHOP',
+        ...(collectionSlug ? { collection: { slug: collectionSlug } } : {}),
       },
       orderBy: { createdAt: 'desc' },
       take,

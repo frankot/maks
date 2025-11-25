@@ -10,9 +10,11 @@ interface ProductsProps {
 }
 
 export default function Products({ title, products }: ProductsProps) {
+  const sectionId = title.toLowerCase();
+
   if (!products?.length) {
     return (
-      <section className="mx-auto max-w-7xl px-4 py-10">
+      <section id={sectionId} className="mx-auto max-w-7xl px-4 py-10">
         <div className="mx-auto px-4">
           <div className="py-6 md:py-8">
             <h2 className="font-extrabold text-4xl leading-[0.9] whitespace-nowrap text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">
@@ -26,7 +28,7 @@ export default function Products({ title, products }: ProductsProps) {
   }
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-10">
+    <section id={sectionId} className="mx-auto max-w-7xl px-4 py-10">
       {/* Title */}
       <div className="mx-auto px-4">
         <div className="py-6 md:py-8">

@@ -50,7 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </p>
  
         </div>
-             <div className="mt-1 mr-6 flex items-center justify-between">
+             <div className="mt-1 mr-6 flex items-center justify-between whitespace-nowrap">
             <p className="text-xs text-gray-600">{priceInPLN} zł </p>
           </div>
       </div>

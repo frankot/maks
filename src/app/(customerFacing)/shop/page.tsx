@@ -1,12 +1,18 @@
 import type { Category } from '@/app/generated/prisma';
 import ProductsServer from '../_components/ProductsServer';
 
-export default function ShopPage() {
+interface ShopPageProps {
+  searchParams: Promise<{ collection?: string }>;
+}
+
+export default async function ShopPage({ searchParams }: ShopPageProps) {
+  const { collection } = await searchParams;
+
   return (
     <main>
-      <ProductsServer category={'RINGS' as Category} title="Rings" />
-      <ProductsServer category={'NECKLACES' as Category} title="Necklaces" />
-      <ProductsServer category={'EARRINGS' as Category} title="Earrings" />
+      <ProductsServer category={'RINGS' as Category} title="Rings" collectionSlug={collection} />
+      <ProductsServer category={'NECKLACES' as Category} title="Necklaces" collectionSlug={collection} />
+      <ProductsServer category={'EARRINGS' as Category} title="Earrings" collectionSlug={collection} />
     </main>
   );
 }

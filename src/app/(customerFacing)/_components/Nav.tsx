@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import NavCarousel from './NavCarousel';
 
@@ -11,10 +12,37 @@ const navLinks = [
   { href: '/gallery', label: 'Gallery' },
 ];
 
+interface Collection {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 export default function Nav() {
   const [showFloating, setShowFloating] = useState(false);
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const lastY = useRef(0);
   const ticking = useRef(false);
+
+  const isShopPage = pathname?.startsWith('/shop');
+  const currentCollection = searchParams?.get('collection');
+
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const response = await fetch('/api/collections');
+        if (response.ok) {
+          const data = await response.json();
+          setCollections(data);
+        }
+      } catch (error) {
+        console.error('Error fetching collections:', error);
+      }
+    };
+    fetchCollections();
+  }, []);
 
   useEffect(() => {
     lastY.current = window.scrollY;
@@ -45,6 +73,62 @@ export default function Nav() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const CollectionsBar = () => (
+    <div className="pb-2">
+      <div className="mx-auto flex max-w-7xl items-center justify-center gap-8 px-4 overflow-x-auto scrollbar-hide">
+        {/* Categories */}
+        <button
+          onClick={() => scrollToSection('rings')}
+          className="whitespace-nowrap text-xs uppercase tracking-widest text-gray-500 hover:text-black transition-colors"
+        >
+          Rings
+        </button>
+        <button
+          onClick={() => scrollToSection('necklaces')}
+          className="whitespace-nowrap text-xs uppercase tracking-widest text-gray-500 hover:text-black transition-colors"
+        >
+          Necklaces
+        </button>
+        <button
+          onClick={() => scrollToSection('earrings')}
+          className="whitespace-nowrap text-xs uppercase tracking-widest text-gray-500 hover:text-black transition-colors"
+        >
+          Earrings
+        </button>
+
+        <div className="h-4 w-px bg-gray-300 mx-2" />
+
+        <Link
+          href="/shop"
+          className={`whitespace-nowrap text-xs uppercase tracking-widest transition-colors ${
+            !currentCollection ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
+          }`}
+        >
+          All
+        </Link>
+
+        {collections.map((c) => (
+          <Link
+            key={c.id}
+            href={`/shop?collection=${c.slug}`}
+            className={`whitespace-nowrap text-xs uppercase tracking-widest transition-colors ${
+              currentCollection === c.slug ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
+            }`}
+          >
+            {c.name}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -107,6 +191,7 @@ export default function Nav() {
             </div>
           </div>
         </div>
+        {isShopPage && <CollectionsBar />}
       </div>
 
         {/* Static main nav replaced with small nav structure */}
@@ -162,6 +247,7 @@ export default function Nav() {
               </div>
             </div>
           </div>
+          {isShopPage && <CollectionsBar />}
         </nav>
     </>
   );
