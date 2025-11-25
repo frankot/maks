@@ -56,6 +56,7 @@ export default function Nav() {
         role="navigation"
         aria-label="Quick Navigation"
       >
+        <NavCarousel />
         <div className="mx-auto px-4">
           <div className="relative flex h-20 items-center md:pr-16">
             {/* Center group: brand + nav (desktop centered) */}
