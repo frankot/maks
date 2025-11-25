@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 interface Collection {
   id: string;
@@ -14,6 +14,7 @@ export default function CollectionsBar() {
   const [collections, setCollections] = useState<Collection[]>([]);
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const currentCollection = searchParams?.get('collection');
 
@@ -72,19 +73,19 @@ export default function CollectionsBar() {
 
           <div className="mx-2 h-4 w-px bg-gray-300" />
 
-          <Link
-            href="/shop"
+          <button
+            onClick={() => router.push('/shop', { scroll: false })}
             className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
               !currentCollection ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
             }`}
           >
             All
-          </Link>
+          </button>
 
           {collections.map((c) => (
-            <Link
+            <button
               key={c.id}
-              href={`/shop?collection=${c.slug}`}
+              onClick={() => router.push(`/shop?collection=${c.slug}`, { scroll: false })}
               className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
                 currentCollection === c.slug
                   ? 'font-bold text-black'
@@ -92,7 +93,7 @@ export default function CollectionsBar() {
               }`}
             >
               {c.name}
-            </Link>
+            </button>
           ))}
         </div>
       </div>
