@@ -40,7 +40,7 @@ export default function Cart() {
                 <div key={item.productId} className="flex gap-4 pb-6 border-b last:border-b-0">
                   {/* Product Image */}
                   <Link
-                    href={`/shop/${item.slug}`}
+                    href={`/shop/${item.slug ?? item.productId}`}
                     onClick={closeCart}
                     className="relative w-20 h-20 flex-shrink-0 bg-gray-100"
                   >
@@ -62,7 +62,7 @@ export default function Cart() {
                   <div className="flex-1 min-w-0 flex flex-col justify-between">
                     <div className="flex justify-between items-start gap-2">
                       <Link
-                        href={`/shop/${item.slug}`}
+                        href={`/shop/${item.slug ?? item.productId}`}
                         onClick={closeCart}
                         className="text-xs uppercase tracking-wide font-medium hover:underline"
                       >

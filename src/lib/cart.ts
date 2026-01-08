@@ -5,7 +5,7 @@ export type CartItem = {
   priceInCents: number;
   imagePath?: string;
   quantity: number;
-  slug: string;
+  slug: string | null;
 };
 
 export type Cart = {

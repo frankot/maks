@@ -139,7 +139,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   name: product.name,
                   priceInGrosz: product.priceInGrosz,
                   imagePath: product.imagePaths[0],
-                  slug: product.slug,
+                  slug: product.slug ?? product.id,
                 }}
                 className="bg-black px-6 py-2 text-xs tracking-wider text-white uppercase transition-colors hover:bg-gray-800"
               />
