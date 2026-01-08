@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import NavCarousel from './NavCarousel';
+import { useCart } from '@/contexts/CartContext';
 
 const navLinks = [
   { href: '/shop', label: 'Shop' },
@@ -28,6 +29,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
   const [lastScrollY, setLastScrollY] = useState(0);
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { cart, openCart } = useCart();
 
   const currentCollection = searchParams?.get('collection');
   const isHomePage = pathname === '/';
@@ -155,17 +157,35 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
 
               {/* Mobile cart (in-flow) */}
               <div className="md:hidden">
-                <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
+                <button
+                  onClick={openCart}
+                  aria-label="Open cart"
+                  className="relative text-black hover:text-gray-700"
+                >
                   <CartIcon size={18} />
-                </Link>
+                  {cart.totalItems > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-medium text-white">
+                      {cart.totalItems}
+                    </span>
+                  )}
+                </button>
               </div>
             </div>
 
             {/* Desktop cart: absolute at right-6 */}
             <div className="absolute inset-y-0 right-6 hidden items-center md:flex">
-              <Link href="/cart" aria-label="Cart" className="text-black hover:text-gray-700">
+              <button
+                onClick={openCart}
+                aria-label="Open cart"
+                className="relative text-black hover:text-gray-700"
+              >
                 <CartIcon size={18} />
-              </Link>
+                {cart.totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-medium text-white">
+                    {cart.totalItems}
+                  </span>
+                )}
+              </button>
             </div>
           </div>
         </div>

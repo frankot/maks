@@ -5,6 +5,7 @@ import ProductDetailsSection from '@/components/ui/ProductDetailsSection';
 import { formatPriceInPLN } from '@/lib/utils';
 import Nav from '../../_components/Nav';
 import { Suspense } from 'react';
+import AddToCartButton from '@/components/AddToCartButton';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -132,9 +133,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
             {/* Add to Cart Button */}
             <div className="flex justify-center">
-              <button className="bg-black px-6 py-2 text-xs tracking-wider text-white uppercase transition-colors hover:bg-gray-800">
-                ADD TO CART
-              </button>
+              <AddToCartButton
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  priceInGrosz: product.priceInGrosz,
+                  imagePath: product.imagePaths[0],
+                  slug: product.slug,
+                }}
+                className="bg-black px-6 py-2 text-xs tracking-wider text-white uppercase transition-colors hover:bg-gray-800"
+              />
             </div>
             <div className="mx-auto max-w-md">
               {/* Size Selector */}
