@@ -68,3 +68,15 @@ export async function toggleProductAvailabilityAction(productId: string, isAvail
     return { success: false, error: 'Failed to update product availability' };
   }
 }
+
+export async function updateProductStatusAction(productId: string, productStatus: 'SHOP' | 'ORDERED' | 'SOLD') {
+  try {
+    const { updateProduct } = await import('@/lib/products');
+    await updateProduct(productId, { productStatus });
+    revalidatePath('/admin/products');
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating product status:', error);
+    return { success: false, error: 'Failed to update product status' };
+  }
+}

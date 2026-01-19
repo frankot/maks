@@ -8,10 +8,10 @@ type CartContextType = {
   isOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
-  addItem: (item: Omit<CartItem, 'quantity'>) => void;
+  addItem: (item: CartItem) => void;
   removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
+  isInCart: (productId: string) => boolean;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -45,17 +45,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const openCart = useCallback(() => setIsOpen(true), []);
   const closeCart = useCallback(() => setIsOpen(false), []);
 
-  const addItem = useCallback((newItem: Omit<CartItem, 'quantity'>) => {
+  const addItem = useCallback((newItem: CartItem) => {
     setItems((prev) => {
       const existing = prev.find((item) => item.productId === newItem.productId);
+      // Don't add if already in cart (unique products)
       if (existing) {
-        return prev.map((item) =>
-          item.productId === newItem.productId
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+        return prev;
       }
-      return [...prev, { ...newItem, quantity: 1 }];
+      return [...prev, newItem];
     });
   }, []);
 
@@ -63,21 +60,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems((prev) => prev.filter((item) => item.productId !== productId));
   }, []);
 
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeItem(productId);
-      return;
-    }
-    setItems((prev) =>
-      prev.map((item) =>
-        item.productId === productId ? { ...item, quantity } : item
-      )
-    );
-  }, [removeItem]);
-
   const clearCart = useCallback(() => {
     setItems([]);
   }, []);
+
+  const isInCart = useCallback((productId: string) => {
+    return items.some((item) => item.productId === productId);
+  }, [items]);
 
   const { totalItems, totalPriceInCents } = calculateCartTotals(items);
 
@@ -96,8 +85,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         closeCart,
         addItem,
         removeItem,
-        updateQuantity,
         clearCart,
+        isInCart,
       }}
     >
       {children}

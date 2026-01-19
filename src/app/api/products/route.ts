@@ -13,7 +13,9 @@ export async function GET(request: NextRequest) {
       const products = await getFeaturedProducts();
       return NextResponse.json(products);
     } else {
-      const products = await getProducts();
+      // Use getShopProducts for customer-facing API to exclude ORDERED products
+      const { getShopProducts } = await import('@/lib/products');
+      const products = await getShopProducts();
       return NextResponse.json(products);
     }
   } catch (error) {

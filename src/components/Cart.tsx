@@ -77,9 +77,8 @@ export default function Cart() {
                       </button>
                     </div>
 
-                    <div className="flex justify-between items-end gap-2 text-xs">
-                      <span className="text-gray-600">{formatCartPrice(item.priceInCents)}</span>
-                      <span className="font-medium">Qty: {item.quantity}</span>
+                    <div className="text-xs text-gray-600">
+                      {formatCartPrice(item.priceInCents)}
                     </div>
                   </div>
                 </div>

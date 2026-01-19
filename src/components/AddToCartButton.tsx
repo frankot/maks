@@ -2,7 +2,7 @@
 
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
+import { Check, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
 
 interface AddToCartButtonProps {
@@ -24,10 +24,17 @@ export default function AddToCartButton({
   size = 'default',
   variant = 'default'
 }: AddToCartButtonProps) {
-  const { addItem, openCart } = useCart();
+  const { addItem, openCart, isInCart } = useCart();
   const [added, setAdded] = useState(false);
+  const alreadyInCart = isInCart(product.id);
 
   const handleAddToCart = () => {
+    if (alreadyInCart) {
+      // Just open cart to show it's already there
+      openCart();
+      return;
+    }
+
     addItem({
       productId: product.id,
       name: product.name,
@@ -48,13 +55,18 @@ export default function AddToCartButton({
       onClick={handleAddToCart}
       className={className}
       size={size}
-      variant={variant}
+      variant={alreadyInCart ? 'outline' : variant}
       disabled={added}
     >
       {added ? (
         <>
           <Check className="w-4 h-4 mr-2" />
           Added
+        </>
+      ) : alreadyInCart ? (
+        <>
+          <ShoppingBag className="w-4 h-4 mr-2" />
+          In Cart
         </>
       ) : (
         'Add to Cart'

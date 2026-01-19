@@ -4,7 +4,6 @@ export type CartItem = {
   name: string;
   priceInCents: number;
   imagePath?: string;
-  quantity: number;
   slug: string | null;
 };
 
@@ -23,8 +22,8 @@ export function calculateCartTotals(items: CartItem[]): {
 } {
   return items.reduce(
     (acc, item) => ({
-      totalItems: acc.totalItems + item.quantity,
-      totalPriceInCents: acc.totalPriceInCents + item.priceInCents * item.quantity,
+      totalItems: acc.totalItems + 1,
+      totalPriceInCents: acc.totalPriceInCents + item.priceInCents,
     }),
     { totalItems: 0, totalPriceInCents: 0 }
   );

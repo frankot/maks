@@ -58,6 +58,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     isAvailable: true,
     category: 'RINGS' as Category,
     collectionId: '',
+    productStatus: 'SHOP' as 'SHOP' | 'ORDERED' | 'SOLD',
   });
   const [isIdManuallyEdited, setIsIdManuallyEdited] = useState(false);
 
@@ -81,6 +82,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
               isAvailable: product.isAvailable,
               category: (product.category ?? 'RINGS') as Category,
               collectionId: product.collectionId || '',
+              productStatus: product.productStatus || 'SHOP',
             });
             setIsIdManuallyEdited(true); // Existing product ID should not auto-update
 
@@ -208,6 +210,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         collectionId: formData.collectionId || null,
         imagePaths: images.map((img) => img.url),
         imagePublicIds: images.map((img) => img.publicId),
+        productStatus: formData.productStatus,
       };
 
       let response;
@@ -307,6 +310,20 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             <option value="RINGS">Rings</option>
             <option value="NECKLACES">Necklaces</option>
             <option value="EARRINGS">Earrings</option>
+          </select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="productStatus">Product Status</Label>
+          <select
+            id="productStatus"
+            className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:outline-none"
+            value={formData.productStatus}
+            onChange={(e) => handleInputChange('productStatus', e.target.value as 'SHOP' | 'ORDERED' | 'SOLD')}
+          >
+            <option value="SHOP">Shop (Available for purchase)</option>
+            <option value="ORDERED">Ordered (Payment received)</option>
+            <option value="SOLD">Sold (Shipped/Delivered)</option>
           </select>
         </div>
 

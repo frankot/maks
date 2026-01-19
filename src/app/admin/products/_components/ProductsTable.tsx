@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { Eye, Edit, ToggleLeft, ToggleRight, Trash2 } from 'lucide-react';
+import { Eye, Edit, ToggleLeft, ToggleRight, Trash2, Package } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Switch } from '@/components/ui/switch';
 import { AdminTable, TableColumn } from '../../components/Table';
@@ -11,7 +11,7 @@ import { formatPrice } from '@/lib/utils/products';
 import type { ProductWithOrderItems } from '@/lib/products';
 import { ProductDetailsModal } from './ProductDetailsModal';
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
-import { deleteProductAction, toggleProductAvailabilityAction } from '../actions';
+import { deleteProductAction, toggleProductAvailabilityAction, updateProductStatusAction } from '../actions';
 
 interface ProductsTableProps {
   products: ProductWithOrderItems[];
@@ -41,6 +41,13 @@ export function ProductsTable({ products }: ProductsTableProps) {
     const result = await toggleProductAvailabilityAction(productId, !currentAvailability);
     if (!result.success) {
       console.error('Failed to toggle availability:', result.error);
+    }
+  };
+
+  const handleStatusChange = async (productId: string, newStatus: 'SHOP' | 'ORDERED' | 'SOLD') => {
+    const result = await updateProductStatusAction(productId, newStatus);
+    if (!result.success) {
+      console.error('Failed to update status:', result.error);
     }
   };
 
@@ -75,7 +82,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
   const getProductActions = (product: ProductWithOrderItems): DropdownAction[] => {
     const hasBeenOrdered = product.orderItems.length > 0;
 
-    return [
+    const baseActions: DropdownAction[] = [
       {
         label: 'View Details',
         icon: <Eye className="mr-2 h-4 w-4" />,
@@ -94,17 +101,50 @@ export function ProductsTable({ products }: ProductsTableProps) {
           <ToggleRight className="mr-2 h-4 w-4" />
         ),
         onClick: () => handleToggleAvailability(product.id, product.isAvailable),
-      },
-      {
-        label: 'Delete',
-        icon: <Trash2 className="mr-2 h-4 w-4" />,
-        onClick: () => handleDeleteClick(product),
-        variant: 'destructive' as const,
+        disabled: product.productStatus === 'ORDERED' || product.productStatus === 'SOLD',
+        disabledTooltip: product.productStatus === 'ORDERED' || product.productStatus === 'SOLD' ? 'Cannot change availability of ordered/sold products' : undefined,
         separator: true,
-        disabled: hasBeenOrdered,
-        disabledTooltip: hasBeenOrdered ? 'Cannot delete product that has been ordered' : undefined,
       },
     ];
+
+    // Add status change options
+    const statusActions: DropdownAction[] = [];
+    
+    if (product.productStatus !== 'SHOP') {
+      statusActions.push({
+        label: 'Mark as Shop',
+        icon: <Package className="mr-2 h-4 w-4" />,
+        onClick: () => handleStatusChange(product.id, 'SHOP'),
+      });
+    }
+    
+    if (product.productStatus !== 'ORDERED') {
+      statusActions.push({
+        label: 'Mark as Ordered',
+        icon: <Package className="mr-2 h-4 w-4" />,
+        onClick: () => handleStatusChange(product.id, 'ORDERED'),
+      });
+    }
+    
+    if (product.productStatus !== 'SOLD') {
+      statusActions.push({
+        label: 'Mark as Sold',
+        icon: <Package className="mr-2 h-4 w-4" />,
+        onClick: () => handleStatusChange(product.id, 'SOLD'),
+      });
+    }
+
+    const deleteAction: DropdownAction = {
+      label: 'Delete',
+      icon: <Trash2 className="mr-2 h-4 w-4" />,
+      onClick: () => handleDeleteClick(product),
+      variant: 'destructive' as const,
+      separator: true,
+      disabled: hasBeenOrdered,
+      disabledTooltip: hasBeenOrdered ? 'Cannot delete product that has been ordered' : undefined,
+    };
+
+    return [...baseActions, ...statusActions, deleteAction];
   };
 
   const columns: TableColumn<ProductWithOrderItems>[] = [
@@ -149,6 +189,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
       render: (product) => (
         <Switch
           checked={product.isAvailable}
+          disabled={product.productStatus === 'ORDERED' || product.productStatus === 'SOLD'}
           onCheckedChange={(checked) => handleToggleAvailability(product.id, !checked)}
         />
       ),

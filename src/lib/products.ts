@@ -30,6 +30,7 @@ export function getAvailabilityLabel(isAvailable: boolean) {
   return isAvailable ? 'Available' : 'Unavailable';
 }
 
+// For admin - gets all products regardless of status
 export async function getProducts(): Promise<ProductWithOrderItems[]> {
   try {
     const products = await prisma.product.findMany({
@@ -44,6 +45,28 @@ export async function getProducts(): Promise<ProductWithOrderItems[]> {
     return products;
   } catch (error) {
     console.error('Error fetching products:', error);
+    return [];
+  }
+}
+
+// For customer-facing - only SHOP products
+export async function getShopProducts(): Promise<ProductWithOrderItems[]> {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        productStatus: 'SHOP',
+      },
+      include: {
+        orderItems: true,
+        collection: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    return products;
+  } catch (error) {
+    console.error('Error fetching shop products:', error);
     return [];
   }
 }

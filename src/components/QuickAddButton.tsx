@@ -1,7 +1,7 @@
 'use client';
 
 import { useCart } from '@/contexts/CartContext';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Check } from 'lucide-react';
 
 interface QuickAddButtonProps {
   product: {
@@ -19,12 +19,17 @@ interface QuickAddButtonProps {
  * Adds item to cart without opening the cart panel
  */
 export default function QuickAddButton({ product, className = '' }: QuickAddButtonProps) {
-  const { addItem } = useCart();
+  const { addItem, isInCart } = useCart();
+  const alreadyInCart = isInCart(product.id);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation if inside a link
     e.stopPropagation();
     
+    if (alreadyInCart) {
+      return; // Don't add if already in cart
+    }
+
     addItem({
       productId: product.id,
       name: product.name,
@@ -37,11 +42,25 @@ export default function QuickAddButton({ product, className = '' }: QuickAddButt
   return (
     <button
       onClick={handleQuickAdd}
-      className={`inline-flex items-center justify-center gap-2 bg-black text-white px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-gray-800 ${className}`}
-      aria-label={`Add ${product.name} to cart`}
+      disabled={alreadyInCart}
+      className={`inline-flex items-center justify-center gap-2 px-4 py-2 text-xs uppercase tracking-wider transition-colors ${
+        alreadyInCart 
+          ? 'bg-gray-200 text-gray-600 cursor-not-allowed' 
+          : 'bg-black text-white hover:bg-gray-800'
+      } ${className}`}
+      aria-label={alreadyInCart ? `${product.name} is in cart` : `Add ${product.name} to cart`}
     >
-      <ShoppingBag className="w-3 h-3" />
-      Quick Add
+      {alreadyInCart ? (
+        <>
+          <Check className="w-3 h-3" />
+          In Cart
+        </>
+      ) : (
+        <>
+          <ShoppingBag className="w-3 h-3" />
+          Quick Add
+        </>
+      )}
     </button>
   );
 }

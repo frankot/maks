@@ -13,7 +13,7 @@ import { ShoppingBag } from 'lucide-react';
 type DeliveryMethod = 'paczkomat' | 'address';
 
 export default function CheckoutPage() {
-  const { cart, clearCart } = useCart();
+  const { cart } = useCart();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,8 +59,8 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
-      // Prepare order data
-      const orderData = {
+      // Prepare checkout data for Stripe
+      const checkoutData = {
         email,
         phoneNumber,
         firstName,
@@ -71,34 +71,37 @@ export default function CheckoutPage() {
           quantity: item.quantity,
           priceInCents: item.priceInCents,
           name: item.name,
+          imagePath: item.imagePath || '',
         })),
-        totalPriceInCents: cart.totalPriceInCents,
         ...(deliveryMethod === 'paczkomat' 
           ? { paczkomatPointId, city, postalCode, country }
           : { street, city, postalCode, country }
         ),
       };
 
-      const response = await fetch('/api/orders', {
+      // Create Stripe checkout session
+      const response = await fetch('/api/checkout/create-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(checkoutData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create order');
+        throw new Error(errorData.error || 'Failed to create checkout session');
       }
 
-      const { orderId } = await response.json();
+      const { url } = await response.json();
 
-      // Clear cart and redirect to success page
-      clearCart();
-      router.push(`/checkout/success?orderId=${orderId}`);
+      // Redirect to Stripe Checkout
+      if (url) {
+        window.location.href = url;
+      } else {
+        throw new Error('No checkout URL received');
+      }
     } catch (err) {
       console.error('Checkout error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred during checkout');
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -335,7 +338,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Right Column - Order Summary */}
-          <div className="order-1 lg:order-2">
+          <div className="order-1 lg:order-2">q
             <div className="bg-white p-6 sm:p-8 rounded-sm sticky top-4">
               <h2 className="text-lg font-bold uppercase tracking-tight mb-6">Order Summary</h2>
 

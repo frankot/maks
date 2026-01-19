@@ -127,7 +127,6 @@ model OrderItem {
   id                 String   @id @default(uuid())
   orderId            String
   productId          String
-  quantity           Int
   priceInGrosz       Int      // Price per item in PLN grosz
   currency           String   @default("PLN") // Currency used for this order item
   createdAt          DateTime @default(now())
