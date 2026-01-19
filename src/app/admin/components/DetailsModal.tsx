@@ -32,9 +32,15 @@ export function DetailsModal({
 }: DetailsModalProps) {
   const sizeClass = sizeClasses[size];
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      onClose();
+    }
+  };
+
   if (loading) {
     return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
+      <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         <DialogContent
           className={`${sizeClass} max-h-[95vh] overflow-y-auto`}
           showCloseButton={true}
@@ -55,7 +61,7 @@ export function DetailsModal({
 
   if (error) {
     return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
+      <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         <DialogContent
           className={`${sizeClass} max-h-[95vh] overflow-y-auto`}
           showCloseButton={true}
@@ -88,7 +94,7 @@ export function DetailsModal({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent
         className={`${sizeClass} max-h-[95vh] overflow-y-auto p-0`}
         showCloseButton={true}
