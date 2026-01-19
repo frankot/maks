@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getOrders } from '@/lib/orders';
 import { OrdersTable } from './_components/OrdersTable';
 import AdminPageWrapper from '../components/AdminPageWrapper';
