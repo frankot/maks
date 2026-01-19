@@ -337,7 +337,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Right Column - Order Summary */}
-          <div className="order-1 lg:order-2">q
+          <div className="order-1 lg:order-2">
             <div className="bg-white p-6 sm:p-8 rounded-sm sticky top-4">
               <h2 className="text-lg font-bold uppercase tracking-tight mb-6">Order Summary</h2>
 

@@ -38,13 +38,10 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
-        await handleCheckoutSessionCompleted(session);
-        break;
-      }
-
-      case 'checkout.session.async_payment_succeeded': {
-        const session = event.data.object as Stripe.Checkout.Session;
-        await handleCheckoutSessionCompleted(session);
+        // Only process if payment was successful
+        if (session.payment_status === 'paid') {
+          await handleCheckoutSessionCompleted(session);
+        }
         break;
       }
 
@@ -80,6 +77,18 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     }
 
     console.log('📦 Processing order with metadata:', metadata);
+
+    // Check if order already exists for this session (prevent duplicates)
+    const existingPayment = await prisma.payment.findFirst({
+      where: {
+        transactionId: session.id,
+      },
+    });
+
+    if (existingPayment) {
+      console.log(`⚠️ Order already processed for session ${session.id}, skipping...`);
+      return;
+    }
 
     // Extract customer and order data from metadata
     const {

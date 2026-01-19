@@ -25,6 +25,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const priceInPLN = formatPriceInPLN(product.priceInGrosz);
+  const isSold = product.productStatus === 'ORDERED' || product.productStatus === 'SOLD';
 
   return (
     <>
@@ -131,18 +132,24 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <p className="text-xs leading-relaxed">{product.description}</p>
             </div>
 
-            {/* Add to Cart Button */}
+            {/* Add to Cart Button or SOLD indicator */}
             <div className="flex justify-center">
-              <AddToCartButton
-                product={{
-                  id: product.id,
-                  name: product.name,
-                  priceInGrosz: product.priceInGrosz,
-                  imagePath: product.imagePaths[0],
-                  slug: product.slug ?? product.id,
-                }}
-                className="bg-black px-6 py-2 text-xs tracking-wider text-white uppercase transition-colors hover:bg-gray-800"
-              />
+              {isSold ? (
+                <div className="border border-black bg-white px-6 py-2 text-xs tracking-wider text-black uppercase cursor-not-allowed">
+                  SOLD
+                </div>
+              ) : (
+                <AddToCartButton
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    priceInGrosz: product.priceInGrosz,
+                    imagePath: product.imagePaths[0],
+                    slug: product.slug ?? product.id,
+                  }}
+                  className="bg-black px-6 py-2 text-xs tracking-wider text-white uppercase transition-colors hover:bg-gray-800"
+                />
+              )}
             </div>
             <div className="mx-auto max-w-md">
               {/* Size Selector */}
