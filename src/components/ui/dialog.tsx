@@ -7,7 +7,7 @@ import { XIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />;
+  return <DialogPrimitive.Root modal={true} data-slot="dialog" {...props} />;
 }
 
 function DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
@@ -15,7 +15,7 @@ function DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive
 }
 
 function DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
-  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
+  return <DialogPrimitive.Portal forceMount={props.forceMount} data-slot="dialog-portal" {...props} />;
 }
 
 function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) {
