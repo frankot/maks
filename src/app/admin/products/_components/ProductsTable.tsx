@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { Eye, Edit, ToggleLeft, ToggleRight, Trash2, Package } from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Switch } from '@/components/ui/switch';
 import { AdminTable, TableColumn } from '../../components/Table';
@@ -151,7 +152,27 @@ export function ProductsTable({ products }: ProductsTableProps) {
     {
       key: 'name',
       label: 'Product Name',
-      render: (product) => <div className="font-medium">{product.name}</div>,
+      render: (product) => (
+        <div className="group relative">
+          <div className="cursor-pointer font-medium">
+            {product.name}
+          </div>
+          {/* Hover image preview */}
+          {product.imagePaths && product.imagePaths[0] && (
+            <div className="absolute left-0 top-full z-50 hidden pt-2 group-hover:block">
+              <div className="relative h-32 w-32 rounded-md border border-gray-200 bg-white shadow-lg overflow-hidden">
+                <Image
+                  src={product.imagePaths[0]}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                  sizes="128px"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      ),
     },
     {
       key: 'category',

@@ -369,7 +369,6 @@ async function main() {
       data: {
         orderId: orders[0].id,
         productId: products[0].id, // Diamond Ring
-        quantity: 1,
         priceInGrosz: 299900,
         currency: 'PLN',
       },
@@ -378,7 +377,6 @@ async function main() {
       data: {
         orderId: orders[0].id,
         productId: products[1].id, // Pearl Necklace
-        quantity: 1,
         priceInGrosz: 89900,
         currency: 'PLN',
       },
@@ -388,7 +386,6 @@ async function main() {
       data: {
         orderId: orders[1].id,
         productId: products[2].id, // Gold Hoop Earrings
-        quantity: 1,
         priceInGrosz: 45900,
         currency: 'PLN',
       },
@@ -398,7 +395,6 @@ async function main() {
       data: {
         orderId: orders[2].id,
         productId: products[4].id, // Emerald Pendant
-        quantity: 1,
         priceInGrosz: 189900,
         currency: 'PLN',
       },
@@ -407,7 +403,6 @@ async function main() {
       data: {
         orderId: orders[2].id,
         productId: products[3].id, // Silver Bracelet
-        quantity: 1,
         priceInGrosz: 32900,
         currency: 'PLN',
       },
@@ -417,7 +412,6 @@ async function main() {
       data: {
         orderId: orders[3].id,
         productId: products[5].id, // Rose Gold Watch
-        quantity: 1,
         priceInGrosz: 129900,
         currency: 'PLN',
       },
@@ -427,7 +421,6 @@ async function main() {
       data: {
         orderId: orders[4].id,
         productId: products[6].id, // Sapphire Earrings
-        quantity: 1,
         priceInGrosz: 79900,
         currency: 'PLN',
       },
@@ -436,7 +429,6 @@ async function main() {
       data: {
         orderId: orders[4].id,
         productId: products[7].id, // Vintage Brooch
-        quantity: 1,
         priceInGrosz: 24900,
         currency: 'PLN',
       },

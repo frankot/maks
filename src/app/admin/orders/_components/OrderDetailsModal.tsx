@@ -249,14 +249,13 @@ export function OrderDetailsModal({ orderId, onClose }: OrderDetailsModalProps) 
                   <div key={item.id} className="rounded-lg border border-gray-100 bg-gray-50 p-4">
                     <div className="mb-2 flex items-start justify-between">
                       <h4 className="font-medium text-gray-900">{item.product.name}</h4>
-                      <span className="text-sm text-gray-500">×{item.quantity}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">
-                        {formatPrice(item.priceInGrosz, item.currency)} each
+                        Price
                       </span>
                       <span className="font-semibold text-gray-900">
-                        {formatPrice(item.priceInGrosz * item.quantity, item.currency)}
+                        {formatPrice(item.priceInGrosz, item.currency)}
                       </span>
                     </div>
                   </div>

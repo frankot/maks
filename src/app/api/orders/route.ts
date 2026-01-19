@@ -121,7 +121,6 @@ export async function POST(request: NextRequest) {
           data: {
             orderId: newOrder.id,
             productId: item.productId,
-            quantity: item.quantity,
             priceInGrosz: item.priceInCents, // Store in grosz (will use cents for EUR)
             currency: 'EUR', // Assuming EUR for now based on cart
           },

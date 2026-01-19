@@ -99,25 +99,29 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     const recentOrdersGrowth =
       previousOrders > 0 ? Math.round(((recentOrders - previousOrders) / previousOrders) * 100) : 0;
 
-    // Get top selling products
+    // Get top selling products (count occurrences since each product is unique)
     const topSellingProducts: Array<{
       productId: string;
-      _sum: { quantity: number | null; priceInGrosz: number | null };
+      _count: { productId: number };
+      _sum: { priceInGrosz: number | null };
     }> = (await prisma.orderItem.groupBy({
       by: ['productId'],
+      _count: {
+        productId: true,
+      },
       _sum: {
-        quantity: true,
         priceInGrosz: true,
       },
       orderBy: {
-        _sum: {
-          quantity: 'desc',
+        _count: {
+          productId: 'desc',
         },
       },
       take: 5,
     })) as unknown as Array<{
       productId: string;
-      _sum: { quantity: number | null; priceInGrosz: number | null };
+      _count: { productId: number };
+      _sum: { priceInGrosz: number | null };
     }>;
 
     const topSellingProductsWithNames = await Promise.all(
@@ -129,7 +133,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
         return {
           id: item.productId,
           name: product?.name || 'Unknown Product',
-          totalSold: item._sum.quantity || 0,
+          totalSold: item._count.productId || 0,
           revenue: item._sum.priceInGrosz || 0,
         };
       })

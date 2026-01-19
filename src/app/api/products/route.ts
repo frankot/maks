@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createProduct, getProducts } from '@/lib/products';
+import { createProduct } from '@/lib/products';
 import type { Category } from '@prisma/client';
 import { errorHandler } from '@/lib/errorHandler';
 

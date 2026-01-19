@@ -68,7 +68,6 @@ export default function CheckoutPage() {
         deliveryMethod,
         items: cart.items.map(item => ({
           productId: item.productId,
-          quantity: item.quantity,
           priceInCents: item.priceInCents,
           name: item.name,
           imagePath: item.imagePath || '',
@@ -359,9 +358,6 @@ export default function CheckoutPage() {
                           <ShoppingBag className="w-6 h-6 text-gray-300" strokeWidth={1.5} />
                         </div>
                       )}
-                      <div className="absolute -top-2 -right-2 bg-gray-700 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                        {item.quantity}
-                      </div>
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -372,7 +368,7 @@ export default function CheckoutPage() {
                     </div>
 
                     <div className="text-sm font-medium">
-                      {formatCartPrice(item.priceInCents * item.quantity)}
+                      {formatCartPrice(item.priceInCents)}
                     </div>
                   </div>
                 ))}
