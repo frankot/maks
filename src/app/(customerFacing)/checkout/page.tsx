@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { ShoppingBag } from 'lucide-react';
+import Nav from '../_components/Nav';
 
 type DeliveryMethod = 'paczkomat' | 'address';
 
@@ -110,7 +111,8 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <Nav/>
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 mt-[var(--nav-height)]  lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Left Column - Form */}
           <div className="order-2 lg:order-1">
@@ -338,7 +340,7 @@ export default function CheckoutPage() {
 
           {/* Right Column - Order Summary */}
           <div className="order-1 lg:order-2">
-            <div className="bg-white p-6 sm:p-8 rounded-sm sticky top-4">
+            <div className="bg-white p-6 sm:p-8 rounded-sm sticky top-[calc(var(--nav-height)+1rem)]">
               <h2 className="text-lg font-bold uppercase tracking-tight mb-6">Order Summary</h2>
 
               {/* Cart Items */}

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import type { Product, Category, Collection } from '@prisma/client';
 import { useSearchParams } from 'next/navigation';
 import Products from './Products';
+import ProductsSkeleton from './ProductsSkeleton';
 
 type ProductWithCollection = Product & { collection: Collection | null };
 
@@ -41,7 +42,7 @@ export default function ProductsClient() {
   };
 
   if (loading) {
-    return <div className="py-20 text-center text-gray-500">Loading products...</div>;
+    return <ProductsSkeleton />;
   }
 
   return (

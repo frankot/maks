@@ -1,9 +1,11 @@
 'use client';
-import Image from 'next/image';
 import CollectionsBar from '../_components/CollectionsBar';
+import CollectionsBarSkeleton from '../_components/CollectionsBarSkeleton';
 import Nav from '../_components/Nav';
+import PageWithHeroBar from '../_components/PageWithHeroBar';
 import { Suspense } from 'react';
 import ProductsClient from '../_components/ProductsClient';
+import ProductsSkeleton from '../_components/ProductsSkeleton';
 
 export default function ShopPage() {
   return (
@@ -11,23 +13,18 @@ export default function ShopPage() {
       <Suspense fallback={null}>
         <Nav />
       </Suspense>
-      <main className="pt-[var(--nav-height)]">
-        {/* Hero Image */}
-        <div className="relative h-[300px] w-full lg:h-[400px]">
-          <div className="bg-black/10 absolute inset-0 z-10"></div>
-          <Image src="/shop_main.jpg" alt="Shop" fill className="object-cover" priority />
-        </div>
 
-        {/* Sticky Collections Bar */}
-        <Suspense fallback={null}>
+      {/* Hero + Collections Bar Wrapper */}
+      <PageWithHeroBar imagePath="/shop_main.jpg" imageAlt="Shop">
+        <Suspense fallback={<CollectionsBarSkeleton />}>
           <CollectionsBar />
         </Suspense>
+      </PageWithHeroBar>
 
-        {/* Client-rendered products list (handles collection filtering smoothly) */}
-        <Suspense fallback={<div className="py-20 text-center text-gray-500">Loading products...</div>}>
-          <ProductsClient />
-        </Suspense>
-      </main>
+      {/* Client-rendered products list (handles collection filtering smoothly) */}
+      <Suspense fallback={<ProductsSkeleton />}>
+        <ProductsClient />
+      </Suspense>
     </>
   );
 }

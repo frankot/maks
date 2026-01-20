@@ -47,55 +47,51 @@ export default function CollectionsBar() {
   };
 
   return (
-    <div className="sticky top-[var(--nav-height)] z-40 bg-white border-b border-gray-200">
-      <div className="py-3">
-        <div className="scrollbar-hide mx-auto flex max-w-6xl items-center justify-start gap-8 overflow-x-auto px-4">
-          {/* Categories */}
-          <button
-            onClick={() => scrollToSection('rings')}
-            className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
-          >
-            Rings
-          </button>
-          <button
-            onClick={() => scrollToSection('necklaces')}
-            className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
-          >
-            Necklaces
-          </button>
-          <button
-            onClick={() => scrollToSection('earrings')}
-            className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
-          >
-            Earrings
-          </button>
+    <>
+      {/* Categories */}
+      <button
+        onClick={() => scrollToSection('rings')}
+        className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
+      >
+        Rings
+      </button>
+      <button
+        onClick={() => scrollToSection('necklaces')}
+        className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
+      >
+        Necklaces
+      </button>
+      <button
+        onClick={() => scrollToSection('earrings')}
+        className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
+      >
+        Earrings
+      </button>
 
-          <div className="mx-2 h-4 w-px bg-gray-300" />
+      <div className="mx-2 h-4 w-px bg-gray-300" />
 
-          <button
-            onClick={() => router.push('/shop', { scroll: false })}
-            className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
-              !currentCollection ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
-            }`}
-          >
-            All
-          </button>
+      <button
+        onClick={() => router.push('/shop', { scroll: false })}
+        className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
+          !currentCollection ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
+        }`}
+      >
+        All
+      </button>
 
-          {collections.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => router.push(`/shop?collection=${c.slug}`, { scroll: false })}
-              className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
-                currentCollection === c.slug
-                  ? 'font-bold text-black'
-                  : 'text-gray-500 hover:text-black'
-              }`}
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+      {collections.map((c) => (
+        <button
+          key={c.id}
+          onClick={() => router.push(`/shop?collection=${c.slug}`, { scroll: false })}
+          className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
+            currentCollection === c.slug
+              ? 'font-bold text-black'
+              : 'text-gray-500 hover:text-black'
+          }`}
+        >
+          {c.name}
+        </button>
+      ))}
+    </>
   );
 }
