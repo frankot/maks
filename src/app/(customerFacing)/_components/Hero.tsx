@@ -50,8 +50,9 @@ export default function Hero() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="relative flex h-[635px] w-full items-center justify-center bg-gray-100">
-        <div className="text-gray-500">Loading...</div>
+      <div className="relative flex h-[635px] w-full overflow-hidden bg-gray-50">
+        <div className="relative w-1/2 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
+        <div className="relative w-1/2 bg-gradient-to-br from-gray-200 to-gray-100 animate-pulse" />
       </div>
     );
   }
@@ -89,6 +90,8 @@ export default function Hero() {
                 fill
                 className="object-cover"
                 priority={index === 0}
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgZmlsbD0iI2YzZjRmNiIvPjwvc3ZnPg=="
                 unoptimized={true}
               />
             </div>
@@ -99,6 +102,8 @@ export default function Hero() {
                 fill
                 className="object-cover"
                 priority={index === 0}
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgZmlsbD0iI2YzZjRmNiIvPjwvc3ZnPg=="
                 unoptimized={true}
               />
             </div>

@@ -1,7 +1,6 @@
 'use client';
 import CollectionsBar from '../_components/CollectionsBar';
 import CollectionsBarSkeleton from '../_components/CollectionsBarSkeleton';
-import Nav from '../_components/Nav';
 import PageWithHeroBar from '../_components/PageWithHeroBar';
 import { Suspense } from 'react';
 import ProductsClient from '../_components/ProductsClient';
@@ -10,9 +9,6 @@ import ProductsSkeleton from '../_components/ProductsSkeleton';
 export default function ShopPage() {
   return (
     <>
-      <Suspense fallback={null}>
-        <Nav />
-      </Suspense>
 
       {/* Hero + Collections Bar Wrapper */}
       <PageWithHeroBar imagePath="/shop_main.jpg" imageAlt="Shop">

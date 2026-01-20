@@ -6,6 +6,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import NavCarousel from './NavCarousel';
 import { useCart } from '@/contexts/CartContext';
+import { useNav } from '@/contexts/NavContext';
 
 const navLinks = [
   { href: '/shop', label: 'Shop' },
@@ -25,14 +26,18 @@ interface NavProps {
 
 export default function Nav({ showCollectionsBar = false }: NavProps) {
   const [collections, setCollections] = useState<Collection[]>([]);
-  const [showNav, setShowNav] = useState(true);
+  const { showNav, setShowNav } = useNav();
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { cart, openCart } = useCart();
 
   const currentCollection = searchParams?.get('collection');
-  const isHomePage = pathname === '/';
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const fetchCollections = async () => {
@@ -49,10 +54,8 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
     fetchCollections();
   }, []);
 
-  // Handle scroll behavior on home page
+  // Handle scroll behavior on all pages
   useEffect(() => {
-    if (!isHomePage) return;
-
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
@@ -72,7 +75,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isHomePage, lastScrollY]);
+  }, [lastScrollY, setShowNav]);
 
   // Handle scroll to section on page load if hash is present
   useEffect(() => {
@@ -115,7 +118,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
       {/* Fixed main nav */}
       <nav 
         className={`fixed top-0 left-0 right-0 z-50 w-full  bg-white transition-transform duration-300 ${
-          isHomePage && !showNav ? '-translate-y-full' : 'translate-y-0'
+          !showNav ? '-translate-y-full' : 'translate-y-0'
         }`} 
         role="navigation" 
         aria-label="Main Navigation"
@@ -148,7 +151,11 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                   <Link
                     key={l.href}
                     href={l.href}
-                    className="text-xs tracking-wider text-black/90 uppercase hover:text-black md:text-sm"
+                    className={`text-xs tracking-wider uppercase hover:text-black md:text-sm ${
+                      pathname === l.href 
+                        ? 'text-black border-t border-gray-400 pt-0.5' 
+                        : 'text-black/90'
+                    }`}
                   >
                     {l.label}
                   </Link>
@@ -163,7 +170,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                   className="relative text-black hover:text-gray-700"
                 >
                   <CartIcon size={18} />
-                  {cart.totalItems > 0 && (
+                  {isMounted && cart.totalItems > 0 && (
                     <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-medium text-white">
                       {cart.totalItems}
                     </span>
@@ -180,7 +187,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                 className="relative text-black hover:text-gray-700"
               >
                 <CartIcon size={18} />
-                {cart.totalItems > 0 && (
+                {isMounted && cart.totalItems > 0 && (
                   <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-medium text-white">
                     {cart.totalItems}
                   </span>

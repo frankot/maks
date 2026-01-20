@@ -101,7 +101,7 @@ export default function FeaturedProductsBase({
         </div>
 
         {/* Bottom right controls */}
-        <div className="flex items-center justify-end gap-3 px-4 pt-6 md:gap-4">
+        <div className="hidden md:flex items-center justify-end gap-3 px-4 pt-6 md:gap-4">
           <button
             type="button"
             onClick={handlePrev}

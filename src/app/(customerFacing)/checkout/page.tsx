@@ -9,12 +9,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { ShoppingBag } from 'lucide-react';
-import Nav from '../_components/Nav';
 
 type DeliveryMethod = 'paczkomat' | 'address';
 
 export default function CheckoutPage() {
-  const { cart } = useCart();
+  const { cart, isHydrated } = useCart();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +34,18 @@ export default function CheckoutPage() {
   const [postalCode, setPostalCode] = useState('');
   const [country, setCountry] = useState('Poland');
 
-  // Redirect if cart is empty
+  // Show loading state while hydrating
+  if (!isHydrated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 mx-auto border-4 border-gray-200 border-t-black rounded-full animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  // Redirect if cart is empty after hydration
   if (cart.items.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
@@ -110,9 +120,8 @@ export default function CheckoutPage() {
   const total = cart.totalPriceInCents + shippingCost;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Nav/>
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 mt-[var(--nav-height)]  lg:px-8">
+    <div className="min-h-screen bg-gray-50 pt-[var(--nav-height)]">
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Left Column - Form */}
           <div className="order-2 lg:order-1">

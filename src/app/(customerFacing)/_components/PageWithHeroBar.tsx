@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useNav } from '@/contexts/NavContext';
 
 interface PageWithHeroBarProps {
   imagePath: string;
@@ -15,6 +16,8 @@ export default function PageWithHeroBar({
   title,
   children,
 }: PageWithHeroBarProps) {
+  const { showNav } = useNav();
+
   return (
     <>
       <main className="pt-[var(--nav-height)]">
@@ -39,7 +42,9 @@ export default function PageWithHeroBar({
       </main>
 
       {/* Sticky Bar Wrapper */}
-      <div className="sticky top-[var(--nav-height)] z-40 bg-white border-b border-gray-200">
+      <div className={`sticky z-40 bg-white border-b border-gray-200 transition-[top] duration-300 ${
+        showNav ? 'top-[var(--nav-height)]' : 'top-0'
+      }`}>
         <div className="py-3">
           <div className="scrollbar-hide mx-auto flex max-w-6xl items-center justify-start gap-8 overflow-x-auto px-4">
             {children}

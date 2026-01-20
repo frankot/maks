@@ -1,10 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import Nav from '../_components/Nav';
 import PageWithHeroBar from '../_components/PageWithHeroBar';
 import FeaturedProducts from '../_components/FeaturedProducts';
 import { ChevronRight } from 'lucide-react';
-import { Suspense } from 'react';
 import { getShopProducts } from '@/lib/products';
 
 export default async function AboutPage() {
@@ -16,12 +14,9 @@ export default async function AboutPage() {
 
   return (
     <>
-      <Suspense fallback={null}>
-        <Nav />
-      </Suspense>
 
       {/* Hero + Bar Wrapper */}
-      <PageWithHeroBar imagePath="/about_bg.jpg" title='About' imageAlt="About">
+      <PageWithHeroBar imagePath="/about_bg.jpg"  imageAlt="About">
         <span className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors">
           ABOUT
         </span>
@@ -31,9 +26,9 @@ export default async function AboutPage() {
         </span>
       </PageWithHeroBar>
 
-      <div className="relative h-[80vh] w-full">
+      <div className="relative h-[80vh] w-full bg-white">
       {/* Background Image with Gradient Overlay */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-white">
         <Image
           src="/about.png"
           alt="About 06.33.11 Studio"
@@ -93,9 +88,9 @@ export default async function AboutPage() {
       </div>
 
       {/* Gallery Section - Same dimensions as first content section */}
-      <div className="relative h-[556px] w-full mb-10">
+      <div className="relative h-[556px] w-full mb-10 bg-white">
         {/* Background Image */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-white">
           <Image
             src="/about_bg2.jpg"
             alt="Gallery"
@@ -106,12 +101,12 @@ export default async function AboutPage() {
         <div className='absolute inset-0 bg-black/30'></div>
 
         {/* Centered Gallery Text */}
-        <div className="relative mx-auto flex h-full max-w-[1440px] items-center justify-center px-20 py-20">
+        <div className="absolute bottom-6 left-4 max-w-xl text-white md:bottom-10">
           <Link 
             href="/gallery"
-            className="flex items-center gap-2 font-['Inter'] text-4xl  uppercase text-white hover:opacity-80 transition-opacity"
+            className="text-2xl font-bold group tracking-tight uppercase md:text-4xl lg:text-8xl hover:opacity-80 transition-opacity inline-flex items-center gap-2"
           >
-            GALLERY <ChevronRight className="h-12 w-12 stroke-1 -ml-2" />
+            GALLERY <ChevronRight className="h-8 w-8 group-hover:translate-x-0.5 duration-200 stroke-3 md:h-12 md:w-12 lg:h-24 lg:w-24 -ml-2" />
           </Link>
         </div>
       </div>

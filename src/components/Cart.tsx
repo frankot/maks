@@ -17,8 +17,8 @@ export default function Cart() {
 
   return (
     <Sheet open={isOpen} onOpenChange={closeCart}>
-      <SheetContent side="right" className="w-full sm:max-w-lg flex flex-col p-0 border-l">
-        <div className="px-6 py-4 border-b">
+      <SheetContent side="right" className="w-full sm:max-w-lg flex flex-col p-0 border-l bg-stone-100">
+        <div className="px-6 py-4 border-b mx-2">
           <SheetTitle className="text-2xl font-bold uppercase tracking-tight">Cart</SheetTitle>
         </div>
 
@@ -89,12 +89,11 @@ export default function Cart() {
 
         {/* Footer with Total and Checkout */}
         {cart.items.length > 0 && (
-          <div className="border-t pt-6 px-6 pb-6 space-y-4">
+          <div className="border-t pt-6 px-6 mx-2 pb-6 space-y-4">
             <div className="flex justify-between items-center text-sm">
               <span className="uppercase tracking-wide font-medium">Subtotal</span>
               <span className="font-bold">{formatCartPrice(cart.totalPriceInCents)}</span>
             </div>
-            <p className="text-xs text-gray-500">Shipping and taxes calculated at checkout</p>
             <Button 
               className="w-full bg-black text-white h-12 uppercase tracking-wider font-medium text-xs hover:bg-gray-900" 
               asChild

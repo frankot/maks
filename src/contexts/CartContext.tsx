@@ -6,6 +6,7 @@ import { CartItem, Cart, CART_STORAGE_KEY, calculateCartTotals } from '@/lib/car
 type CartContextType = {
   cart: Cart;
   isOpen: boolean;
+  isHydrated: boolean;
   openCart: () => void;
   closeCart: () => void;
   addItem: (item: CartItem) => void;
@@ -81,6 +82,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       value={{
         cart,
         isOpen,
+        isHydrated,
         openCart,
         closeCart,
         addItem,

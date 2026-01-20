@@ -5,15 +5,10 @@ import FeaturedProductsServer from './_components/FeaturedProductsServer';
 import FeaturedProductsDynamicServer from './_components/FeaturedProductsDynamicServer';
 import type { Category } from '@prisma/client';
 import CTA from './_components/CTA';
-import Nav from './_components/Nav';
-import { Suspense } from 'react';
 
 export default function Home() {
   return (
     <>
-      <Suspense fallback={null}>
-        <Nav />
-      </Suspense>
       <main className="pt-[var(--nav-height)]">
         <Hero />
       <Marquee />
