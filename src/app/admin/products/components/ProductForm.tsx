@@ -28,6 +28,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
   const [loading, setLoading] = useState(false);
   const [uploadingImages, setUploadingImages] = useState<string[]>([]);
   const [images, setImages] = useState<UploadedImage[]>([]);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     priceInGrosz: '',
@@ -81,9 +82,12 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
+    // Clear previous error
+    setUploadError(null);
+
     // Check if adding this file would exceed the limit
     if (images.length + uploadingImages.length >= 4) {
-      alert('Maximum 4 images allowed');
+      setUploadError('Maximum 4 images allowed');
       return;
     }
 
@@ -101,14 +105,21 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         body: formData,
       });
 
+      const result = await response.json();
+
       if (response.ok) {
-        const result = await response.json();
         setImages((prev) => [...prev, result]);
       } else {
-        console.error('Upload failed');
+        // Handle specific error types
+        if (response.status === 413 || result.type === 'file_too_large') {
+          setUploadError('Image is too large. Please compress it before uploading (max 10MB).');
+        } else {
+          setUploadError(result.error || 'Failed to upload image');
+        }
       }
     } catch (error) {
       console.error('Upload error:', error);
+      setUploadError('Failed to upload image. Please try again.');
     } finally {
       setUploadingImages((prev) => prev.filter((id) => id !== fileId));
     }
@@ -357,6 +368,13 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             </Label>
           )}
         </div>
+
+        {/* Upload Error Message */}
+        {uploadError && (
+          <div className="mt-3 rounded-md bg-red-50 border border-red-200 p-3">
+            <p className="text-sm text-red-600">{uploadError}</p>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end space-x-4">

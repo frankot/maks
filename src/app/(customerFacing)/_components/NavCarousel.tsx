@@ -23,7 +23,7 @@ export default function NavCarousel() {
       <div className="absolute inset-0 bg-black/50" />
 
       {/* Carousel Text */}
-      <div className="absolute inset-0 flex items-center">
+      <div className="absolute inset-0  flex items-center">
         <div className="animate-scroll flex whitespace-nowrap">
           {/* Repeat the text 3 times to ensure seamless loop */}
           {Array.from({ length: 3 }).map((_, groupIndex) => (

@@ -7,6 +7,7 @@ import AddToCartButton from '@/components/AddToCartButton';
 import CollectionsBar from '@/app/(customerFacing)/_components/CollectionsBar';
 import { Suspense } from 'react';
 import CollectionsBarSkeleton from '@/app/(customerFacing)/_components/CollectionsBarSkeleton';
+import MobileProductView from './MobileProductView';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -28,8 +29,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      {/* Hero Image */}
-      <div className="relative h-[150px] w-full lg:h-[200px] mt-[var(--nav-height)]">
+      {/* Hero Image - Desktop only */}
+      <div className="hidden lg:block relative h-[200px] w-full mt-[var(--nav-height)]">
         <div className="bg-black/10 absolute inset-0 z-10" />
         <Image
           src="/shop_main.jpg"
@@ -40,8 +41,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
         />
       </div>
 
-      {/* Collections Bar */}
-      <div className="sticky top-[var(--nav-height)] z-40 bg-white border-b border-black">
+      {/* Collections Bar - Desktop version */}
+      <div className="hidden lg:block sticky top-[var(--nav-height)] z-40 bg-white border-b border-black">
         <div className="py-3">
           <div className="scrollbar-hide mx-auto flex max-w-6xl items-center justify-start gap-8 overflow-x-auto px-4">
             <Suspense fallback={<CollectionsBarSkeleton />}>
@@ -54,7 +55,37 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1  border-b border-black lg:grid-cols-2 lg:items-start lg:gap-x-8">
+      {/* Collections Bar - Mobile version */}
+      <div className="lg:hidden sticky top-18 z-40 bg-white border-b border-black">
+        <div className="py-3">
+          <div className="scrollbar-hide flex items-center justify-start gap-6 overflow-x-auto px-4">
+            <Suspense fallback={<CollectionsBarSkeleton />}>
+              <CollectionsBar 
+                highlightedCollection={product.collection?.slug}
+                highlightedCategory={product.category}
+              />
+            </Suspense>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Layout */}
+      <MobileProductView 
+        product={{
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          priceInGrosz: product.priceInGrosz,
+          imagePaths: product.imagePaths,
+          slug: product.slug,
+          productStatus: product.productStatus,
+        }}
+        priceInPLN={priceInPLN}
+        isSold={isSold}
+      />
+
+      {/* Desktop Layout */}
+      <div className="hidden lg:grid grid-cols-1  border-b border-black lg:grid-cols-2 lg:items-start lg:gap-x-8">
         <div className="order-2 lg:order-1 lg:col-start-1 lg:row-start-1">
           <div className="space-y-0 border-r border-black">
             <div className="relative h-screen w-full">

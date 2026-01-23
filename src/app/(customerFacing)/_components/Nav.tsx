@@ -129,7 +129,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
       >
         <NavCarousel />
         <div className="mx-auto px-4">
-          <div className="relative flex h-24 items-center md:pr-16">
+          <div className="relative flex h-14 lg:h-24 items-center md:pr-16">
             {/* Center group: brand + nav (desktop centered) */}
             <div className="flex w-full items-center justify-between gap-4 md:justify-center md:gap-8">
               <Link

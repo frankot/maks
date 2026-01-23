@@ -1,9 +1,14 @@
 import { prisma } from './prisma';
-import type { Product, OrderItem, ProductStatus, Category } from '@prisma/client';
+import type { Product, OrderItem, ProductStatus, Category, Collection } from '@prisma/client';
 
 // Extended Product type with orderItems
 export type ProductWithOrderItems = Product & {
   orderItems: OrderItem[];
+};
+
+// Product with collection relation
+export type ProductWithCollection = Product & {
+  collection: Collection | null;
 };
 
 export function formatPrice(priceInGrosz: number): string {
@@ -71,7 +76,7 @@ export async function getShopProducts(): Promise<ProductWithOrderItems[]> {
   }
 }
 
-export async function getProductById(id: string): Promise<Product | null> {
+export async function getProductById(id: string): Promise<ProductWithCollection | null> {
   try {
     const product = await prisma.product.findUnique({
       where: { id },
@@ -86,7 +91,7 @@ export async function getProductById(id: string): Promise<Product | null> {
   }
 }
 
-export async function getProductBySlug(slug: string): Promise<Product | null> {
+export async function getProductBySlug(slug: string): Promise<ProductWithCollection | null> {
   try {
     const product = await prisma.product.findUnique({
       where: { slug },

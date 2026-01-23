@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
 import { PaymentMethod, PaymentStatus, OrderStatus } from '@prisma/client';
-import { findOrCreateAddress } from '@/lib/addresses';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-12-15.clover',
@@ -125,9 +124,9 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
         });
       }
 
-      // 2. Find or create addresses (reuse if same address exists)
-      const billingAddress = await findOrCreateAddress(
-        {
+      // 2. Create addresses
+      const billingAddress = await tx.address.create({
+        data: {
           userId: user.id,
           street,
           city,
@@ -135,11 +134,10 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
           country,
           addressType: 'BILLING',
         },
-        tx
-      );
+      });
 
-      const shippingAddress = await findOrCreateAddress(
-        {
+      const shippingAddress = await tx.address.create({
+        data: {
           userId: user.id,
           street,
           city,
@@ -147,8 +145,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
           country,
           addressType: 'SHIPPING',
         },
-        tx
-      );
+      });
 
       // 3. Calculate totals (amount_total is in cents)
       const pricePaid = session.amount_total || 0;
