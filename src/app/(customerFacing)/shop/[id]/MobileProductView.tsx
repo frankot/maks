@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import Link from 'next/link';
 import AddToCartButton from '@/components/AddToCartButton';
 import ProductDetailsTabs from './ProductDetailsTabs';
 
@@ -14,6 +15,7 @@ interface MobileProductViewProps {
     imagePaths: string[];
     slug: string | null;
     productStatus: string;
+    materials: string | null;
   };
   priceInPLN: string;
   isSold: boolean;
@@ -23,9 +25,9 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   return (
-    <div className="lg:hidden mt-18">
+    <div className="lg:hidden">
       {/* Main Product Image */}
-      <div className="relative w-full aspect-square bg-gray-50">
+      <div className="relative w-full aspect-square">
         {product.imagePaths[selectedImageIndex] ? (
           <Image
             key={selectedImageIndex}
@@ -41,6 +43,31 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
             <span className="text-lg font-medium text-gray-400">LOADING</span>
           </div>
         )}
+        
+        {/* Back button - top left corner */}
+        <Link 
+          href="/shop"
+          className="absolute bottom-3 left-4 z-20 flex items-center gap-1 text-black hover:text-gray-600 transition-colors"
+        >
+          <svg 
+            width="20" 
+            height="20" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+            className="rotate-180 "
+          >
+            <path 
+              d="M9 18L15 12L9 6" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="text-xs -ml-1">BACK</span>
+          
+        </Link>
       </div>
 
       {/* Thumbnail Gallery - Always show */}
@@ -49,7 +76,7 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
           <button
             key={index}
             onClick={() => setSelectedImageIndex(index)}
-            className={`relative aspect-square border bg-gray-50  overflow-hidden transition-all ${
+            className={`relative aspect-square border overflow-hidden transition-all ${
               selectedImageIndex === index
                 ? ' border-black'
                 : ' border-gray-200'
@@ -73,13 +100,48 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
       </div>
 
       {/* Product Info Section */}
-      <div className="px-4 pt-6 pb-8">
+      <div className="mx-4 pt-6 pb-8 border-b border-gray-200"> 
         {/* Title & Price */}
         <div className="mb-6">
-          <h1 className="text-lg font-normal tracking-wide uppercase mb-2">
+          <h1 className="text-lg font-normal tracking-wide uppercase ">
             {product.name}
           </h1>
+                   {product.materials && (
+            <p className="text-xs text-gray-600 -mt-1 mb-1 ">{product.materials}</p>
+          )}
           <p className="text-base font-light text-gray-900">{priceInPLN} zł</p>
+          
+        </div>
+
+        {/* Size Selector */}
+        <div className="mb-4 relative">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs">Size:</span>
+            <a href="#" className="text-xs underline">
+              size guide
+            </a>
+          </div>
+          <div className="relative">
+            <select className="w-full border border-gray-900 px-3 py-2.5 text-xs focus:ring-1 focus:ring-black focus:outline-none appearance-none bg-white">
+              <option>Select size</option>
+              <option>XS</option>
+              <option>S</option>
+              <option>M</option>
+              <option>L</option>
+              <option>XL</option>
+              <option>50</option>
+              <option>52</option>
+              <option>54</option>
+              <option>56</option>
+              <option>58</option>
+              <option>60</option>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-900">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         {/* Add to Cart Button */}
@@ -105,16 +167,11 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
           )}
         </div>
 
-        {/* More Payment Options */}
-        <div className="text-center mb-6">
-          <button className="text-xs text-gray-600 underline hover:text-black transition-colors">
-            More payment options
-          </button>
-        </div>
+     
 
         {/* Product Description */}
         <div className="pt-4 border-t border-gray-200">
-          <p className="text-xs leading-relaxed text-gray-700">
+          <p className="text-xs text-center leading-relaxed text-gray-700">
             {product.description}
           </p>
         </div>

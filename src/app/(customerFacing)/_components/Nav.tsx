@@ -12,6 +12,8 @@ const navLinks = [
   { href: '/shop', label: 'Shop' },
   { href: '/about', label: 'About' },
   { href: '/gallery', label: 'Gallery' },
+  { href: '/sold', label: 'Sold' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 interface Collection {
@@ -29,6 +31,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
   const { showNav, setShowNav } = useNav();
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { cart, openCart } = useCart();
@@ -166,19 +169,14 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                 ))}
               </div>
 
-              {/* Mobile cart (in-flow) */}
+              {/* Mobile burger menu button */}
               <div className="md:hidden">
                 <button
-                  onClick={openCart}
-                  aria-label="Open cart"
-                  className="relative text-black hover:text-gray-700"
+                  onClick={() => setMobileMenuOpen(true)}
+                  aria-label="Open menu"
+                  className="text-black hover:text-gray-700"
                 >
-                  <CartIcon size={18} />
-                  {isMounted && cart.totalItems > 0 && (
-                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-medium text-white">
-                      {cart.totalItems}
-                    </span>
-                  )}
+                  <MenuIcon size={20} />
                 </button>
               </div>
             </div>
@@ -199,8 +197,85 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
               </button>
             </div>
           </div>
+
+          {/* Remove mobile nav links - they're now in burger menu */}
         </div>
       </nav>
+
+      {/* Mobile floating cart button */}
+      {isMounted && cart.totalItems > 0 && (
+        <button
+          onClick={openCart}
+          aria-label="Open cart"
+          className={`md:hidden fixed left-4 bottom-4 z-50 bg-black text-white p-3 shadow-lg transition-transform duration-300 ${
+            cart.totalItems > 0 ? 'translate-x-0' : '-translate-x-20'
+          }`}
+        >
+          <div className="relative">
+            <CartIcon size={20} />
+            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-medium text-black">
+              {cart.totalItems}
+            </span>
+          </div>
+        </button>
+      )}
+
+      {/* Mobile menu overlay */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop blur */}
+          <div 
+            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          
+          {/* Menu content box */}
+          <div className="relative bg-white border border-black shadow-2xl p-8 mx-4 max-w-sm w-full">
+            <nav className="flex flex-col gap-6 pb-6 border-b border-black">
+              {navLinks.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`text-base tracking-wider uppercase hover:text-gray-600 transition-colors ${
+                    pathname === l.href 
+                      ? 'text-black font-medium' 
+                      : 'text-black/80'
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Logo at bottom */}
+            <div className="flex justify-center pt-8">
+              <div className="text-3xl font-extrabold tracking-tight text-black uppercase">
+                <span className="inline-flex items-center gap-2 align-middle">
+                  <span className="font-neubold -mr-2">SPLOT</span>
+                  <Image
+                    src="/sun.png"
+                    alt=""
+                    width={60}
+                    height={60}
+                    className="inline-block size-12 align-middle"
+                  />
+                  <span className="font-neubold -ml-2">STUDIO</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Close button - same position as burger button */}
+          <button
+            onClick={() => setMobileMenuOpen(false)}
+            className="absolute top-10 right-4 text-black hover:text-gray-600 transition-colors"
+            aria-label="Close menu"
+          >
+            <XIcon size={20} />
+          </button>
+        </div>
+      )}
 
       {/* Collections bar - fixed for product pages, sticky for shop page */}
       {showCollectionsBar && (
@@ -285,6 +360,46 @@ function CartIcon({ size = 20 }: { size?: number }) {
           strokeLinejoin="round"
         />
       </g>
+    </svg>
+  );
+}
+
+function MenuIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M3 12H21M3 6H21M3 18H21"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function XIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M18 6L6 18M6 6L18 18"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

@@ -8,6 +8,7 @@ import CollectionsBar from '@/app/(customerFacing)/_components/CollectionsBar';
 import { Suspense } from 'react';
 import CollectionsBarSkeleton from '@/app/(customerFacing)/_components/CollectionsBarSkeleton';
 import MobileProductView from './MobileProductView';
+import PageWithHeroBar from '@/app/(customerFacing)/_components/PageWithHeroBar';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -29,45 +30,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      {/* Hero Image - Desktop only */}
-      <div className="hidden lg:block relative h-[200px] w-full mt-[var(--nav-height)]">
-        <div className="bg-black/10 absolute inset-0 z-10" />
-        <Image
-          src="/shop_main.jpg"
-          alt="Shop"
-          fill
-          className="object-cover"
-          priority
-        />
-      </div>
-
-      {/* Collections Bar - Desktop version */}
-      <div className="hidden lg:block sticky top-[var(--nav-height)] z-40 bg-white border-b border-black">
-        <div className="py-3">
-          <div className="scrollbar-hide mx-auto flex max-w-6xl items-center justify-start gap-8 overflow-x-auto px-4">
-            <Suspense fallback={<CollectionsBarSkeleton />}>
-              <CollectionsBar 
-                highlightedCollection={product.collection?.slug}
-                highlightedCategory={product.category}
-              />
-            </Suspense>
-          </div>
-        </div>
-      </div>
-
-      {/* Collections Bar - Mobile version */}
-      <div className="lg:hidden sticky top-18 z-40 bg-white border-b border-black">
-        <div className="py-3">
-          <div className="scrollbar-hide flex items-center justify-start gap-6 overflow-x-auto px-4">
-            <Suspense fallback={<CollectionsBarSkeleton />}>
-              <CollectionsBar 
-                highlightedCollection={product.collection?.slug}
-                highlightedCategory={product.category}
-              />
-            </Suspense>
-          </div>
-        </div>
-      </div>
+      {/* Hero + Collections Bar Wrapper */}
+      <PageWithHeroBar imagePath="/shop_main.jpg" imageAlt="Shop">
+        <Suspense fallback={<CollectionsBarSkeleton />}>
+          <CollectionsBar 
+            highlightedCollection={product.collection?.slug}
+            highlightedCategory={product.category}
+          />
+        </Suspense>
+      </PageWithHeroBar>
 
       {/* Mobile Layout */}
       <MobileProductView 
@@ -79,6 +50,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           imagePaths: product.imagePaths,
           slug: product.slug,
           productStatus: product.productStatus,
+          materials: product.materials,
         }}
         priceInPLN={priceInPLN}
         isSold={isSold}
@@ -94,7 +66,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   src={product.imagePaths[0]}
                   alt={product.name}
                   fill
-                  className="bg-[#F1F1F1] object-cover p-24"
+                  className="object-cover p-24"
                   sizes="50vw"
                   priority
                 />
@@ -168,6 +140,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <h1 className="text-[28px] leading-8 font-[500] tracking-wide uppercase">
                   {product.name}
                 </h1>
+                {product.materials && (
+                  <p className="text-xs text-gray-600 mt-1">{product.materials}</p>
+                )}
                 <div className="mt-3">
                   <p className="text-sm">{priceInPLN} zł</p>
                 </div>
