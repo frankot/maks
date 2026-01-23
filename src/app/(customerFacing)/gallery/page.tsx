@@ -1,5 +1,5 @@
 import PageWithHeroBar from '../_components/PageWithHeroBar';
-import Gallery from '../_components/Gallery';
+import Gallery from './components/Gallery';
 
 export default function GalleryPage() {
   return (

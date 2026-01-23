@@ -58,12 +58,16 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
 
       if (currentScrollY < 100) {
         // Always show nav at the top
         setShowNav(true);
+      } else if (currentScrollY < viewportHeight) {
+        // Always show nav if not scrolled past first page (100vh)
+        setShowNav(true);
       } else if (currentScrollY > lastScrollY) {
-        // Scrolling down
+        // Scrolling down (only hide after 100vh)
         setShowNav(false);
       } else {
         // Scrolling up

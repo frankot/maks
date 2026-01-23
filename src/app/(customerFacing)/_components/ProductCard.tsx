@@ -9,9 +9,11 @@ type ProductWithMaterials = Omit<Product, 'materials'> & {
 
 interface ProductCardProps {
   product: ProductWithMaterials;
+  simplified?: boolean; // For gallery use - shows only title
+  className?: string; // Additional classes for the card wrapper
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, simplified = false, className = '' }: ProductCardProps) {
   // Convert price from grosz to PLN
   const priceInPLN = (product.priceInGrosz / 100).toFixed(2);
 
@@ -26,9 +28,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           ?.slice(0, 80);
 
   return (
-    <div className={`w-full`}>
+    <div className={`w-full flex flex-col ${simplified ? 'h-[480px]' : ''} ${className}`}>
       {/* Image section - clickable */}
-      <Link href={`/shop/${product.slug || product.id}`} className="block">
+      <Link href={`/shop/${product.slug || product.id}`} className="block flex-shrink-0">
         <div className="relative aspect-[4/5] overflow-hidden">
           <Image
             src={product.imagePaths?.[0] || '/placeholder.jpg'}
@@ -42,21 +44,31 @@ export default function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       {/* Product info */}
-      <div className="flex items-center justify-between px-4 pb-3">
-        <div>
-          <Link href={`/shop/${product.slug || product.id}`} className="block">
-            <h3 className="w-full truncate text-left text-sm font-semibold text-gray-900 uppercase">
+      {simplified ? (
+        <div className="flex items-center justify-center px-4 py-4 flex-grow">
+          <Link href={`/shop/${product.slug || product.id}`} className="block w-full">
+            <h3 className="w-full text-center text-lg font-light text-gray-900 capitalize">
               {product.name}
             </h3>
           </Link>
-          <p className="text-xs leading-tight text-gray-500 capitalize">
-            {materials || 'White gold, sterling silver, crystal base'}
-          </p>
         </div>
-        <div className="mt-1 mr-6 flex items-center justify-between whitespace-nowrap">
-          <p className="text-xs text-gray-600">{priceInPLN} zł </p>
+      ) : (
+        <div className="flex items-center justify-between px-4 pb-3">
+          <div>
+            <Link href={`/shop/${product.slug || product.id}`} className="block">
+              <h3 className="w-full truncate text-left text-sm font-semibold text-gray-900 uppercase">
+                {product.name}
+              </h3>
+            </Link>
+            <p className="text-xs leading-tight text-gray-500 capitalize">
+              {materials || 'White gold, sterling silver, crystal base'}
+            </p>
+          </div>
+          <div className="mt-1 mr-6 flex items-center justify-between whitespace-nowrap">
+            <p className="text-xs text-gray-600">{priceInPLN} zł </p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
