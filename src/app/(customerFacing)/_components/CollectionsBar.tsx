@@ -9,13 +9,21 @@ interface Collection {
   slug: string;
 }
 
-export default function CollectionsBar() {
+interface CollectionsBarProps {
+  highlightedCollection?: string | null;
+  highlightedCategory?: 'RINGS' | 'NECKLACES' | 'EARRINGS' | null;
+}
+
+export default function CollectionsBar({ 
+  highlightedCollection, 
+  highlightedCategory 
+}: CollectionsBarProps = {}) {
   const [collections, setCollections] = useState<Collection[]>([]);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const currentCollection = searchParams?.get('collection');
+  const currentCollection = highlightedCollection ?? searchParams?.get('collection');
 
   useEffect(() => {
     const fetchCollections = async () => {
@@ -51,19 +59,31 @@ export default function CollectionsBar() {
       {/* Categories */}
       <button
         onClick={() => scrollToSection('rings')}
-        className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
+        className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
+          highlightedCategory === 'RINGS'
+            ? 'font-bold text-black'
+            : 'text-gray-500 hover:text-black'
+        }`}
       >
         Rings
       </button>
       <button
         onClick={() => scrollToSection('necklaces')}
-        className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
+        className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
+          highlightedCategory === 'NECKLACES'
+            ? 'font-bold text-black'
+            : 'text-gray-500 hover:text-black'
+        }`}
       >
         Necklaces
       </button>
       <button
         onClick={() => scrollToSection('earrings')}
-        className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors hover:text-black"
+        className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
+          highlightedCategory === 'EARRINGS'
+            ? 'font-bold text-black'
+            : 'text-gray-500 hover:text-black'
+        }`}
       >
         Earrings
       </button>

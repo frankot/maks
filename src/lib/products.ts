@@ -75,6 +75,9 @@ export async function getProductById(id: string): Promise<Product | null> {
   try {
     const product = await prisma.product.findUnique({
       where: { id },
+      include: {
+        collection: true,
+      },
     });
     return product;
   } catch (error) {
@@ -87,6 +90,9 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   try {
     const product = await prisma.product.findUnique({
       where: { slug },
+      include: {
+        collection: true,
+      },
     });
     return product;
   } catch (error) {

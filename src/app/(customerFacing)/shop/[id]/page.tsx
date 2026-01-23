@@ -4,6 +4,9 @@ import { getProductById, getProductBySlug } from '@/lib/products';
 import ProductDetailsTabs from '@/app/(customerFacing)/shop/[id]/ProductDetailsTabs';
 import { formatPriceInPLN } from '@/lib/utils';
 import AddToCartButton from '@/components/AddToCartButton';
+import CollectionsBar from '@/app/(customerFacing)/_components/CollectionsBar';
+import { Suspense } from 'react';
+import CollectionsBarSkeleton from '@/app/(customerFacing)/_components/CollectionsBarSkeleton';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -25,8 +28,34 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      <div className="mt-[calc(var(--nav-height))] grid grid-cols-1 border-t border-b border-black lg:grid-cols-2 lg:items-start lg:gap-x-8">
-        <div className="lg:col-start-1 lg:row-start-1">
+      {/* Hero Image */}
+      <div className="relative h-[150px] w-full lg:h-[200px] mt-[var(--nav-height)]">
+        <div className="bg-black/10 absolute inset-0 z-10" />
+        <Image
+          src="/shop_main.jpg"
+          alt="Shop"
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
+
+      {/* Collections Bar */}
+      <div className="sticky top-[var(--nav-height)] z-40 bg-white border-b border-black">
+        <div className="py-3">
+          <div className="scrollbar-hide mx-auto flex max-w-6xl items-center justify-start gap-8 overflow-x-auto px-4">
+            <Suspense fallback={<CollectionsBarSkeleton />}>
+              <CollectionsBar 
+                highlightedCollection={product.collection?.slug}
+                highlightedCategory={product.category}
+              />
+            </Suspense>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1  border-b border-black lg:grid-cols-2 lg:items-start lg:gap-x-8">
+        <div className="order-2 lg:order-1 lg:col-start-1 lg:row-start-1">
           <div className="space-y-0 border-r border-black">
             <div className="relative h-screen w-full">
               {product.imagePaths[0] ? (
@@ -101,8 +130,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
 
-        <div className="lg:sticky lg:top-20 lg:col-start-2 lg:row-start-1">
-          <div className="flex h-[700px] flex-col justify-center px-8">
+        <div className="order-1 lg:order-2 lg:sticky lg:top-20 lg:col-start-2 lg:row-start-1">
+          <div className="flex h-[700px] flex-col justify-center px-8 lg:pt-32">
             <div className="space-y-6">
               <div className="text-center">
                 <h1 className="text-[28px] leading-8 font-[500] tracking-wide uppercase">
