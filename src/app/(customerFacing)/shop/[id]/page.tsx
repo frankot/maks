@@ -25,7 +25,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      <div className="mt-[calc(var(--nav-height)+var(--collections-bar-height)-7px)] grid grid-cols-1 border-t border-b border-black lg:grid-cols-2 lg:items-start lg:gap-x-8">
+      <div className="mt-[calc(var(--nav-height))] grid grid-cols-1 border-t border-b border-black lg:grid-cols-2 lg:items-start lg:gap-x-8">
         <div className="lg:col-start-1 lg:row-start-1">
           <div className="space-y-0 border-r border-black">
             <div className="relative h-screen w-full">

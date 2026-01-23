@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { PaymentMethod } from '@prisma/client';
+import { findOrCreateAddress } from '@/lib/addresses';
 
 export async function POST(request: NextRequest) {
   try {
@@ -69,32 +70,32 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      // 2. Create addresses
-      const billingAddressData = {
-        userId: user.id,
-        street: deliveryMethod === 'paczkomat' ? `Paczkomat ${paczkomatPointId}` : street,
-        city,
-        postalCode,
-        country,
-        addressType: 'BILLING' as const,
-      };
+      // 2. Find or create addresses (reuse if same address exists)
+      const addressStreet = deliveryMethod === 'paczkomat' ? `Paczkomat ${paczkomatPointId}` : street;
 
-      const shippingAddressData = {
-        userId: user.id,
-        street: deliveryMethod === 'paczkomat' ? `Paczkomat ${paczkomatPointId}` : street,
-        city,
-        postalCode,
-        country,
-        addressType: 'SHIPPING' as const,
-      };
+      const billingAddress = await findOrCreateAddress(
+        {
+          userId: user.id,
+          street: addressStreet,
+          city,
+          postalCode,
+          country,
+          addressType: 'BILLING',
+        },
+        tx
+      );
 
-      const billingAddress = await tx.address.create({
-        data: billingAddressData,
-      });
-
-      const shippingAddress = await tx.address.create({
-        data: shippingAddressData,
-      });
+      const shippingAddress = await findOrCreateAddress(
+        {
+          userId: user.id,
+          street: addressStreet,
+          city,
+          postalCode,
+          country,
+          addressType: 'SHIPPING',
+        },
+        tx
+      );
 
       // 3. Calculate totals
       const shippingCost = 0; // Free shipping for now
