@@ -57,9 +57,17 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
     fetchCollections();
   }, []);
 
-  // Handle scroll behavior on all pages
+  // Handle scroll behavior on desktop only
   useEffect(() => {
     const handleScroll = () => {
+      const isMobile = window.innerWidth < 768;
+      
+      // Always show nav on mobile
+      if (isMobile) {
+        setShowNav(true);
+        return;
+      }
+
       const currentScrollY = window.scrollY;
       const viewportHeight = window.innerHeight;
 
