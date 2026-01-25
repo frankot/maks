@@ -9,7 +9,6 @@ import ProductsSkeleton from '../_components/ProductsSkeleton';
 export default function ShopPage() {
   return (
     <>
-
       {/* Hero + Collections Bar Wrapper */}
       <PageWithHeroBar imagePath="/shop_main.jpg" imageAlt="Shop">
         <Suspense fallback={<CollectionsBarSkeleton />}>

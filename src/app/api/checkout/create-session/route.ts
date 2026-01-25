@@ -23,11 +23,16 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // Validate required fields
-    if (!email || !phoneNumber || !firstName || !lastName || !deliveryMethod || !items || items.length === 0) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+    if (
+      !email ||
+      !phoneNumber ||
+      !firstName ||
+      !lastName ||
+      !deliveryMethod ||
+      !items ||
+      items.length === 0
+    ) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     // Validate delivery-specific fields
@@ -61,30 +66,32 @@ export async function POST(request: NextRequest) {
     }
 
     // Create line items for Stripe (quantity is always 1 for unique products)
-    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map((item: CartItem) => {
-      const productData: Stripe.Checkout.SessionCreateParams.LineItem.PriceData.ProductData = {
-        name: item.name,
-      };
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map(
+      (item: CartItem) => {
+        const productData: Stripe.Checkout.SessionCreateParams.LineItem.PriceData.ProductData = {
+          name: item.name,
+        };
 
-      // Only add description if it exists and is not empty
-      if (item.description && item.description.trim()) {
-        productData.description = item.description;
+        // Only add description if it exists and is not empty
+        if (item.description && item.description.trim()) {
+          productData.description = item.description;
+        }
+
+        // Only add images if they exist
+        if (item.imagePath) {
+          productData.images = [item.imagePath];
+        }
+
+        return {
+          price_data: {
+            currency: 'pln',
+            unit_amount: item.priceInCents,
+            product_data: productData,
+          },
+          quantity: 1, // Always 1 for unique products
+        };
       }
-
-      // Only add images if they exist
-      if (item.imagePath) {
-        productData.images = [item.imagePath];
-      }
-
-      return {
-        price_data: {
-          currency: 'pln',
-          unit_amount: item.priceInCents,
-          product_data: productData,
-        },
-        quantity: 1, // Always 1 for unique products
-      };
-    });
+    );
 
     // Calculate shipping cost (you can customize this)
     const shippingCost = 0; // Free shipping for now
@@ -97,7 +104,8 @@ export async function POST(request: NextRequest) {
           unit_amount: shippingCost,
           product_data: {
             name: 'Shipping',
-            description: deliveryMethod === 'paczkomat' ? 'Paczkomat delivery' : 'Standard delivery',
+            description:
+              deliveryMethod === 'paczkomat' ? 'Paczkomat delivery' : 'Standard delivery',
           },
         },
         quantity: 1,
@@ -115,10 +123,12 @@ export async function POST(request: NextRequest) {
       city,
       postalCode,
       country,
-      items: JSON.stringify(items.map((item: CartItem) => ({
-        productId: item.productId,
-        priceInCents: item.priceInCents,
-      }))),
+      items: JSON.stringify(
+        items.map((item: CartItem) => ({
+          productId: item.productId,
+          priceInCents: item.priceInCents,
+        }))
+      ),
     };
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
@@ -138,15 +148,12 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       sessionId: session.id,
       url: session.url,
     });
   } catch (error) {
     console.error('Error creating checkout session:', error);
-    return NextResponse.json(
-      { error: 'Failed to create checkout session' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 });
   }
 }

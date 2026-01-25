@@ -251,9 +251,7 @@ export function OrderDetailsModal({ orderId, onClose }: OrderDetailsModalProps) 
                       <h4 className="font-medium text-gray-900">{item.product.name}</h4>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">
-                        Price
-                      </span>
+                      <span className="text-sm text-gray-600">Price</span>
                       <span className="font-semibold text-gray-900">
                         {formatPrice(item.priceInGrosz, item.currency)}
                       </span>

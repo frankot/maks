@@ -38,7 +38,7 @@ export function DetailsModal({
     } else {
       document.body.style.overflow = 'unset';
     }
-    
+
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -48,8 +48,11 @@ export function DetailsModal({
 
   if (loading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
-        <div 
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+        onClick={onClose}
+      >
+        <div
           className={`${sizeClass} max-h-[95vh] overflow-y-auto rounded-lg border bg-white p-6 shadow-lg`}
           onClick={(e) => e.stopPropagation()}
         >
@@ -57,7 +60,7 @@ export function DetailsModal({
             <h2 className="text-2xl font-bold">{title}</h2>
             <button
               onClick={onClose}
-              className="rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2"
+              className="rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 focus:outline-none"
             >
               <X className="h-4 w-4" />
               <span className="sr-only">Close</span>
@@ -76,8 +79,11 @@ export function DetailsModal({
 
   if (error) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
-        <div 
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+        onClick={onClose}
+      >
+        <div
           className={`${sizeClass} max-h-[95vh] overflow-y-auto rounded-lg border bg-white p-6 shadow-lg`}
           onClick={(e) => e.stopPropagation()}
         >
@@ -85,7 +91,7 @@ export function DetailsModal({
             <h2 className="text-2xl font-bold text-red-600">Error</h2>
             <button
               onClick={onClose}
-              className="rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2"
+              className="rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 focus:outline-none"
             >
               <X className="h-4 w-4" />
               <span className="sr-only">Close</span>
@@ -116,8 +122,11 @@ export function DetailsModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
-      <div 
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={onClose}
+    >
+      <div
         className={`${sizeClass} max-h-[95vh] overflow-y-auto rounded-lg border bg-white shadow-lg`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -127,7 +136,7 @@ export function DetailsModal({
             <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
             <button
               onClick={onClose}
-              className="rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2"
+              className="rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 focus:outline-none"
             >
               <X className="h-4 w-4" />
               <span className="sr-only">Close</span>

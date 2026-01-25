@@ -69,7 +69,10 @@ export async function toggleProductAvailabilityAction(productId: string, isAvail
   }
 }
 
-export async function updateProductStatusAction(productId: string, productStatus: 'SHOP' | 'ORDERED' | 'SOLD') {
+export async function updateProductStatusAction(
+  productId: string,
+  productStatus: 'SHOP' | 'ORDERED' | 'SOLD'
+) {
   try {
     const { updateProduct } = await import('@/lib/products');
     await updateProduct(productId, { productStatus });

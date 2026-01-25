@@ -51,8 +51,8 @@ export default function Hero() {
   if (isLoading) {
     return (
       <div className="relative flex h-[635px] w-full overflow-hidden bg-gray-50">
-        <div className="relative w-1/2 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
-        <div className="relative w-1/2 bg-gradient-to-br from-gray-200 to-gray-100 animate-pulse" />
+        <div className="relative w-1/2 animate-pulse bg-gradient-to-br from-gray-100 to-gray-200" />
+        <div className="relative w-1/2 animate-pulse bg-gradient-to-br from-gray-200 to-gray-100" />
       </div>
     );
   }

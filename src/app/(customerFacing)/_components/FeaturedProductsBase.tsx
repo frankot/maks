@@ -80,9 +80,9 @@ export default function FeaturedProductsBase({
   }
 
   return (
-    <section className="mx-auto ">
+    <section className="mx-auto">
       {header}
-      <div className="relative w-full overflow-x-hidden ">
+      <div className="relative w-full overflow-x-hidden">
         <div
           ref={scrollerRef}
           className="relative w-full touch-pan-x overflow-x-auto overflow-y-hidden [-ms-overflow-style:'none'] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -101,7 +101,7 @@ export default function FeaturedProductsBase({
         </div>
 
         {/* Bottom right controls */}
-        <div className="hidden md:flex items-center justify-end gap-3 px-4 pt-6 md:gap-4">
+        <div className="hidden items-center justify-end gap-3 px-4 pt-6 md:flex md:gap-4">
           <button
             type="button"
             onClick={handlePrev}

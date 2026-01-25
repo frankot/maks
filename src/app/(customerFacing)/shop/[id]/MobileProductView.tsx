@@ -27,7 +27,7 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
   return (
     <div className="lg:hidden">
       {/* Main Product Image */}
-      <div className="relative w-full aspect-square">
+      <div className="relative aspect-square w-full">
         {product.imagePaths[selectedImageIndex] ? (
           <Image
             key={selectedImageIndex}
@@ -43,43 +43,40 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
             <span className="text-lg font-medium text-gray-400">LOADING</span>
           </div>
         )}
-        
+
         {/* Back button - top left corner */}
-        <Link 
+        <Link
           href="/shop"
-          className="absolute bottom-3 left-4 z-20 flex items-center gap-1 text-black hover:text-gray-600 transition-colors"
+          className="absolute bottom-3 left-4 z-20 flex items-center gap-1 text-black transition-colors hover:text-gray-600"
         >
-          <svg 
-            width="20" 
-            height="20" 
-            viewBox="0 0 24 24" 
-            fill="none" 
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="rotate-180 "
+            className="rotate-180"
           >
-            <path 
-              d="M9 18L15 12L9 6" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <path
+              d="M9 18L15 12L9 6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
             />
           </svg>
-          <span className="text-xs -ml-1">BACK</span>
-          
+          <span className="-ml-1 text-xs">BACK</span>
         </Link>
       </div>
 
       {/* Thumbnail Gallery - Always show */}
-      <div className="grid grid-cols-4 gap-2 p-4 border-b border-gray-200">
+      <div className="grid grid-cols-4 gap-2 border-b border-gray-200 p-4">
         {product.imagePaths.map((imagePath, index) => (
           <button
             key={index}
             onClick={() => setSelectedImageIndex(index)}
-            className={`relative aspect-square border overflow-hidden transition-all ${
-              selectedImageIndex === index
-                ? ' border-black'
-                : ' border-gray-200'
+            className={`relative aspect-square overflow-hidden border transition-all ${
+              selectedImageIndex === index ? 'border-black' : 'border-gray-200'
             }`}
           >
             {imagePath ? (
@@ -100,29 +97,26 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
       </div>
 
       {/* Product Info Section */}
-      <div className="mx-4 pt-6 pb-8 border-b border-gray-200"> 
+      <div className="mx-4 border-b border-gray-200 pt-6 pb-8">
         {/* Title & Price */}
         <div className="mb-6">
-          <h1 className="text-lg font-normal tracking-wide uppercase ">
-            {product.name}
-          </h1>
-                   {product.materials && (
-            <p className="text-xs text-gray-600 -mt-1 mb-1 ">{product.materials}</p>
+          <h1 className="text-lg font-normal tracking-wide uppercase">{product.name}</h1>
+          {product.materials && (
+            <p className="-mt-1 mb-1 text-xs text-gray-600">{product.materials}</p>
           )}
           <p className="text-base font-light text-gray-900">{priceInPLN} zł</p>
-          
         </div>
 
         {/* Size Selector */}
-        <div className="mb-4 relative">
-          <div className="flex items-center justify-between mb-2">
+        <div className="relative mb-4">
+          <div className="mb-2 flex items-center justify-between">
             <span className="text-xs">Size:</span>
             <a href="#" className="text-xs underline">
               size guide
             </a>
           </div>
           <div className="relative">
-            <select className="w-full border border-gray-900 px-3 py-2.5 text-xs focus:ring-1 focus:ring-black focus:outline-none appearance-none bg-white">
+            <select className="w-full appearance-none border border-gray-900 bg-white px-3 py-2.5 text-xs focus:ring-1 focus:ring-black focus:outline-none">
               <option>Select size</option>
               <option>XS</option>
               <option>S</option>
@@ -138,18 +132,23 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-900">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </div>
           </div>
         </div>
 
         {/* Add to Cart Button */}
-        <div className="space-y-3 mb-4">
+        <div className="mb-4 space-y-3">
           {isSold ? (
             <button
               disabled
-              className="w-full border border-gray-300 bg-gray-100 py-3.5 text-sm tracking-wider text-gray-500 uppercase cursor-not-allowed"
+              className="w-full cursor-not-allowed border border-gray-300 bg-gray-100 py-3.5 text-sm tracking-wider text-gray-500 uppercase"
             >
               SOLD OUT
             </button>
@@ -167,13 +166,9 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
           )}
         </div>
 
-     
-
         {/* Product Description */}
-        <div className="pt-4 border-t border-gray-200">
-          <p className="text-xs text-center leading-relaxed text-gray-700">
-            {product.description}
-          </p>
+        <div className="border-t border-gray-200 pt-4">
+          <p className="text-center text-xs leading-relaxed text-gray-700">{product.description}</p>
         </div>
 
         {/* Product Details Accordion/Tabs */}
@@ -181,9 +176,9 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
           <ProductDetailsTabs
             details={
               <p className="text-xs leading-relaxed">
-                Each piece is handmade in Warsaw, Poland as a limited edition creation.
-                Your jewelry comes with an authenticity certificate and is beautifully
-                presented in a gift box. We provide a 1-year warranty for your peace of mind.
+                Each piece is handmade in Warsaw, Poland as a limited edition creation. Your jewelry
+                comes with an authenticity certificate and is beautifully presented in a gift box.
+                We provide a 1-year warranty for your peace of mind.
               </p>
             }
             material={
@@ -197,9 +192,9 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
             }
             care={
               <p className="text-xs leading-relaxed">
-                Clean gently with a soft cloth and avoid contact with chemicals or water.
-                Store your jewelry in the provided pouch when not wearing it. Remove before
-                swimming or exercising. Professional cleaning is recommended annually.
+                Clean gently with a soft cloth and avoid contact with chemicals or water. Store your
+                jewelry in the provided pouch when not wearing it. Remove before swimming or
+                exercising. Professional cleaning is recommended annually.
               </p>
             }
           />

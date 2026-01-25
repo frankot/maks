@@ -12,7 +12,11 @@ import { formatPrice } from '@/lib/utils/products';
 import type { ProductWithOrderItems } from '@/lib/products';
 import { ProductDetailsModal } from './ProductDetailsModal';
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
-import { deleteProductAction, toggleProductAvailabilityAction, updateProductStatusAction } from '../actions';
+import {
+  deleteProductAction,
+  toggleProductAvailabilityAction,
+  updateProductStatusAction,
+} from '../actions';
 
 interface ProductsTableProps {
   products: ProductWithOrderItems[];
@@ -103,14 +107,17 @@ export function ProductsTable({ products }: ProductsTableProps) {
         ),
         onClick: () => handleToggleAvailability(product.id, product.isAvailable),
         disabled: product.productStatus === 'ORDERED' || product.productStatus === 'SOLD',
-        disabledTooltip: product.productStatus === 'ORDERED' || product.productStatus === 'SOLD' ? 'Cannot change availability of ordered/sold products' : undefined,
+        disabledTooltip:
+          product.productStatus === 'ORDERED' || product.productStatus === 'SOLD'
+            ? 'Cannot change availability of ordered/sold products'
+            : undefined,
         separator: true,
       },
     ];
 
     // Add status change options
     const statusActions: DropdownAction[] = [];
-    
+
     if (product.productStatus !== 'SHOP') {
       statusActions.push({
         label: 'Mark as Shop',
@@ -118,7 +125,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
         onClick: () => handleStatusChange(product.id, 'SHOP'),
       });
     }
-    
+
     if (product.productStatus !== 'ORDERED') {
       statusActions.push({
         label: 'Mark as Ordered',
@@ -126,7 +133,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
         onClick: () => handleStatusChange(product.id, 'ORDERED'),
       });
     }
-    
+
     if (product.productStatus !== 'SOLD') {
       statusActions.push({
         label: 'Mark as Sold',
@@ -154,13 +161,11 @@ export function ProductsTable({ products }: ProductsTableProps) {
       label: 'Product Name',
       render: (product) => (
         <div className="group relative">
-          <div className="cursor-pointer font-medium">
-            {product.name}
-          </div>
+          <div className="cursor-pointer font-medium">{product.name}</div>
           {/* Hover image preview */}
           {product.imagePaths && product.imagePaths[0] && (
-            <div className="absolute left-0 top-full z-50 hidden pt-2 group-hover:block">
-              <div className="relative h-32 w-32 rounded-md border border-gray-200 bg-white shadow-lg overflow-hidden">
+            <div className="absolute top-full left-0 z-50 hidden pt-2 group-hover:block">
+              <div className="relative h-32 w-32 overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
                 <Image
                   src={product.imagePaths[0]}
                   alt={product.name}
@@ -192,7 +197,9 @@ export function ProductsTable({ products }: ProductsTableProps) {
       key: 'collection',
       label: 'Collection',
       render: (product) => {
-        type ProductWithCollection = ProductWithOrderItems & { collection?: { name?: string | null } };
+        type ProductWithCollection = ProductWithOrderItems & {
+          collection?: { name?: string | null };
+        };
         const p = product as ProductWithCollection;
         const collectionName = p.collection?.name;
         return collectionName ? (

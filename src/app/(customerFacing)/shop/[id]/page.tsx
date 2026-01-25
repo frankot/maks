@@ -33,7 +33,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       {/* Hero + Collections Bar Wrapper */}
       <PageWithHeroBar imagePath="/shop_main.jpg" imageAlt="Shop">
         <Suspense fallback={<CollectionsBarSkeleton />}>
-          <CollectionsBar 
+          <CollectionsBar
             highlightedCollection={product.collection?.slug}
             highlightedCategory={product.category}
           />
@@ -41,7 +41,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </PageWithHeroBar>
 
       {/* Mobile Layout */}
-      <MobileProductView 
+      <MobileProductView
         product={{
           id: product.id,
           name: product.name,
@@ -57,7 +57,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       />
 
       {/* Desktop Layout */}
-      <div className="hidden lg:grid grid-cols-1  border-b border-black lg:grid-cols-2 lg:items-start lg:gap-x-8">
+      <div className="hidden grid-cols-1 border-b border-black lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
         <div className="order-2 lg:order-1 lg:col-start-1 lg:row-start-1">
           <div className="space-y-0 border-r border-black">
             <div className="relative h-screen w-full">
@@ -133,7 +133,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
 
-        <div className="order-1 lg:order-2 lg:sticky lg:top-20 lg:col-start-2 lg:row-start-1">
+        <div className="order-1 lg:sticky lg:top-20 lg:order-2 lg:col-start-2 lg:row-start-1">
           <div className="flex h-[700px] flex-col justify-center px-8 lg:pt-32">
             <div className="space-y-6">
               <div className="text-center">
@@ -141,7 +141,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   {product.name}
                 </h1>
                 {product.materials && (
-                  <p className="text-xs text-gray-600 mt-1">{product.materials}</p>
+                  <p className="mt-1 text-xs text-gray-600">{product.materials}</p>
                 )}
                 <div className="mt-3">
                   <p className="text-sm">{priceInPLN} zł</p>
@@ -155,7 +155,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
               <div className="flex justify-center">
                 {isSold ? (
-                  <div className="border border-black bg-white px-6 py-2 text-xs tracking-wider text-black uppercase cursor-not-allowed">
+                  <div className="cursor-not-allowed border border-black bg-white px-6 py-2 text-xs tracking-wider text-black uppercase">
                     SOLD
                   </div>
                 ) : (
@@ -199,9 +199,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <ProductDetailsTabs
                   details={
                     <p className="text-sm leading-relaxed">
-                      Each piece is handmade in Warsaw, Poland as a limited edition creation. 
-                      Your jewelry comes with an authenticity certificate and is beautifully 
-                      presented in a gift box. We provide a 1-year warranty for your peace of mind.
+                      Each piece is handmade in Warsaw, Poland as a limited edition creation. Your
+                      jewelry comes with an authenticity certificate and is beautifully presented in
+                      a gift box. We provide a 1-year warranty for your peace of mind.
                     </p>
                   }
                   material={
@@ -215,8 +215,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   }
                   care={
                     <p className="text-sm leading-relaxed">
-                      Clean gently with a soft cloth and avoid contact with chemicals or water. 
-                      Store your jewelry in the provided pouch when not wearing it. Remove before 
+                      Clean gently with a soft cloth and avoid contact with chemicals or water.
+                      Store your jewelry in the provided pouch when not wearing it. Remove before
                       swimming or exercising. Professional cleaning is recommended annually.
                     </p>
                   }

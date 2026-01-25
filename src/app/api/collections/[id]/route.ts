@@ -2,10 +2,7 @@ import { NextResponse } from 'next/server';
 import { deleteCollection } from '@/lib/collections';
 import { errorHandler } from '@/lib/errorHandler';
 
-export async function DELETE(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
 

@@ -2,11 +2,7 @@
 
 import { useCart } from '@/contexts/CartContext';
 import { formatCartPrice } from '@/lib/cart';
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -17,63 +13,59 @@ export default function Cart() {
 
   return (
     <Sheet open={isOpen} onOpenChange={closeCart}>
-      <SheetContent side="right" className="w-full sm:max-w-lg flex flex-col p-0 border-l bg-stone-100">
-        <div className="px-6 py-4 border-b mx-2">
-          <SheetTitle className="text-2xl font-bold uppercase tracking-tight">Cart</SheetTitle>
+      <SheetContent
+        side="right"
+        className="flex w-full flex-col border-l bg-stone-100 p-0 sm:max-w-lg"
+      >
+        <div className="mx-2 border-b px-6 py-4">
+          <SheetTitle className="text-2xl font-bold tracking-tight uppercase">Cart</SheetTitle>
         </div>
 
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto px-6 py-6">
           {cart.items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-              <ShoppingBag className="w-12 h-12 text-gray-300" strokeWidth={1.5} />
+            <div className="flex h-full flex-col items-center justify-center space-y-4 text-center">
+              <ShoppingBag className="h-12 w-12 text-gray-300" strokeWidth={1.5} />
               <div>
                 <p className="text-sm font-medium">Your cart is empty</p>
-                <p className="text-xs text-gray-500 mt-2">
-                  Add items to get started
-                </p>
+                <p className="mt-2 text-xs text-gray-500">Add items to get started</p>
               </div>
             </div>
           ) : (
             <div className="space-y-6">
               {cart.items.map((item) => (
-                <div key={item.productId} className="flex gap-4 pb-6 border-b last:border-b-0">
+                <div key={item.productId} className="flex gap-4 border-b pb-6 last:border-b-0">
                   {/* Product Image */}
                   <Link
                     href={`/shop/${item.slug ?? item.productId}`}
                     onClick={closeCart}
-                    className="relative w-20 h-20 flex-shrink-0 bg-gray-100"
+                    className="relative h-20 w-20 flex-shrink-0 bg-gray-100"
                   >
                     {item.imagePath ? (
-                      <Image
-                        src={item.imagePath}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                      />
+                      <Image src={item.imagePath} alt={item.name} fill className="object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <ShoppingBag className="w-6 h-6 text-gray-300" strokeWidth={1.5} />
+                      <div className="flex h-full w-full items-center justify-center">
+                        <ShoppingBag className="h-6 w-6 text-gray-300" strokeWidth={1.5} />
                       </div>
                     )}
                   </Link>
 
                   {/* Product Details */}
-                  <div className="flex-1 min-w-0 flex flex-col justify-between">
-                    <div className="flex justify-between items-start gap-2">
+                  <div className="flex min-w-0 flex-1 flex-col justify-between">
+                    <div className="flex items-start justify-between gap-2">
                       <Link
                         href={`/shop/${item.slug ?? item.productId}`}
                         onClick={closeCart}
-                        className="text-xs uppercase tracking-wide font-medium hover:underline"
+                        className="text-xs font-medium tracking-wide uppercase hover:underline"
                       >
                         {item.name}
                       </Link>
                       <button
                         onClick={() => removeItem(item.productId)}
-                        className="text-gray-400 hover:text-black transition-colors flex-shrink-0"
+                        className="flex-shrink-0 text-gray-400 transition-colors hover:text-black"
                         aria-label="Remove item"
                       >
-                        <X className="w-3 h-3" />
+                        <X className="h-3 w-3" />
                       </button>
                     </div>
 
@@ -89,20 +81,20 @@ export default function Cart() {
 
         {/* Footer with Total and Checkout */}
         {cart.items.length > 0 && (
-          <div className="border-t pt-6 px-6 mx-2 pb-6 space-y-4">
-            <div className="flex justify-between items-center text-sm">
-              <span className="uppercase tracking-wide font-medium">Subtotal</span>
+          <div className="mx-2 space-y-4 border-t px-6 pt-6 pb-6">
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-medium tracking-wide uppercase">Subtotal</span>
               <span className="font-bold">{formatCartPrice(cart.totalPriceInCents)}</span>
             </div>
-            <Button 
-              className="w-full bg-black text-white h-12 uppercase tracking-wider font-medium text-xs hover:bg-gray-900" 
+            <Button
+              className="h-12 w-full bg-black text-xs font-medium tracking-wider text-white uppercase hover:bg-gray-900"
               asChild
             >
               <a href="/checkout">Checkout</a>
             </Button>
             <button
               onClick={closeCart}
-              className="w-full text-xs uppercase tracking-wider font-medium py-3 text-gray-600 hover:text-black transition-colors"
+              className="w-full py-3 text-xs font-medium tracking-wider text-gray-600 uppercase transition-colors hover:text-black"
             >
               Continue Shopping
             </button>

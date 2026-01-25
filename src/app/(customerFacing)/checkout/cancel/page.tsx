@@ -8,13 +8,13 @@ export default function CheckoutCancelPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
-      <div className="max-w-2xl w-full bg-white p-8 sm:p-12 rounded-sm border border-gray-200">
-        <div className="text-center space-y-6">
-          <XCircle className="w-16 h-16 text-orange-500 mx-auto" strokeWidth={1.5} />
-          
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-2xl rounded-sm border border-gray-200 bg-white p-8 sm:p-12">
+        <div className="space-y-6 text-center">
+          <XCircle className="mx-auto h-16 w-16 text-orange-500" strokeWidth={1.5} />
+
           <div>
-            <h1 className="text-3xl font-bold mb-2">Payment Cancelled</h1>
+            <h1 className="mb-2 text-3xl font-bold">Payment Cancelled</h1>
             <p className="text-gray-600">
               Your payment was cancelled. Your cart items are still saved.
             </p>
@@ -24,8 +24,8 @@ export default function CheckoutCancelPage() {
             <p className="text-sm text-gray-600">
               You can return to checkout to complete your purchase, or continue shopping.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+
+            <div className="flex flex-col justify-center gap-3 pt-4 sm:flex-row">
               <Button
                 onClick={() => router.push('/checkout')}
                 variant="outline"
@@ -33,10 +33,7 @@ export default function CheckoutCancelPage() {
               >
                 Return to Checkout
               </Button>
-              <Button
-                onClick={() => router.push('/shop')}
-                className="min-w-[150px]"
-              >
+              <Button onClick={() => router.push('/shop')} className="min-w-[150px]">
                 Continue Shopping
               </Button>
             </div>

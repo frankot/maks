@@ -14,9 +14,9 @@ interface CollectionsBarProps {
   highlightedCategory?: 'RINGS' | 'NECKLACES' | 'EARRINGS' | null;
 }
 
-export default function CollectionsBar({ 
-  highlightedCollection, 
-  highlightedCategory 
+export default function CollectionsBar({
+  highlightedCollection,
+  highlightedCategory,
 }: CollectionsBarProps = {}) {
   const [collections, setCollections] = useState<Collection[]>([]);
   const pathname = usePathname();
@@ -44,8 +44,13 @@ export default function CollectionsBar({
     if (pathname === '/shop') {
       const element = document.getElementById(id);
       if (element) {
-        const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 0;
-        const colH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--collections-bar-height')) || 0;
+        const navH =
+          parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) ||
+          0;
+        const colH =
+          parseFloat(
+            getComputedStyle(document.documentElement).getPropertyValue('--collections-bar-height')
+          ) || 0;
         const targetY = element.getBoundingClientRect().top + window.scrollY - (navH + colH);
         window.scrollTo({ top: targetY, behavior: 'smooth' });
       }
@@ -104,9 +109,7 @@ export default function CollectionsBar({
           key={c.id}
           onClick={() => router.push(`/shop?collection=${c.slug}`, { scroll: false })}
           className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
-            currentCollection === c.slug
-              ? 'font-bold text-black'
-              : 'text-gray-500 hover:text-black'
+            currentCollection === c.slug ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
           }`}
         >
           {c.name}

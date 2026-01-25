@@ -21,11 +21,16 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // Validate required fields
-    if (!email || !phoneNumber || !firstName || !lastName || !deliveryMethod || !items || items.length === 0) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+    if (
+      !email ||
+      !phoneNumber ||
+      !firstName ||
+      !lastName ||
+      !deliveryMethod ||
+      !items ||
+      items.length === 0
+    ) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     // Validate delivery-specific fields
@@ -143,19 +148,15 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { 
-        success: true, 
+      {
+        success: true,
         orderId: order.id,
-        message: 'Order created successfully' 
+        message: 'Order created successfully',
       },
       { status: 201 }
     );
-
   } catch (error) {
     console.error('Error creating order:', error);
-    return NextResponse.json(
-      { error: 'Failed to create order' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });
   }
 }

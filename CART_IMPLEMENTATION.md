@@ -3,6 +3,7 @@
 ## Overview
 
 A minimalistic, Shopify-inspired cart system with:
+
 - Sliding panel from the right (using shadcn/ui Sheet)
 - localStorage persistence across sessions
 - Real-time cart state management
@@ -12,21 +13,24 @@ A minimalistic, Shopify-inspired cart system with:
 ## Components
 
 ### 1. Cart Context (`src/contexts/CartContext.tsx`)
+
 Manages global cart state with localStorage persistence.
 
 **Features:**
+
 - Add/remove/update items
 - Calculate totals automatically
 - Open/close cart panel
 - Persist cart data across page reloads
 
 **Usage:**
+
 ```tsx
 import { useCart } from '@/contexts/CartContext';
 
 function MyComponent() {
   const { cart, addItem, removeItem, updateQuantity, openCart } = useCart();
-  
+
   // Access cart data
   console.log(cart.items); // Array of cart items
   console.log(cart.totalItems); // Total quantity
@@ -35,9 +39,11 @@ function MyComponent() {
 ```
 
 ### 2. Cart Component (`src/components/Cart.tsx`)
+
 The sliding panel displaying cart contents.
 
 **Features:**
+
 - Empty state with icon
 - Product thumbnails and details
 - Quantity controls (+/-)
@@ -47,15 +53,18 @@ The sliding panel displaying cart contents.
 - Continue shopping link
 
 ### 3. AddToCartButton (`src/components/AddToCartButton.tsx`)
+
 Used on product detail pages.
 
 **Features:**
+
 - Adds item to cart
 - Shows "Added" confirmation
 - Auto-opens cart after adding
 - Customizable styling
 
 **Usage:**
+
 ```tsx
 import AddToCartButton from '@/components/AddToCartButton';
 
@@ -68,18 +77,21 @@ import AddToCartButton from '@/components/AddToCartButton';
     slug: product.slug,
   }}
   className="custom-styles"
-/>
+/>;
 ```
 
 ### 4. QuickAddButton (`src/components/QuickAddButton.tsx`)
+
 Used in product grids/listings for quick add functionality.
 
 **Features:**
+
 - Adds without navigation
 - Prevents event bubbling
 - Compact design for grids
 
 **Usage:**
+
 ```tsx
 import QuickAddButton from '@/components/QuickAddButton';
 
@@ -91,12 +103,13 @@ import QuickAddButton from '@/components/QuickAddButton';
     imagePath: product.imagePaths[0],
     slug: product.slug,
   }}
-/>
+/>;
 ```
 
 ## Integration
 
 ### Layout Setup
+
 The CartProvider wraps the customer-facing layout:
 
 ```tsx
@@ -108,6 +121,7 @@ The CartProvider wraps the customer-facing layout:
 ```
 
 ### Navigation Integration
+
 Cart icon with badge in Nav component:
 
 ```tsx
@@ -115,15 +129,14 @@ const { cart, openCart } = useCart();
 
 <button onClick={openCart}>
   <CartIcon />
-  {cart.totalItems > 0 && (
-    <span>{cart.totalItems}</span>
-  )}
-</button>
+  {cart.totalItems > 0 && <span>{cart.totalItems}</span>}
+</button>;
 ```
 
 ## Data Structure
 
 ### CartItem
+
 ```typescript
 type CartItem = {
   productId: string;
@@ -136,6 +149,7 @@ type CartItem = {
 ```
 
 ### Cart
+
 ```typescript
 type Cart = {
   items: CartItem[];
@@ -147,6 +161,7 @@ type Cart = {
 ## LocalStorage
 
 Cart data is automatically saved to localStorage under the key `'maks-cart'` and persists across:
+
 - Page reloads
 - Browser sessions
 - Navigation
@@ -154,6 +169,7 @@ Cart data is automatically saved to localStorage under the key `'maks-cart'` and
 ## Styling
 
 The cart follows a minimalistic design inspired by Shopify:
+
 - Clean white background
 - Simple borders
 - Hover effects on interactive elements

@@ -65,11 +65,13 @@ export async function POST(request: NextRequest) {
     // Check if the image is larger than 2MB and re-upload with lower quality if needed
     const maxSizeBytes = 2 * 1024 * 1024; // 2MB
     if (uploadResult.bytes > maxSizeBytes) {
-      console.log(`Image too large (${(uploadResult.bytes / 1024 / 1024).toFixed(2)}MB), re-optimizing...`);
-      
+      console.log(
+        `Image too large (${(uploadResult.bytes / 1024 / 1024).toFixed(2)}MB), re-optimizing...`
+      );
+
       // Delete the oversized image
       await cloudinary.uploader.destroy(uploadResult.public_id);
-      
+
       // Re-upload with more aggressive compression
       const reuploadResult = await new Promise<{
         public_id: string;
@@ -133,18 +135,22 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Upload error:', error);
-    
+
     // Check if it's a Cloudinary file size error
     if (error && typeof error === 'object' && 'message' in error) {
       const errorMessage = (error as { message: string }).message;
       if (errorMessage.includes('File size too large')) {
-        return NextResponse.json({ 
-          error: 'Image file is too large. Please compress the image before uploading (max 10MB).',
-          type: 'file_too_large'
-        }, { status: 413 });
+        return NextResponse.json(
+          {
+            error:
+              'Image file is too large. Please compress the image before uploading (max 10MB).',
+            type: 'file_too_large',
+          },
+          { status: 413 }
+        );
       }
     }
-    
+
     return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
   }
 }

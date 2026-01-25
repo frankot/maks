@@ -28,7 +28,7 @@ export default function ProductDetailsTabs({ details, material, care }: ProductD
             onClick={() => setActiveSection(section.name)}
             className={`py-3 text-xs tracking-wider uppercase transition-colors ${
               activeSection === section.name
-                ? 'font-bold text-black border-b border-black'
+                ? 'border-b border-black font-bold text-black'
                 : 'text-gray-500 hover:text-black'
             }`}
           >

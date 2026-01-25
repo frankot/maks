@@ -65,9 +65,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems([]);
   }, []);
 
-  const isInCart = useCallback((productId: string) => {
-    return items.some((item) => item.productId === productId);
-  }, [items]);
+  const isInCart = useCallback(
+    (productId: string) => {
+      return items.some((item) => item.productId === productId);
+    },
+    [items]
+  );
 
   const { totalItems, totalPriceInCents } = calculateCartTotals(items);
 

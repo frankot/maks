@@ -29,9 +29,9 @@ function CheckoutSuccessContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-gray-400 mx-auto mb-4" />
+          <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-gray-400" />
           <p className="text-gray-600">Processing your order...</p>
         </div>
       </div>
@@ -40,56 +40,46 @@ function CheckoutSuccessContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white p-8 rounded-sm border border-gray-200 text-center">
-          <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={() => router.push('/shop')}>
-            Return to Shop
-          </Button>
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="w-full max-w-md rounded-sm border border-gray-200 bg-white p-8 text-center">
+          <p className="mb-4 text-red-600">{error}</p>
+          <Button onClick={() => router.push('/shop')}>Return to Shop</Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="max-w-2xl w-full bg-white rounded-sm p-8 sm:p-12 text-center space-y-6">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-2xl space-y-6 rounded-sm bg-white p-8 text-center sm:p-12">
         <div className="flex justify-center">
-          <CheckCircle2 className="w-16 h-16 text-green-600" strokeWidth={1.5} />
+          <CheckCircle2 className="h-16 w-16 text-green-600" strokeWidth={1.5} />
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold mb-2">Payment Successful!</h1>
+          <h1 className="mb-2 text-3xl font-bold">Payment Successful!</h1>
           <p className="text-gray-600">
-            Thank you for your order. We&apos;ve received your payment and are processing your order.
+            Thank you for your order. We&apos;ve received your payment and are processing your
+            order.
           </p>
         </div>
 
         {sessionId && (
-          <div className="bg-gray-50 border border-gray-200 rounded-sm p-4">
-            <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">Order Reference</p>
+          <div className="rounded-sm border border-gray-200 bg-gray-50 p-4">
+            <p className="mb-1 text-xs tracking-wide text-gray-500 uppercase">Order Reference</p>
             <p className="font-mono text-sm font-medium">{sessionId}</p>
           </div>
         )}
 
-        <div className="space-y-3 text-sm text-gray-600 pt-4">
-          <p>
-            You will receive a confirmation email with your order details shortly.
-          </p>
+        <div className="space-y-3 pt-4 text-sm text-gray-600">
+          <p>You will receive a confirmation email with your order details shortly.</p>
         </div>
 
-        <div className="pt-6 flex flex-col sm:flex-row gap-3 justify-center">
-          <Button
-            onClick={() => router.push('/')}
-            variant="outline"
-            className="min-w-[150px]"
-          >
+        <div className="flex flex-col justify-center gap-3 pt-6 sm:flex-row">
+          <Button onClick={() => router.push('/')} variant="outline" className="min-w-[150px]">
             Back to Home
           </Button>
-          <Button
-            onClick={() => router.push('/shop')}
-            className="min-w-[150px]"
-          >
+          <Button onClick={() => router.push('/shop')} className="min-w-[150px]">
             Continue Shopping
           </Button>
         </div>
@@ -102,8 +92,8 @@ export default function CheckoutSuccessPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <Loader2 className="w-12 h-12 animate-spin text-gray-400" />
+        <div className="flex min-h-screen items-center justify-center">
+          <Loader2 className="h-12 w-12 animate-spin text-gray-400" />
         </div>
       }
     >

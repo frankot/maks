@@ -61,7 +61,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
   useEffect(() => {
     const handleScroll = () => {
       const isMobile = window.innerWidth < 768;
-      
+
       // Always show nav on mobile
       if (isMobile) {
         setShowNav(true);
@@ -102,8 +102,16 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
           const element = document.getElementById(hash);
           if (element) {
             // account for fixed nav + collections bar height
-            const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 0;
-            const colH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--collections-bar-height')) || 0;
+            const navH =
+              parseFloat(
+                getComputedStyle(document.documentElement).getPropertyValue('--nav-height')
+              ) || 0;
+            const colH =
+              parseFloat(
+                getComputedStyle(document.documentElement).getPropertyValue(
+                  '--collections-bar-height'
+                )
+              ) || 0;
             const targetY = element.getBoundingClientRect().top + window.scrollY - (navH + colH);
             window.scrollTo({ top: targetY, behavior: 'smooth' });
           }
@@ -117,8 +125,13 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
     if (pathname === '/shop') {
       const element = document.getElementById(id);
       if (element) {
-        const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 0;
-        const colH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--collections-bar-height')) || 0;
+        const navH =
+          parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) ||
+          0;
+        const colH =
+          parseFloat(
+            getComputedStyle(document.documentElement).getPropertyValue('--collections-bar-height')
+          ) || 0;
         const targetY = element.getBoundingClientRect().top + window.scrollY - (navH + colH);
         window.scrollTo({ top: targetY, behavior: 'smooth' });
       }
@@ -131,16 +144,16 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
   return (
     <>
       {/* Fixed main nav */}
-      <nav 
-        className={`fixed top-0 left-0 right-0 z-50 w-full  bg-white transition-transform duration-300 ${
+      <nav
+        className={`fixed top-0 right-0 left-0 z-50 w-full bg-white transition-transform duration-300 ${
           !showNav ? '-translate-y-full' : 'translate-y-0'
-        }`} 
-        role="navigation" 
+        }`}
+        role="navigation"
         aria-label="Main Navigation"
       >
         <NavCarousel />
         <div className="mx-auto px-4">
-          <div className="relative flex h-14 lg:h-24 items-center md:pr-16">
+          <div className="relative flex h-14 items-center md:pr-16 lg:h-24">
             {/* Center group: brand + nav (desktop centered) */}
             <div className="flex w-full items-center justify-between gap-4 md:justify-center md:gap-8">
               <Link
@@ -167,8 +180,8 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                     key={l.href}
                     href={l.href}
                     className={`text-xs tracking-wider uppercase hover:text-black md:text-sm ${
-                      pathname === l.href 
-                        ? 'text-black border-t border-gray-400 pt-0.5' 
+                      pathname === l.href
+                        ? 'border-t border-gray-400 pt-0.5 text-black'
                         : 'text-black/90'
                     }`}
                   >
@@ -215,7 +228,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
         <button
           onClick={openCart}
           aria-label="Open cart"
-          className={`md:hidden fixed left-4 bottom-4 z-50 bg-black text-white p-3 shadow-lg transition-transform duration-300 ${
+          className={`fixed bottom-4 left-4 z-50 bg-black p-3 text-white shadow-lg transition-transform duration-300 md:hidden ${
             cart.totalItems > 0 ? 'translate-x-0' : '-translate-x-20'
           }`}
         >
@@ -230,25 +243,23 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
 
       {/* Mobile menu overlay */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center md:hidden">
           {/* Backdrop blur */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/20 backdrop-blur-sm"
             onClick={() => setMobileMenuOpen(false)}
           />
-          
+
           {/* Menu content box */}
-          <div className="relative bg-white border border-black shadow-2xl p-8 mx-4 max-w-sm w-full">
-            <nav className="flex flex-col gap-6 pb-6 border-b border-black">
+          <div className="relative mx-4 w-full max-w-sm border border-black bg-white p-8 shadow-2xl">
+            <nav className="flex flex-col gap-6 border-b border-black pb-6">
               {navLinks.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`text-base tracking-wider uppercase hover:text-gray-600 transition-colors ${
-                    pathname === l.href 
-                      ? 'text-black font-medium' 
-                      : 'text-black/80'
+                  className={`text-base tracking-wider uppercase transition-colors hover:text-gray-600 ${
+                    pathname === l.href ? 'font-medium text-black' : 'text-black/80'
                   }`}
                 >
                   {l.label}
@@ -277,7 +288,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
           {/* Close button - same position as burger button */}
           <button
             onClick={() => setMobileMenuOpen(false)}
-            className="absolute top-10 right-4 text-black hover:text-gray-600 transition-colors"
+            className="absolute top-10 right-4 text-black transition-colors hover:text-gray-600"
             aria-label="Close menu"
           >
             <XIcon size={20} />
@@ -287,7 +298,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
 
       {/* Collections bar - fixed for product pages, sticky for shop page */}
       {showCollectionsBar && (
-        <div className="fixed top-[var(--nav-height)] left-0 right-0 z-40 bg-white border-b border-gray-200">
+        <div className="fixed top-[var(--nav-height)] right-0 left-0 z-40 border-b border-gray-200 bg-white">
           <div className="py-3">
             <div className="scrollbar-hide mx-auto flex max-w-7xl items-center justify-center gap-8 overflow-x-auto px-4">
               {/* Categories */}

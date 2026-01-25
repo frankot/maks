@@ -13,7 +13,11 @@ interface ProductCardProps {
   className?: string; // Additional classes for the card wrapper
 }
 
-export default function ProductCard({ product, simplified = false, className = '' }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  simplified = false,
+  className = '',
+}: ProductCardProps) {
   // Convert price from grosz to PLN
   const priceInPLN = (product.priceInGrosz / 100).toFixed(2);
 
@@ -28,7 +32,7 @@ export default function ProductCard({ product, simplified = false, className = '
           ?.slice(0, 80);
 
   return (
-    <div className={`w-full flex flex-col ${simplified ? 'h-[480px]' : ''} ${className}`}>
+    <div className={`flex w-full flex-col ${simplified ? 'h-[480px]' : ''} ${className}`}>
       {/* Image section - clickable */}
       <Link href={`/shop/${product.slug || product.id}`} className="block flex-shrink-0">
         <div className="relative aspect-[4/5] overflow-hidden">
@@ -45,7 +49,7 @@ export default function ProductCard({ product, simplified = false, className = '
 
       {/* Product info */}
       {simplified ? (
-        <div className="flex items-center justify-center px-4 py-4 flex-grow">
+        <div className="flex flex-grow items-center justify-center px-4 py-4">
           <Link href={`/shop/${product.slug || product.id}`} className="block w-full">
             <h3 className="w-full text-center text-lg font-light text-gray-900 capitalize">
               {product.name}

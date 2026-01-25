@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import type { Product, Category, Collection } from '@prisma/client';
@@ -47,9 +47,21 @@ export default function ProductsClient() {
 
   return (
     <>
-      <Products title="Rings" products={filterProductsByCategory('RINGS' as Category)} key={`rings-${collectionSlug || 'all'}`} />
-      <Products title="Necklaces" products={filterProductsByCategory('NECKLACES' as Category)} key={`necklaces-${collectionSlug || 'all'}`} />
-      <Products title="Earrings" products={filterProductsByCategory('EARRINGS' as Category)} key={`earrings-${collectionSlug || 'all'}`} />
+      <Products
+        title="Rings"
+        products={filterProductsByCategory('RINGS' as Category)}
+        key={`rings-${collectionSlug || 'all'}`}
+      />
+      <Products
+        title="Necklaces"
+        products={filterProductsByCategory('NECKLACES' as Category)}
+        key={`necklaces-${collectionSlug || 'all'}`}
+      />
+      <Products
+        title="Earrings"
+        products={filterProductsByCategory('EARRINGS' as Category)}
+        key={`earrings-${collectionSlug || 'all'}`}
+      />
     </>
   );
 }

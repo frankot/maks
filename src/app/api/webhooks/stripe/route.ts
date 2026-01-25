@@ -15,10 +15,7 @@ export async function POST(request: NextRequest) {
     const signature = request.headers.get('stripe-signature');
 
     if (!signature) {
-      return NextResponse.json(
-        { error: 'No signature provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No signature provided' }, { status: 400 });
     }
 
     let event: Stripe.Event;
@@ -58,17 +55,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error('Error processing webhook:', error);
-    return NextResponse.json(
-      { error: 'Webhook processing failed' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
   }
 }
 
 async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
   try {
     console.log('🎉 Handling checkout session completed:', session.id);
-    
+
     const metadata = session.metadata;
 
     if (!metadata) {
@@ -180,7 +174,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
         // Mark product as ORDERED and unavailable to hide it from the store
         await tx.product.update({
           where: { id: item.productId },
-          data: { 
+          data: {
             productStatus: 'ORDERED',
             isAvailable: false,
           },
@@ -214,12 +208,12 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 async function handlePaymentFailed(session: Stripe.Checkout.Session) {
   try {
     console.log(`Payment failed for session ${session.id}`);
-    
+
     // You can implement logic here to:
     // 1. Send email to customer about failed payment
     // 2. Log the failure for tracking
     // 3. Create a failed payment record if needed
-    
+
     const metadata = session.metadata;
     if (metadata?.email) {
       console.log(`Notifying customer ${metadata.email} about failed payment`);

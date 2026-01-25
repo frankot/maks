@@ -25,7 +25,7 @@ export default function QuickAddButton({ product, className = '' }: QuickAddButt
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation if inside a link
     e.stopPropagation();
-    
+
     if (alreadyInCart) {
       return; // Don't add if already in cart
     }
@@ -43,21 +43,21 @@ export default function QuickAddButton({ product, className = '' }: QuickAddButt
     <button
       onClick={handleQuickAdd}
       disabled={alreadyInCart}
-      className={`inline-flex items-center justify-center gap-2 px-4 py-2 text-xs uppercase tracking-wider transition-colors ${
-        alreadyInCart 
-          ? 'bg-gray-200 text-gray-600 cursor-not-allowed' 
+      className={`inline-flex items-center justify-center gap-2 px-4 py-2 text-xs tracking-wider uppercase transition-colors ${
+        alreadyInCart
+          ? 'cursor-not-allowed bg-gray-200 text-gray-600'
           : 'bg-black text-white hover:bg-gray-800'
       } ${className}`}
       aria-label={alreadyInCart ? `${product.name} is in cart` : `Add ${product.name} to cart`}
     >
       {alreadyInCart ? (
         <>
-          <Check className="w-3 h-3" />
+          <Check className="h-3 w-3" />
           In Cart
         </>
       ) : (
         <>
-          <ShoppingBag className="w-3 h-3" />
+          <ShoppingBag className="h-3 w-3" />
           Quick Add
         </>
       )}

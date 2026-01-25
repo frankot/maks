@@ -166,34 +166,34 @@ export function EditCollections({ onCollectionsChanged }: EditCollectionsProps) 
             Manage Collections
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px] max-h-[80vh] px-6 flex flex-col">
+        <DialogContent className="flex max-h-[80vh] flex-col px-6 sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>Manage Collections</DialogTitle>
           </DialogHeader>
 
-          <div className="flex-1 overflow-y-auto space-y-6">
+          <div className="flex-1 space-y-6 overflow-y-auto">
             {/* Existing Collections */}
             <div className="space-y-2">
               <h3 className="text-sm font-semibold text-gray-700">Current Collections</h3>
               {collections.length === 0 ? (
-                <p className="text-sm text-gray-500 py-2">No collections yet. Add one below.</p>
+                <p className="py-2 text-sm text-gray-500">No collections yet. Add one below.</p>
               ) : (
                 <div className="grid grid-cols-2 gap-2">
                   {collections.map((collection) => (
                     <div
                       key={collection.id}
-                      className="flex items-center justify-between px-2 py-1.5 border rounded text-xs hover:bg-gray-50 transition-colors"
+                      className="flex items-center justify-between rounded border px-2 py-1.5 text-xs transition-colors hover:bg-gray-50"
                     >
-                      <div className="flex-1 min-w-0 mr-2">
-                        <p className="font-medium truncate">{collection.name}</p>
-                        <p className="text-gray-500 truncate">/{collection.slug}</p>
+                      <div className="mr-2 min-w-0 flex-1">
+                        <p className="truncate font-medium">{collection.name}</p>
+                        <p className="truncate text-gray-500">/{collection.slug}</p>
                       </div>
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => handleDeleteClick(collection)}
                         disabled={loading}
-                        className="h-6 w-6 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
+                        className="h-6 w-6 flex-shrink-0 p-0 text-red-600 hover:bg-red-50 hover:text-red-700"
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
@@ -205,7 +205,7 @@ export function EditCollections({ onCollectionsChanged }: EditCollectionsProps) 
 
             {/* Add New Collection */}
             <div className="border-t pt-4">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Add New Collection</h3>
+              <h3 className="mb-3 text-sm font-semibold text-gray-700">Add New Collection</h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="collection-name">Collection Name</Label>
@@ -255,7 +255,7 @@ export function EditCollections({ onCollectionsChanged }: EditCollectionsProps) 
             </div>
           </div>
 
-          <div className="border-t pt-4 mt-4">
+          <div className="mt-4 border-t pt-4">
             <Button
               type="button"
               variant="outline"

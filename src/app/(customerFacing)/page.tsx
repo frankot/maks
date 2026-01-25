@@ -11,14 +11,14 @@ export default function Home() {
     <>
       <main className="pt-[var(--nav-height)]">
         <Hero />
-      <Marquee />
+        <Marquee />
 
-      <FeaturedProductsServer category={'RINGS' as Category} title="Rings" />
+        <FeaturedProductsServer category={'RINGS' as Category} title="Rings" />
 
-      <FeaturedProductsServer category={'NECKLACES' as Category} title="Necklaces" />
-      <Mission />
+        <FeaturedProductsServer category={'NECKLACES' as Category} title="Necklaces" />
+        <Mission />
 
-      <FeaturedProductsDynamicServer initialCategory={'EARRINGS' as Category} />
+        <FeaturedProductsDynamicServer initialCategory={'EARRINGS' as Category} />
 
         <CTA />
       </main>

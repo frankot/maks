@@ -371,7 +371,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
 
         {/* Upload Error Message */}
         {uploadError && (
-          <div className="mt-3 rounded-md bg-red-50 border border-red-200 p-3">
+          <div className="mt-3 rounded-md border border-red-200 bg-red-50 p-3">
             <p className="text-sm text-red-600">{uploadError}</p>
           </div>
         )}

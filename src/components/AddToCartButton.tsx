@@ -18,11 +18,11 @@ interface AddToCartButtonProps {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
 }
 
-export default function AddToCartButton({ 
-  product, 
+export default function AddToCartButton({
+  product,
   className = '',
   size = 'default',
-  variant = 'default'
+  variant = 'default',
 }: AddToCartButtonProps) {
   const { addItem, openCart, isInCart } = useCart();
   const [added, setAdded] = useState(false);
@@ -42,7 +42,7 @@ export default function AddToCartButton({
       imagePath: product.imagePath,
       slug: product.slug,
     });
-    
+
     setAdded(true);
     setTimeout(() => {
       setAdded(false);
@@ -60,12 +60,12 @@ export default function AddToCartButton({
     >
       {added ? (
         <>
-          <Check className="w-4 h-4 mr-2" />
+          <Check className="mr-2 h-4 w-4" />
           Added
         </>
       ) : alreadyInCart ? (
         <>
-          <ShoppingBag className="w-4 h-4 mr-2" />
+          <ShoppingBag className="mr-2 h-4 w-4" />
           In Cart
         </>
       ) : (

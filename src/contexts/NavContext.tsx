@@ -12,11 +12,7 @@ const NavContext = createContext<NavContextType | undefined>(undefined);
 export function NavProvider({ children }: { children: React.ReactNode }) {
   const [showNav, setShowNav] = useState(true);
 
-  return (
-    <NavContext.Provider value={{ showNav, setShowNav }}>
-      {children}
-    </NavContext.Provider>
-  );
+  return <NavContext.Provider value={{ showNav, setShowNav }}>{children}</NavContext.Provider>;
 }
 
 export function useNav() {

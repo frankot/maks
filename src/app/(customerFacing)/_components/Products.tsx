@@ -17,7 +17,10 @@ export default function Products({ title, products }: ProductsProps) {
   }
 
   return (
-    <section id={sectionId} className="mx-auto max-w-7xl px-4 py-10 animate-in fade-in duration-500">
+    <section
+      id={sectionId}
+      className="animate-in fade-in mx-auto max-w-7xl px-4 py-10 duration-500"
+    >
       {/* Title */}
       <div className="mx-auto px-4">
         <div className="py-6 md:py-8">

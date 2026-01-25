@@ -17,6 +17,7 @@ cp .env.local.example .env.local
 ```
 
 Required environment variables:
+
 - `DATABASE_URL` - PostgreSQL database connection string
 - `STRIPE_SECRET_KEY` - Stripe secret key (test mode)
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Stripe publishable key (test mode)
@@ -31,6 +32,7 @@ This project uses Stripe for payment processing. Follow the detailed setup guide
 **📖 [Read the complete Stripe setup guide](./STRIPE_SETUP.md)**
 
 Quick start:
+
 1. Create a Stripe account at [stripe.com](https://stripe.com)
 2. Get your test API keys from the [Stripe Dashboard](https://dashboard.stripe.com/test/apikeys)
 3. Install and authenticate the Stripe CLI
@@ -67,12 +69,14 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Features
 
 ### Payment Processing
+
 - **Stripe Checkout Integration** - Secure hosted checkout pages
 - **Automatic Order Creation** - Orders are created via webhooks after successful payment
 - **Payment Status Tracking** - Real-time payment status updates
 - **Test Mode** - Safe testing with Stripe test cards
 
 ### E-commerce
+
 - Shopping cart functionality
 - Product catalog with categories and collections
 - Dual currency support (PLN/EUR)
@@ -80,6 +84,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Guest checkout
 
 ### Admin Features
+
 - CMS for content management
 - Product management
 - Order tracking
@@ -89,10 +94,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Use these test card numbers in Stripe Checkout:
 
-| Card Number | Result |
-|------------|--------|
-| `4242 4242 4242 4242` | ✅ Success |
-| `4000 0000 0000 0002` | ❌ Card declined |
+| Card Number           | Result                     |
+| --------------------- | -------------------------- |
+| `4242 4242 4242 4242` | ✅ Success                 |
+| `4000 0000 0000 0002` | ❌ Card declined           |
 | `4000 0025 0000 3155` | 🔐 Requires authentication |
 
 Use any future expiration date, any 3-digit CVC, and any ZIP code.
@@ -123,15 +128,18 @@ More test cards: [https://stripe.com/docs/testing](https://stripe.com/docs/testi
 ## API Routes
 
 ### Checkout
+
 - `POST /api/checkout/create-session` - Create Stripe checkout session
 - `POST /api/webhooks/stripe` - Handle Stripe webhook events
 
 ### Orders
+
 - `GET /api/orders` - List orders
 - `POST /api/orders` - Create order (legacy, replaced by webhook)
 - `GET /api/orders/[id]` - Get order details
 
 ### Products
+
 - `GET /api/products` - List products
 - `POST /api/products` - Create product (admin)
 
@@ -161,10 +169,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ### Production Stripe Setup
 
 Before deploying to production:
+
 1. Switch to Live Mode in Stripe Dashboard
 2. Get your live API keys
 3. Create a webhook endpoint in Stripe Dashboard pointing to `https://yourdomain.com/api/webhooks/stripe`
 4. Update all environment variables in your production environment
 
 See [STRIPE_SETUP.md](./STRIPE_SETUP.md) for detailed production setup instructions.
-

@@ -319,7 +319,9 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             id="productStatus"
             className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:outline-none"
             value={formData.productStatus}
-            onChange={(e) => handleInputChange('productStatus', e.target.value as 'SHOP' | 'ORDERED' | 'SOLD')}
+            onChange={(e) =>
+              handleInputChange('productStatus', e.target.value as 'SHOP' | 'ORDERED' | 'SOLD')
+            }
           >
             <option value="SHOP">Shop (Available for purchase)</option>
             <option value="ORDERED">Ordered (Payment received)</option>
