@@ -16,12 +16,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { description, imagePaths, imagePublicIds, href, textHref } = body;
 
-    if (!description || !imagePaths || !Array.isArray(imagePaths)) {
+    if (!imagePaths || !Array.isArray(imagePaths)) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const heroContent = await createHeroContent({
-      description,
+      description: description || '',
       imagePaths,
       imagePublicIds: imagePublicIds || [],
       href,

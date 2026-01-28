@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import type { HeroContent } from '@prisma/client';
 
 interface MarqueeState {
-  description?: string | null;
   href?: string | null;
   textHref?: string | null;
 }
@@ -19,7 +18,6 @@ export default function Marquee() {
         if (res.ok) {
           const data: HeroContent = await res.json();
           setState({
-            description: data?.description ?? undefined,
             href: data?.href ?? undefined,
             textHref: data?.textHref ?? undefined,
           });
@@ -31,8 +29,8 @@ export default function Marquee() {
     void fetchData();
   }, []);
 
+  // Always use hardcoded description
   const description =
-    state.description ??
     'SPLOT STUDIO A jewelry brand founded by Maks Michalak in 2024, based in Warsaw, Poland';
   const href = state.href ?? '#';
   const textHref = state.textHref ?? 'CHECK US OUT ;)';

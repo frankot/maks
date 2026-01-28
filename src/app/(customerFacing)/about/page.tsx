@@ -76,7 +76,7 @@ export default async function AboutPage() {
       {/* Bottom Section - Belief Statement */}
       <div className="flex flex-col items-center justify-center gap-2.5 px-[30px] py-10">
         <p className="max-w-[1380px] py-10 text-center font-['Inter'] text-[32px] leading-9 font-medium text-black uppercase">
-          In 06.33.11 we believe that jewelry should be one of a kind, just as our audience is.
+          In mami we believe that jewelry should be one of a kind, just as our audience ought to be.
           Jewelry should be celebrated, and wearing it should make you feel special. So in our
           studio you will not find two identical pieces.
         </p>
