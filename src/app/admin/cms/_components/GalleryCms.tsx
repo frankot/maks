@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select,
@@ -12,9 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import Image from 'next/image';
 import { Loader2, Plus, Trash2, X } from 'lucide-react';
 import { toast } from 'sonner';
+import ImageUploadSlot from './ImageUploadSlot';
 
 interface PhotoArtist {
   id: string;
@@ -43,7 +42,6 @@ export default function GalleryCms() {
   const [newArtistName, setNewArtistName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [addingArtist, setAddingArtist] = useState(false);
-  const [uploadingSlots, setUploadingSlots] = useState<Record<string, boolean>>({});
   const [deletingRows, setDeletingRows] = useState<Record<string, boolean>>({});
   const [deletingImages, setDeletingImages] = useState<Record<string, boolean>>({});
   const [addingRow, setAddingRow] = useState(false);
@@ -171,33 +169,13 @@ export default function GalleryCms() {
   };
 
   // --- Image Management ---
-  const handleUploadImage = async (
-    file: File,
+  const handleImageUploaded = async (
+    uploadData: { url: string; publicId: string },
     rowId: string,
     slotIndex: number,
     artistId: string
   ) => {
-    const slotKey = `${rowId}-${slotIndex}`;
-    setUploadingSlots((prev) => ({ ...prev, [slotKey]: true }));
-
     try {
-      // Upload to Cloudinary
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const uploadRes = await fetch('/api/upload/gallery', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!uploadRes.ok) {
-        const err = await uploadRes.json();
-        toast.error(err.error || 'Upload failed');
-        return;
-      }
-
-      const uploadData: { url: string; publicId: string } = await uploadRes.json();
-
       // Create gallery image record
       const imageRes = await fetch('/api/gallery/images', {
         method: 'POST',
@@ -211,7 +189,10 @@ export default function GalleryCms() {
         }),
       });
 
-      if (!imageRes.ok) throw new Error('Failed to save image record');
+      if (!imageRes.ok) {
+        const err = await imageRes.json();
+        throw new Error(err.error || 'Failed to save image record');
+      }
 
       // Refresh rows
       const rowsRes = await fetch('/api/gallery/rows');
@@ -220,15 +201,11 @@ export default function GalleryCms() {
         setRows(rowsData);
       }
 
-      toast.success('Image uploaded');
-    } catch {
-      toast.error('Failed to upload image');
-    } finally {
-      setUploadingSlots((prev) => {
-        const newState = { ...prev };
-        delete newState[slotKey];
-        return newState;
-      });
+      toast.success('Image added to gallery');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to save image';
+      toast.error(message);
+      throw error; // Re-throw so ImageUploadSlot can handle rollback
     }
   };
 
@@ -390,9 +367,8 @@ export default function GalleryCms() {
                         rowId={row.id}
                         slotIndex={slotIndex}
                         artists={artists}
-                        uploading={!!uploadingSlots[`${row.id}-${slotIndex}`]}
                         deleting={image ? !!deletingImages[image.id] : false}
-                        onUpload={handleUploadImage}
+                        onImageUploaded={handleImageUploaded}
                         onDelete={handleDeleteImage}
                       />
                     ))}
@@ -412,91 +388,70 @@ function ImageSlot({
   rowId,
   slotIndex,
   artists,
-  uploading,
   deleting,
-  onUpload,
+  onImageUploaded,
   onDelete,
 }: {
   image: GalleryImage | null;
   rowId: string;
   slotIndex: number;
   artists: PhotoArtist[];
-  uploading: boolean;
   deleting: boolean;
-  onUpload: (file: File, rowId: string, slotIndex: number, artistId: string) => Promise<void>;
+  onImageUploaded: (
+    uploadData: { url: string; publicId: string },
+    rowId: string,
+    slotIndex: number,
+    artistId: string
+  ) => Promise<void>;
   onDelete: (imageId: string) => Promise<void>;
 }) {
   const [selectedArtistId, setSelectedArtistId] = useState(artists[0]?.id ?? '');
 
-  if (image) {
-    return (
-      <div className="space-y-1">
-        <div className="relative aspect-square w-full overflow-hidden rounded-lg border">
-          <Image
-            src={image.imagePath}
-            alt={image.artist.name}
-            fill
-            className="object-cover"
-            unoptimized
-          />
-          <button
-            onClick={() => void onDelete(image.id)}
-            disabled={deleting}
-            className="absolute top-1 right-1 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
-          >
-            {deleting ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
-            ) : (
-              <X className="h-3 w-3" />
-            )}
-          </button>
-        </div>
-        <p className="text-muted-foreground truncate text-xs">{image.artist.name}</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-1">
-      <div className="flex aspect-square w-full items-center justify-center rounded-lg border-2 border-dashed">
-        {uploading ? (
-          <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
-        ) : (
-          <span className="text-muted-foreground text-xs">Empty</span>
-        )}
-      </div>
-      {artists.length > 0 && (
-        <>
-          <Select value={selectedArtistId} onValueChange={setSelectedArtistId}>
-            <SelectTrigger className="h-7 text-xs">
-              <SelectValue placeholder="Artist" />
-            </SelectTrigger>
-            <SelectContent>
-              {artists.map((a) => (
-                <SelectItem key={a.id} value={a.id}>
-                  {a.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Label className="block">
-            <Input
-              type="file"
-              accept="image/*"
-              className="h-7 text-xs"
-              disabled={uploading || !selectedArtistId}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file && selectedArtistId) {
-                  void onUpload(file, rowId, slotIndex, selectedArtistId);
-                }
-              }}
-            />
-          </Label>
-        </>
+    <div className="space-y-2">
+      <ImageUploadSlot
+        imageUrl={image?.imagePath}
+        onUpload={async (data) => {
+          if (!selectedArtistId && !image) {
+            toast.error('Please select an artist first');
+            throw new Error('No artist selected');
+          }
+          await onImageUploaded(data, rowId, slotIndex, image?.artistId || selectedArtistId);
+          return data;
+        }}
+        onRemove={image ? () => void onDelete(image.id) : undefined}
+        uploadEndpoint="/api/upload/gallery"
+        slotId={`${rowId}-${slotIndex}`}
+        label={`Slot ${slotIndex + 1}`}
+        altText={image ? image.artist.name : 'Gallery image'}
+        aspectRatio="aspect-square"
+        showRemoveButton={!!image}
+        disabled={deleting || (!image && (!selectedArtistId || artists.length === 0))}
+      />
+      
+      {!image && artists.length > 0 && (
+        <Select value={selectedArtistId} onValueChange={setSelectedArtistId}>
+          <SelectTrigger className="h-8 text-xs">
+            <SelectValue placeholder="Select artist" />
+          </SelectTrigger>
+          <SelectContent>
+            {artists.map((a) => (
+              <SelectItem key={a.id} value={a.id}>
+                {a.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       )}
-      {artists.length === 0 && (
-        <p className="text-xs text-red-500">Add an artist first</p>
+      
+      {image && (
+        <p className="text-muted-foreground truncate text-center text-xs">
+          {image.artist.name}
+        </p>
+      )}
+      
+      {!image && artists.length === 0 && (
+        <p className="text-center text-xs text-red-500">Add an artist first</p>
       )}
     </div>
   );
