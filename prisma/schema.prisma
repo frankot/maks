@@ -42,6 +42,8 @@ enum Category {
   NECKLACES
   RINGS
   EARRINGS
+  BRACELETS
+  CHAINS
 }
 
 model Collection {

@@ -1,16 +1,19 @@
 'use client';
 
 import React from 'react';
-import type { Product } from '@prisma/client';
+import type { Product, Category } from '@prisma/client';
+import Link from 'next/link';
 import ProductCard from './ProductCard';
 
 interface ProductsProps {
   title: string;
+  category: Category;
   products: Product[];
 }
 
-export default function Products({ title, products }: ProductsProps) {
+export default function Products({ title, category, products }: ProductsProps) {
   const sectionId = title.toLowerCase();
+  const categorySlug = category.toLowerCase();
 
   if (!products?.length) {
     return null;
@@ -24,9 +27,11 @@ export default function Products({ title, products }: ProductsProps) {
       {/* Title */}
       <div className="mx-auto px-4">
         <div className="py-6 md:py-8">
-          <h2 className="text-4xl leading-[0.9] font-extrabold whitespace-nowrap text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">
-            {title}
-          </h2>
+          <Link href={`/shop/${categorySlug}`}>
+            <h2 className="text-4xl leading-[0.9] font-extrabold whitespace-nowrap text-black/90 uppercase transition-colors hover:text-black/60 sm:text-5xl md:text-6xl lg:text-7xl">
+              {title}
+            </h2>
+          </Link>
         </div>
       </div>
 

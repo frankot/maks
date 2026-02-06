@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import type { Product, Category, Collection } from '@prisma/client';
 import { useSearchParams } from 'next/navigation';
 import Products from './Products';
 import ProductsSkeleton from './ProductsSkeleton';
+
+const MAX_PRODUCTS_PER_CATEGORY = 10;
 
 type ProductWithCollection = Product & { collection: Collection | null };
 
@@ -33,13 +35,26 @@ export default function ProductsClient() {
     fetchProducts();
   }, []);
 
-  const filterProductsByCategory = (category: Category) => {
-    return allProducts.filter((p) => {
-      const matchesCategory = p.category === category;
-      const matchesCollection = collectionSlug ? p.collection?.slug === collectionSlug : true;
-      return matchesCategory && matchesCollection && p.isAvailable && p.productStatus === 'SHOP';
-    });
-  };
+  const categoryGroups = useMemo(() => {
+    const grouped = new Map<Category, ProductWithCollection[]>();
+
+    for (const p of allProducts) {
+      if (!p.isAvailable || p.productStatus !== 'SHOP') continue;
+      if (collectionSlug && p.collection?.slug !== collectionSlug) continue;
+
+      const existing = grouped.get(p.category) || [];
+      existing.push(p);
+      grouped.set(p.category, existing);
+    }
+
+    return Array.from(grouped.entries())
+      .filter(([, products]) => products.length > 0)
+      .map(([category, products]) => ({
+        category,
+        title: category.charAt(0) + category.slice(1).toLowerCase(),
+        products: products.slice(0, MAX_PRODUCTS_PER_CATEGORY),
+      }));
+  }, [allProducts, collectionSlug]);
 
   if (loading) {
     return <ProductsSkeleton />;
@@ -47,21 +62,14 @@ export default function ProductsClient() {
 
   return (
     <>
-      <Products
-        title="Rings"
-        products={filterProductsByCategory('RINGS' as Category)}
-        key={`rings-${collectionSlug || 'all'}`}
-      />
-      <Products
-        title="Necklaces"
-        products={filterProductsByCategory('NECKLACES' as Category)}
-        key={`necklaces-${collectionSlug || 'all'}`}
-      />
-      <Products
-        title="Earrings"
-        products={filterProductsByCategory('EARRINGS' as Category)}
-        key={`earrings-${collectionSlug || 'all'}`}
-      />
+      {categoryGroups.map(({ category, title, products }) => (
+        <Products
+          key={`${category}-${collectionSlug || 'all'}`}
+          title={title}
+          category={category}
+          products={products}
+        />
+      ))}
     </>
   );
 }

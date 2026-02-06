@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import type { Category } from '@prisma/client';
 
 interface Collection {
   id: string;
@@ -9,9 +11,17 @@ interface Collection {
   slug: string;
 }
 
+const CATEGORIES: { label: string; value: Category }[] = [
+  { label: 'Rings', value: 'RINGS' },
+  { label: 'Necklaces', value: 'NECKLACES' },
+  { label: 'Earrings', value: 'EARRINGS' },
+  { label: 'Bracelets', value: 'BRACELETS' },
+  { label: 'Chains', value: 'CHAINS' },
+];
+
 interface CollectionsBarProps {
   highlightedCollection?: string | null;
-  highlightedCategory?: 'RINGS' | 'NECKLACES' | 'EARRINGS' | null;
+  highlightedCategory?: string | null;
 }
 
 export default function CollectionsBar({
@@ -19,7 +29,6 @@ export default function CollectionsBar({
   highlightedCategory,
 }: CollectionsBarProps = {}) {
   const [collections, setCollections] = useState<Collection[]>([]);
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -40,58 +49,22 @@ export default function CollectionsBar({
     fetchCollections();
   }, []);
 
-  const scrollToSection = (id: string) => {
-    if (pathname === '/shop') {
-      const element = document.getElementById(id);
-      if (element) {
-        const navH =
-          parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) ||
-          0;
-        const colH =
-          parseFloat(
-            getComputedStyle(document.documentElement).getPropertyValue('--collections-bar-height')
-          ) || 0;
-        const targetY = element.getBoundingClientRect().top + window.scrollY - (navH + colH);
-        window.scrollTo({ top: targetY, behavior: 'smooth' });
-      }
-    } else {
-      window.location.href = `/shop#${id}`;
-    }
-  };
-
   return (
     <>
       {/* Categories */}
-      <button
-        onClick={() => scrollToSection('rings')}
-        className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
-          highlightedCategory === 'RINGS'
-            ? 'font-bold text-black'
-            : 'text-gray-500 hover:text-black'
-        }`}
-      >
-        Rings
-      </button>
-      <button
-        onClick={() => scrollToSection('necklaces')}
-        className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
-          highlightedCategory === 'NECKLACES'
-            ? 'font-bold text-black'
-            : 'text-gray-500 hover:text-black'
-        }`}
-      >
-        Necklaces
-      </button>
-      <button
-        onClick={() => scrollToSection('earrings')}
-        className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
-          highlightedCategory === 'EARRINGS'
-            ? 'font-bold text-black'
-            : 'text-gray-500 hover:text-black'
-        }`}
-      >
-        Earrings
-      </button>
+      {CATEGORIES.map(({ label, value }) => (
+        <Link
+          key={value}
+          href={`/shop/${value.toLowerCase()}`}
+          className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
+            highlightedCategory === value
+              ? 'font-bold text-black'
+              : 'text-gray-500 hover:text-black'
+          }`}
+        >
+          {label}
+        </Link>
+      ))}
 
       <div className="mx-2 h-4 w-px bg-gray-300" />
 

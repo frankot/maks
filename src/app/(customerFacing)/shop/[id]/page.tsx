@@ -9,6 +9,9 @@ import { Suspense } from 'react';
 import CollectionsBarSkeleton from '@/app/(customerFacing)/_components/CollectionsBarSkeleton';
 import MobileProductView from './MobileProductView';
 import PageWithHeroBar from '@/app/(customerFacing)/_components/PageWithHeroBar';
+import CategoryPage from './CategoryPage';
+
+const CATEGORY_SLUGS = ['necklaces', 'rings', 'earrings', 'bracelets', 'chains'];
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -16,6 +19,20 @@ interface ProductPageProps {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
+
+  if (CATEGORY_SLUGS.includes(id.toLowerCase())) {
+    return (
+      <>
+        <PageWithHeroBar imagePath="/shop_main.jpg" imageAlt="Shop">
+          <Suspense fallback={<CollectionsBarSkeleton />}>
+            <CollectionsBar highlightedCategory={id.toUpperCase() as 'RINGS' | 'NECKLACES' | 'EARRINGS'} />
+          </Suspense>
+        </PageWithHeroBar>
+        <CategoryPage category={id.toLowerCase()} />
+      </>
+    );
+  }
+
   let product = await getProductBySlug(id);
   if (!product) {
     product = await getProductById(id);

@@ -15,5 +15,5 @@ export default async function ProductsServer({
 }: ProductsServerProps) {
   const products = await getProductsByCategory(category, 24, collectionSlug);
 
-  return <Products title={title} products={products} />;
+  return <Products title={title} category={category} products={products} />;
 }
