@@ -1,39 +1,43 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { HeroContent } from '@prisma/client';
 
 interface MarqueeState {
-  href?: string | null;
-  textHref?: string | null;
+  description: string;
+  href: string;
+  textHref: string;
 }
 
+const FALLBACK: MarqueeState = {
+  description:
+    'SPLOT STUDIO A jewelry brand founded by Maks Michalak in 2024, based in Warsaw, Poland',
+  href: '#',
+  textHref: 'CHECK US OUT ;)',
+};
+
 export default function Marquee() {
-  const [state, setState] = useState<MarqueeState>({});
+  const [state, setState] = useState<MarqueeState>(FALLBACK);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('/api/hero');
+        const res = await fetch('/api/marquee');
         if (res.ok) {
-          const data: HeroContent = await res.json();
-          setState({
-            href: data?.href ?? undefined,
-            textHref: data?.textHref ?? undefined,
-          });
+          const data = await res.json();
+          if (data) {
+            setState({
+              description: data.description || FALLBACK.description,
+              href: data.href || FALLBACK.href,
+              textHref: data.textHref || FALLBACK.textHref,
+            });
+          }
         }
       } catch {
-        // ignore; fallbacks will render
+        // fallbacks will render
       }
     };
     void fetchData();
   }, []);
-
-  // Always use hardcoded description
-  const description =
-    'SPLOT STUDIO A jewelry brand founded by Maks Michalak in 2024, based in Warsaw, Poland';
-  const href = state.href ?? '#';
-  const textHref = state.textHref ?? 'CHECK US OUT ;)';
 
   return (
     <div className="mx-auto py-10">
@@ -50,15 +54,15 @@ export default function Marquee() {
               className="font-neubold mx-8 text-5xl leading-9 text-black/80 uppercase"
               aria-hidden={groupIndex !== 0}
             >
-              {description}
+              {state.description}
             </span>
           ))}
         </div>
       </div>
 
       <div className="flex justify-center">
-        <a href={href} className="group relative pb-1 text-sm tracking-wider uppercase">
-          {textHref}
+        <a href={state.href} className="group relative pb-1 text-sm tracking-wider uppercase">
+          {state.textHref}
           <span className="absolute bottom-0 left-0 h-px w-full bg-black transition-all duration-300 group-hover:left-1/2 group-hover:w-0" />
         </a>
       </div>

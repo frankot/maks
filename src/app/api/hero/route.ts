@@ -14,7 +14,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { description, imagePaths, imagePublicIds, href, textHref } = body;
+    const { description, imagePaths, imagePublicIds } = body;
 
     if (!imagePaths || !Array.isArray(imagePaths)) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -24,8 +24,6 @@ export async function POST(request: NextRequest) {
       description: description || '',
       imagePaths,
       imagePublicIds: imagePublicIds || [],
-      href,
-      textHref,
     });
 
     return NextResponse.json(heroContent, { status: 201 });
@@ -38,7 +36,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, description, imagePaths, imagePublicIds, href, textHref } = body;
+    const { id, description, imagePaths, imagePublicIds } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Hero content ID is required' }, { status: 400 });
@@ -48,8 +46,6 @@ export async function PUT(request: NextRequest) {
       ...(description && { description }),
       ...(imagePaths && { imagePaths }),
       ...(imagePublicIds && { imagePublicIds }),
-      ...(href !== undefined && { href }),
-      ...(textHref !== undefined && { textHref }),
     });
 
     return NextResponse.json(heroContent);

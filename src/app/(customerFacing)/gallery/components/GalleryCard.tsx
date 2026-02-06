@@ -20,7 +20,7 @@ export default function GalleryCard({ imagePath, artistName }: GalleryCardProps)
 
         {/* Artist badge - bottom right corner with backdrop blur */}
         <div className="absolute bottom-3 left-3 bg-white/30 px-3 py-1.5 backdrop-blur-md">
-          <p className="text-xs font-light tracking-wider text-black/70 uppercase">cobre.tti</p>
+          <p className="text-xs font-light tracking-wider text-black/70 uppercase">{artistName}</p>
         </div>
       </div>
     </div>

@@ -19,8 +19,6 @@ export async function createHeroContent(data: {
   description: string;
   imagePaths: string[];
   imagePublicIds: string[];
-  href?: string;
-  textHref?: string;
 }): Promise<HeroContent> {
   try {
     const heroContent = await prisma.heroContent.create({
@@ -40,8 +38,6 @@ export async function updateHeroContent(
     description?: string;
     imagePaths?: string[];
     imagePublicIds?: string[];
-    href?: string;
-    textHref?: string;
   }
 ): Promise<HeroContent> {
   try {

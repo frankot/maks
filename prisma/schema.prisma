@@ -154,13 +154,16 @@ model HeroContent {
   description    String
   imagePaths     String[]
   imagePublicIds String[]
-  href           String?
-  textHref       String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
 
-model GalleryCategory {
+enum GalleryLayout {
+  THREE_COL
+  FIVE_COL
+}
+
+model PhotoArtist {
   id        String         @id @default(uuid())
   name      String         @unique
   createdAt DateTime       @default(now())
@@ -168,13 +171,40 @@ model GalleryCategory {
   images    GalleryImage[]
 }
 
+model GalleryRow {
+  id        String         @id @default(uuid())
+  layout    GalleryLayout
+  order     Int
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  images    GalleryImage[]
+}
+
 model GalleryImage {
-  id         String          @id @default(uuid())
-  name       String
-  imagePath  String
-  publicId   String
-  categoryId String
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
-  category   GalleryCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  id        String      @id @default(uuid())
+  imagePath String
+  publicId  String
+  order     Int
+  artistId  String
+  rowId     String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  artist    PhotoArtist @relation(fields: [artistId], references: [id])
+  row       GalleryRow  @relation(fields: [rowId], references: [id], onDelete: Cascade)
+}
+
+model MarqueeContent {
+  id          String   @id @default(uuid())
+  description String
+  href        String?
+  textHref    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model NavCarouselContent {
+  id        String   @id @default(uuid())
+  texts     String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

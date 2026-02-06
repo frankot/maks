@@ -2,22 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import type { HeroContent } from '@prisma/client';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Upload, Trash2, Plus } from 'lucide-react';
 import { toast } from 'sonner';
+
+interface ImageSlot {
+  url: string;
+  publicId: string;
+}
+
+interface ImagePair {
+  image1: ImageSlot | null;
+  image2: ImageSlot | null;
+}
 
 export default function HeroCms() {
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
-  const [imagePairs, setImagePairs] = useState<
-    Array<{
-      image1: { url: string; publicId: string } | null;
-      image2: { url: string; publicId: string } | null;
-    }>
-  >([]);
+  const [imagePairs, setImagePairs] = useState<ImagePair[]>([]);
   const [uploadingSlots, setUploadingSlots] = useState<Record<string, boolean>>({});
   const [saving, setSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,15 +35,12 @@ export default function HeroCms() {
       const response = await fetch('/api/hero');
       if (response.ok) {
         const data: HeroContent | null = await response.json();
-        
+
         if (data) {
           setHeroContent(data);
 
           // Convert flat arrays to pairs
-          const pairs: Array<{
-            image1: { url: string; publicId: string } | null;
-            image2: { url: string; publicId: string } | null;
-          }> = [];
+          const pairs: ImagePair[] = [];
           for (let i = 0; i < data.imagePaths.length; i += 2) {
             pairs.push({
               image1:
@@ -57,12 +58,17 @@ export default function HeroCms() {
       }
     } catch (error) {
       console.error('Error fetching hero content:', error);
+      toast.error('Failed to load hero content');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleFileUpload = async (file: File, pairIndex: number, imageSlot: 'image1' | 'image2') => {
+  const handleFileUpload = async (
+    file: File,
+    pairIndex: number,
+    imageSlot: 'image1' | 'image2'
+  ) => {
     const slotKey = `${pairIndex}-${imageSlot}`;
     setUploadingSlots((prev) => ({ ...prev, [slotKey]: true }));
 
@@ -81,7 +87,7 @@ export default function HeroCms() {
         return;
       }
 
-      const data: { url: string; publicId: string } = await response.json();
+      const data: ImageSlot = await response.json();
 
       setImagePairs((prev) => {
         const newPairs = [...prev];
@@ -106,18 +112,25 @@ export default function HeroCms() {
   };
 
   const addNewPair = () => {
-    setImagePairs([...imagePairs, { image1: null, image2: null }]);
+    setImagePairs([{ image1: null, image2: null }, ...imagePairs]);
   };
 
   const removePair = (index: number) => {
     setImagePairs((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const removeImage = (pairIndex: number, slot: 'image1' | 'image2') => {
+    setImagePairs((prev) => {
+      const newPairs = [...prev];
+      newPairs[pairIndex]![slot] = null;
+      return newPairs;
+    });
+  };
+
   const saveHeroContent = async () => {
     setSaving(true);
 
     try {
-      // Flatten pairs to arrays
       const imagePaths: string[] = [];
       const imagePublicIds: string[] = [];
 
@@ -132,12 +145,8 @@ export default function HeroCms() {
         }
       });
 
-      const payload = {
-        imagePaths,
-        imagePublicIds,
-      };
-
-      const url = heroContent ? '/api/hero' : '/api/hero';
+      const payload = { imagePaths, imagePublicIds };
+      const url = '/api/hero';
       const method = heroContent ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -164,7 +173,7 @@ export default function HeroCms() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="text-lg">Loading hero content...</div>
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -173,116 +182,133 @@ export default function HeroCms() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Hero Section Management</CardTitle>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Hero Section Management</CardTitle>
+              <p className="text-muted-foreground mt-1 text-sm">
+                Upload image pairs for your hero carousel
+              </p>
+            </div>
+            <Button onClick={addNewPair} type="button" size="sm" className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Pair
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Image Pairs */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label>Image Pairs</Label>
-              <Button onClick={addNewPair} type="button" variant="outline" size="sm">
-                + Add Pair
+          {imagePairs.length === 0 ? (
+            <div className="rounded-lg border-2 border-dashed border-muted-foreground/25 p-12 text-center">
+              <Upload className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+              <p className="text-muted-foreground mb-4">No image pairs yet</p>
+              <Button onClick={addNewPair} variant="outline" type="button">
+                Add First Pair
               </Button>
             </div>
-
-            {imagePairs.map((pair, pairIndex) => (
-              <Card key={pairIndex} className="border-2">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base">Pair {pairIndex + 1}</CardTitle>
+          ) : (
+            <div className="grid gap-4">
+              {imagePairs.map((pair, pairIndex) => (
+                <div
+                  key={pairIndex}
+                  className="rounded-lg border bg-card p-4 transition-colors hover:bg-muted/50"
+                >
+                  {/* Pair Header */}
+                  <div className="mb-4 flex items-center justify-between">
+                    <h3 className="font-semibold">
+                      Pair {imagePairs.length - pairIndex}
+                      <span className="text-muted-foreground ml-2 text-sm font-normal">
+                        ({[pair.image1, pair.image2].filter(Boolean).length}/2 images)
+                      </span>
+                    </h3>
                     <Button
                       onClick={() => removePair(pairIndex)}
-                      variant="destructive"
+                      variant="ghost"
                       size="sm"
-                      type="button"
+                      className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                     >
-                      Remove
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
-                </CardHeader>
-                <CardContent className="grid grid-cols-2 gap-4">
-                  {/* Image 1 */}
-                  <div className="space-y-2">
-                    <Label>Image 1</Label>
-                    {pair.image1 ? (
-                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border">
-                        <Image
-                          src={pair.image1.url}
-                          alt="Hero Image 1"
-                          fill
-                          className="object-cover"
-                          unoptimized
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex aspect-[4/3] w-full items-center justify-center rounded-lg border-2 border-dashed">
-                        {uploadingSlots[`${pairIndex}-image1`] ? (
-                          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                        ) : (
-                          <span className="text-sm text-muted-foreground">No image</span>
-                        )}
-                      </div>
-                    )}
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) void handleFileUpload(file, pairIndex, 'image1');
-                      }}
-                      disabled={uploadingSlots[`${pairIndex}-image1`]}
-                    />
-                  </div>
 
-                  {/* Image 2 */}
-                  <div className="space-y-2">
-                    <Label>Image 2</Label>
-                    {pair.image2 ? (
-                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border">
-                        <Image
-                          src={pair.image2.url}
-                          alt="Hero Image 2"
-                          fill
-                          className="object-cover"
-                          unoptimized
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex aspect-[4/3] w-full items-center justify-center rounded-lg border-2 border-dashed">
-                        {uploadingSlots[`${pairIndex}-image2`] ? (
-                          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                        ) : (
-                          <span className="text-sm text-muted-foreground">No image</span>
-                        )}
-                      </div>
-                    )}
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) void handleFileUpload(file, pairIndex, 'image2');
-                      }}
-                      disabled={uploadingSlots[`${pairIndex}-image2`]}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  {/* Images Grid */}
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {(['image1', 'image2'] as const).map((slot) => {
+                      const image = pair[slot];
+                      const slotKey = `${pairIndex}-${slot}`;
+                      const isUploading = uploadingSlots[slotKey];
 
-            {imagePairs.length === 0 && (
-              <div className="rounded-lg border-2 border-dashed p-8 text-center">
-                <p className="text-muted-foreground">No image pairs added yet</p>
-                <Button onClick={addNewPair} variant="outline" className="mt-4" type="button">
-                  Add First Pair
-                </Button>
-              </div>
-            )}
-          </div>
+                      return (
+                        <div key={slot} className="space-y-2">
+                          {image ? (
+                            <div className="group relative aspect-[4/3] overflow-hidden rounded-lg border bg-muted">
+                              <Image
+                                src={image.url}
+                                alt={`Hero ${slot === 'image1' ? 'Left' : 'Right'}`}
+                                fill
+                                className="object-cover"
+                                unoptimized
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                                <label className="cursor-pointer">
+                                  <Upload className="h-6 w-6 text-white" />
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) void handleFileUpload(file, pairIndex, slot);
+                                    }}
+                                    disabled={isUploading}
+                                    className="hidden"
+                                  />
+                                </label>
+                              </div>
+                              <button
+                                onClick={() => removeImage(pairIndex, slot)}
+                                className="absolute right-2 top-2 rounded bg-destructive p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          ) : (
+                            <label className="flex aspect-[4/3] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 transition-colors hover:border-muted-foreground/50 hover:bg-muted/50">
+                              {isUploading ? (
+                                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                              ) : (
+                                <div className="text-center">
+                                  <Upload className="mx-auto mb-2 h-6 w-6 text-muted-foreground" />
+                                  <span className="text-muted-foreground text-sm">
+                                    Click to upload
+                                  </span>
+                                </div>
+                              )}
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) void handleFileUpload(file, pairIndex, slot);
+                                }}
+                                disabled={isUploading}
+                                className="hidden"
+                              />
+                            </label>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Save Button */}
-          <div className="flex justify-end">
-            <Button onClick={saveHeroContent} disabled={saving || Object.keys(uploadingSlots).length > 0}>
+          <div className="flex justify-end border-t pt-6">
+            <Button
+              onClick={saveHeroContent}
+              disabled={saving || Object.keys(uploadingSlots).length > 0}
+              size="lg"
+            >
               {saving ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
