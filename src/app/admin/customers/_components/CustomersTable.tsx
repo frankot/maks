@@ -69,6 +69,7 @@ export function CustomersTable({ customers }: CustomersTableProps) {
     {
       key: 'name',
       label: 'Name',
+      sortValue: (customer) => formatCustomerName(customer.firstName, customer.lastName),
       render: (customer) => (
         <span className="font-medium">
           {formatCustomerName(customer.firstName, customer.lastName)}
@@ -78,6 +79,7 @@ export function CustomersTable({ customers }: CustomersTableProps) {
     {
       key: 'email',
       label: 'Email',
+      sortValue: (customer) => customer.email,
       render: (customer) => customer.email,
     },
     {
@@ -88,16 +90,19 @@ export function CustomersTable({ customers }: CustomersTableProps) {
     {
       key: 'orders',
       label: 'Orders',
+      sortValue: (customer) => customer._count.orders,
       render: (customer) => customer._count.orders,
     },
     {
       key: 'totalSpent',
       label: 'Total Spent',
+      sortValue: (customer) => calculateTotalSpent(customer.orders),
       render: (customer) => formatPrice(calculateTotalSpent(customer.orders)),
     },
     {
       key: 'joined',
       label: 'Joined',
+      sortValue: (customer) => new Date(customer.createdAt),
       render: (customer) => format(new Date(customer.createdAt), 'dd/MM/yyyy'),
     },
     {

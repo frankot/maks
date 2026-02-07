@@ -159,6 +159,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
     {
       key: 'name',
       label: 'Product Name',
+      sortValue: (product) => product.name,
       render: (product) => (
         <div className="group relative">
           <div className="cursor-pointer font-medium">{product.name}</div>
@@ -182,6 +183,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
     {
       key: 'category',
       label: 'Category',
+      sortValue: (product) => product.category,
       render: (product) => (
         <span className="rounded-md border px-2 py-0.5 text-xs tracking-wide uppercase">
           {product.category}
@@ -191,11 +193,19 @@ export function ProductsTable({ products }: ProductsTableProps) {
     {
       key: 'pricePln',
       label: 'Price (PLN)',
+      sortValue: (product) => product.priceInGrosz,
       render: (product) => formatPrice(product.priceInGrosz),
     },
     {
       key: 'collection',
       label: 'Collection',
+      sortValue: (product) => {
+        type ProductWithCollection = ProductWithOrderItems & {
+          collection?: { name?: string | null };
+        };
+        const p = product as ProductWithCollection;
+        return p.collection?.name ?? '';
+      },
       render: (product) => {
         type ProductWithCollection = ProductWithOrderItems & {
           collection?: { name?: string | null };
@@ -225,6 +235,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
     {
       key: 'productStatus',
       label: 'Status',
+      sortValue: (product) => product.productStatus,
       render: (product) => {
         const getStatusColor = (status: string, isAvailable: boolean) => {
           if (status === 'SHOP' && !isAvailable) {
@@ -251,6 +262,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
     {
       key: 'created',
       label: 'Created',
+      sortValue: (product) => new Date(product.createdAt),
       render: (product) => format(new Date(product.createdAt), 'dd/MM/yyyy'),
     },
     {

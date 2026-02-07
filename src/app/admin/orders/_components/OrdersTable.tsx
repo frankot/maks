@@ -78,6 +78,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
     {
       key: 'status',
       label: 'Status',
+      sortValue: (order) => order.status,
       render: (order) => (
         <Badge variant={getStatusVariant(order.status)}>{getStatusLabel(order.status)}</Badge>
       ),
@@ -85,16 +86,19 @@ export function OrdersTable({ orders }: OrdersTableProps) {
     {
       key: 'price',
       label: 'Price',
+      sortValue: (order) => order.pricePaid,
       render: (order) => formatPrice(order.pricePaid),
     },
     {
       key: 'created',
       label: 'Created',
+      sortValue: (order) => new Date(order.createdAt),
       render: (order) => format(new Date(order.createdAt), 'dd/MM/yyyy HH:mm'),
     },
     {
       key: 'email',
       label: 'Customer Email',
+      sortValue: (order) => order.user.email,
       render: (order) => order.user.email,
     },
     {
