@@ -8,7 +8,9 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
+import { LogOut } from 'lucide-react';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
 const navItems = [
@@ -52,6 +54,18 @@ export default function NavAdmin() {
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               ))}
+              <NavigationMenuItem>
+                <button
+                  onClick={() => signOut({ callbackUrl: '/admin/login' })}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    'cursor-pointer text-muted-foreground transition-colors hover:text-foreground'
+                  )}
+                >
+                  <LogOut className="mr-1 h-4 w-4" />
+                  Sign out
+                </button>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
