@@ -2,14 +2,14 @@
 import { NextResponse } from 'next/server';
 
 export function errorHandler(error: unknown) {
-  if (error instanceof Error) {
+  console.error('API error:', error);
+
+  if (process.env.NODE_ENV === 'development' && error instanceof Error) {
     return NextResponse.json(
-      {
-        error: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-      },
+      { error: error.message, stack: error.stack },
       { status: 500 }
     );
   }
-  return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
+
+  return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
 }

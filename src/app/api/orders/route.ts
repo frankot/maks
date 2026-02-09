@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
             phoneNumber,
             firstName,
             lastName,
-            password: '', // Guest checkout - no password needed
+            password: null, // Guest checkout
           },
         });
       }
@@ -130,8 +130,8 @@ export async function POST(request: NextRequest) {
           data: {
             orderId: newOrder.id,
             productId: item.productId,
-            priceInGrosz: item.priceInCents, // Store in grosz (will use cents for EUR)
-            currency: 'EUR', // Assuming EUR for now based on cart
+            priceInGrosz: item.priceInCents,
+            currency: 'PLN',
           },
         });
       }
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
           orderId: newOrder.id,
           userId: user.id,
           amount: pricePaid,
-          currency: 'EUR',
+          currency: 'PLN',
           status: 'PENDING',
           paymentMethodType: PaymentMethod.STRIPE,
         },

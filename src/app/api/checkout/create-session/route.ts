@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
       items: JSON.stringify(
         productIds.map((productId: string) => ({
           productId,
-          priceInCents: productMap.get(productId)!.priceInGrosz,
+          priceInGrosz: productMap.get(productId)!.priceInGrosz,
         }))
       ),
     };

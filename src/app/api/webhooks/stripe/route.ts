@@ -113,7 +113,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
             phoneNumber,
             firstName,
             lastName,
-            password: '', // Guest checkout - no password needed
+            password: null, // Guest checkout
           },
         });
       }
@@ -166,8 +166,8 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
           data: {
             orderId: newOrder.id,
             productId: item.productId,
-            priceInGrosz: item.priceInCents,
-            currency: 'EUR',
+            priceInGrosz: item.priceInGrosz,
+            currency: 'PLN',
           },
         });
 
@@ -187,7 +187,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
           orderId: newOrder.id,
           userId: user.id,
           amount: pricePaid,
-          currency: session.currency?.toUpperCase() || 'EUR',
+          currency: session.currency?.toUpperCase() || 'PLN',
           status: PaymentStatus.COMPLETED,
           paymentMethodType: PaymentMethod.STRIPE,
           transactionId: session.id, // Store Stripe session ID
