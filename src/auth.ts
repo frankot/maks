@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
@@ -8,14 +9,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         login: { label: 'Login', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
-      authorize(credentials) {
+      async authorize(credentials) {
         const adminLogin = process.env.ADMIN_LOGIN;
-        const adminPassword = process.env.ADMIN_PASSWORD;
+        const adminPasswordHash = process.env.ADMIN_PASSWORD;
 
-        if (
-          credentials?.login === adminLogin &&
-          credentials?.password === adminPassword
-        ) {
+        if (!credentials?.login || !credentials?.password || !adminLogin || !adminPasswordHash) {
+          return null;
+        }
+
+        const passwordMatch = await bcrypt.compare(
+          credentials.password as string,
+          adminPasswordHash
+        );
+
+        if (credentials.login === adminLogin && passwordMatch) {
           return { id: '1', name: 'Admin', email: adminLogin };
         }
 

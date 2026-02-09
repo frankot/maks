@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { prisma } from '@/lib/prisma';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-12-15.clover',
@@ -57,41 +58,50 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    interface CartItem {
-      productId: string;
-      name: string;
-      priceInCents: number;
-      description?: string;
-      imagePath?: string;
+    // Extract product IDs from cart items
+    const productIds = items.map((item: { productId: string }) => item.productId);
+
+    // Fetch products from DB — only SHOP status products are purchasable
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds }, productStatus: 'SHOP' },
+    });
+
+    // Verify all requested products exist and are available
+    if (products.length !== productIds.length) {
+      const foundIds = new Set(products.map((p) => p.id));
+      const missingIds = productIds.filter((id: string) => !foundIds.has(id));
+      return NextResponse.json(
+        { error: `Products not available: ${missingIds.join(', ')}` },
+        { status: 400 }
+      );
     }
 
-    // Create line items for Stripe (quantity is always 1 for unique products)
-    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map(
-      (item: CartItem) => {
-        const productData: Stripe.Checkout.SessionCreateParams.LineItem.PriceData.ProductData = {
-          name: item.name,
-        };
+    // Build a lookup map for DB products
+    const productMap = new Map(products.map((p) => [p.id, p]));
 
-        // Only add description if it exists and is not empty
-        if (item.description && item.description.trim()) {
-          productData.description = item.description;
-        }
+    // Create line items for Stripe using DB-sourced data (quantity is always 1 for unique products)
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = products.map((product) => {
+      const productData: Stripe.Checkout.SessionCreateParams.LineItem.PriceData.ProductData = {
+        name: product.name,
+      };
 
-        // Only add images if they exist
-        if (item.imagePath) {
-          productData.images = [item.imagePath];
-        }
-
-        return {
-          price_data: {
-            currency: 'pln',
-            unit_amount: item.priceInCents,
-            product_data: productData,
-          },
-          quantity: 1, // Always 1 for unique products
-        };
+      if (product.description && product.description.trim()) {
+        productData.description = product.description;
       }
-    );
+
+      if (product.imagePaths.length > 0) {
+        productData.images = [product.imagePaths[0]];
+      }
+
+      return {
+        price_data: {
+          currency: 'pln',
+          unit_amount: product.priceInGrosz,
+          product_data: productData,
+        },
+        quantity: 1,
+      };
+    });
 
     // Calculate shipping cost (you can customize this)
     const shippingCost = 0; // Free shipping for now
@@ -112,7 +122,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Store order data in metadata (Stripe has a 500 character limit per metadata value)
+    // Store order data in metadata using DB prices
     const metadata = {
       email,
       phoneNumber,
@@ -124,9 +134,9 @@ export async function POST(request: NextRequest) {
       postalCode,
       country,
       items: JSON.stringify(
-        items.map((item: CartItem) => ({
-          productId: item.productId,
-          priceInCents: item.priceInCents,
+        productIds.map((productId: string) => ({
+          productId,
+          priceInCents: productMap.get(productId)!.priceInGrosz,
         }))
       ),
     };

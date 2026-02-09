@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createProduct } from '@/lib/products';
 import type { Category } from '@prisma/client';
 import { errorHandler } from '@/lib/errorHandler';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,6 +26,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const unauthorized = await requireAdmin();
+  if (unauthorized) return unauthorized;
+
   try {
     const body = await request.json();
 

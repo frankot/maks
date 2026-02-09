@@ -7,6 +7,7 @@ import {
   getGalleryImagesByRowId,
 } from '@/lib/gallery';
 import type { GalleryLayout } from '@prisma/client';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -25,6 +26,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const unauthorized = await requireAdmin();
+  if (unauthorized) return unauthorized;
+
   try {
     const body = await request.json();
     const { layout, order } = body;
@@ -48,6 +52,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const unauthorized = await requireAdmin();
+  if (unauthorized) return unauthorized;
+
   try {
     const { id } = await request.json();
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCollections, createCollection } from '@/lib/collections';
 import { errorHandler } from '@/lib/errorHandler';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 export async function GET() {
   try {
@@ -13,6 +14,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const unauthorized = await requireAdmin();
+  if (unauthorized) return unauthorized;
+
   try {
     const body = await request.json();
     const { name, slug } = body as { name: string; slug?: string };
