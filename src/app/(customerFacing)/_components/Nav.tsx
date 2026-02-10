@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
 import NavCarousel from './NavCarousel';
 import { useCartStore } from '@/stores/cart-store';
 import { useNavStore } from '@/stores/nav-store';
@@ -12,7 +11,6 @@ const navLinks = [
   { href: '/shop', label: 'Shop' },
   { href: '/about', label: 'About' },
   { href: '/gallery', label: 'Gallery' },
-  { href: '/sold', label: 'Sold' },
   { href: '/contact', label: 'Contact' },
 ];
 
@@ -159,19 +157,9 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
             <div className="flex w-full items-center justify-between gap-4 md:justify-center md:gap-8">
               <Link
                 href="/"
-                className="block text-lg font-extrabold tracking-tight whitespace-nowrap text-black uppercase md:text-4xl"
+                className="block text-lg font-light tracking-[0.3em] whitespace-nowrap text-black md:text-4xl"
               >
-                <span className="inline-flex items-center gap-2 align-middle lg:mr-10">
-                  <span className="font-neubold -mr-4">SPLOT</span>
-                  <Image
-                    src="/sun.png"
-                    alt=""
-                    width={50}
-                    height={50}
-                    className="inline-block size-4 align-middle md:size-16"
-                  />
-                  <span className="font-neubold -ml-4">STUDIO</span>
-                </span>
+                mami
               </Link>
 
               {/* Desktop nav links, hidden on mobile */}
@@ -270,18 +258,8 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
 
             {/* Logo at bottom */}
             <div className="flex justify-center pt-8">
-              <div className="text-3xl font-extrabold tracking-tight text-black uppercase">
-                <span className="inline-flex items-center gap-2 align-middle">
-                  <span className="font-neubold -mr-2">SPLOT</span>
-                  <Image
-                    src="/sun.png"
-                    alt=""
-                    width={60}
-                    height={60}
-                    className="inline-block size-12 align-middle"
-                  />
-                  <span className="font-neubold -ml-2">STUDIO</span>
-                </span>
+              <div className="text-3xl font-light tracking-[0.3em] text-black">
+                mami
               </div>
             </div>
           </div>

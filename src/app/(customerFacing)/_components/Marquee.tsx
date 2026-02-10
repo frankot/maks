@@ -10,7 +10,7 @@ interface MarqueeState {
 
 const FALLBACK: MarqueeState = {
   description:
-    'SPLOT STUDIO A jewelry brand founded by Maks Michalak in 2024, based in Warsaw, Poland',
+    'mami — a jewelry brand founded by Maks Michalak in 2024, based in Warsaw, Poland',
   href: '#',
   textHref: 'CHECK US OUT ;)',
 };

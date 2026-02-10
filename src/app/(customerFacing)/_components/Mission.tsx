@@ -24,7 +24,7 @@ export default function Mission() {
             Mission
           </h2>
           <p className="mt-3 text-sm leading-relaxed opacity-95 md:text-base">
-            Splot Studio crafts timeless jewelry with a focus on material honesty, sustainable
+            mami crafts timeless jewelry with a focus on material honesty, sustainable
             processes, and everyday wearability. Designed in Warsaw, made to last.
           </p>
         </div>

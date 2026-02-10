@@ -9,14 +9,11 @@ import type { ImageLoaderProps } from 'next/image';
  * transformations instead of API-based ones.
  */
 export default function cloudinaryLoader({ src, width, quality }: ImageLoaderProps): string {
-  // Handle local paths - let Next.js optimize them
+  // Handle local paths - serve directly from /public
+  // Note: Local images bypass Next.js optimization when using custom loader
+  // Consider uploading them to Cloudinary for optimization
   if (src.startsWith('/')) {
-    // Default Next.js loader behavior for local files
-    const params = new URLSearchParams();
-    params.set('url', src);
-    params.set('w', width.toString());
-    params.set('q', (quality || 75).toString());
-    return `/_next/image?${params.toString()}`;
+    return src;
   }
 
   // Handle Cloudinary URLs

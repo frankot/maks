@@ -28,8 +28,8 @@ export default async function AboutPage() {
           ABOUT
         </span>
         <div className="mx-2 h-4 w-px bg-gray-300" />
-        <span className="text-xs font-bold tracking-widest whitespace-nowrap text-black uppercase">
-          SPLOT STUDIO
+        <span className="text-xs font-light tracking-[0.3em] whitespace-nowrap text-black">
+          mami
         </span>
       </PageWithHeroBar>
 

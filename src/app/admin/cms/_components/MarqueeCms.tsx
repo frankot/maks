@@ -98,7 +98,7 @@ export default function MarqueeCms() {
             id="marquee-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="SPLOT STUDIO A jewelry brand founded by..."
+            placeholder="mami — a jewelry brand founded by..."
             rows={3}
           />
         </div>

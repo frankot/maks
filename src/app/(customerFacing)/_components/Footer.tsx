@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Footer() {
@@ -49,23 +48,10 @@ export default function Footer() {
 }
 
 function LinkLogoLarge() {
-  // Recreate the big navbar logo but larger and responsive
   return (
-    <Link href="/" className="inline-flex items-center align-middle whitespace-nowrap text-black">
-      <span className="font-neubold -mr-12 text-4xl font-extrabold tracking-tight uppercase md:text-6xl lg:text-[9.5rem]">
-        SPLOT
-      </span>
-      <span className="mx-4">
-        <Image
-          src="/sun.png"
-          alt="Splot Studio"
-          width={520}
-          height={520}
-          className="inline-block h-28 w-28 object-contain align-middle md:h-40 md:w-40 lg:h-56 lg:w-56"
-        />
-      </span>
-      <span className="font-neubold -ml-8 text-4xl font-extrabold tracking-tight uppercase md:text-6xl lg:text-[9.5rem]">
-        STUDIO
+    <Link href="/" className="text-black">
+      <span className="text-4xl font-light tracking-[0.3em] md:text-6xl lg:text-[9.5rem]">
+        mami
       </span>
     </Link>
   );
