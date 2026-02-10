@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useNav } from '@/contexts/NavContext';
+import { useNavStore } from '@/stores/nav-store';
 
 interface PageWithHeroBarProps {
   imagePath: string;
@@ -16,7 +16,7 @@ export default function PageWithHeroBar({
   title,
   children,
 }: PageWithHeroBarProps) {
-  const { showNav } = useNav();
+  const showNav = useNavStore((s) => s.showNav);
 
   return (
     <>

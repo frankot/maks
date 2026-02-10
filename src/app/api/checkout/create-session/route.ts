@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
+import { STRIPE_CURRENCY } from '@/lib/constants';
+import { checkoutSchema } from '@/lib/validators/order';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-12-15.clover',
@@ -21,42 +23,7 @@ export async function POST(request: NextRequest) {
       postalCode,
       country,
       paczkomatPointId,
-    } = body;
-
-    // Validate required fields
-    if (
-      !email ||
-      !phoneNumber ||
-      !firstName ||
-      !lastName ||
-      !deliveryMethod ||
-      !items ||
-      items.length === 0
-    ) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
-
-    // Validate delivery-specific fields
-    if (deliveryMethod === 'paczkomat' && !paczkomatPointId) {
-      return NextResponse.json(
-        { error: 'Paczkomat Point ID is required for Paczkomat delivery' },
-        { status: 400 }
-      );
-    }
-
-    if (deliveryMethod === 'address' && !street) {
-      return NextResponse.json(
-        { error: 'Street address is required for address delivery' },
-        { status: 400 }
-      );
-    }
-
-    if (!city || !postalCode || !country) {
-      return NextResponse.json(
-        { error: 'City, postal code, and country are required' },
-        { status: 400 }
-      );
-    }
+    } = checkoutSchema.parse(body);
 
     // Extract product IDs from cart items
     const productIds = items.map((item: { productId: string }) => item.productId);
@@ -95,7 +62,7 @@ export async function POST(request: NextRequest) {
 
       return {
         price_data: {
-          currency: 'pln',
+          currency: STRIPE_CURRENCY,
           unit_amount: product.priceInGrosz,
           product_data: productData,
         },
@@ -110,7 +77,7 @@ export async function POST(request: NextRequest) {
     if (shippingCost > 0) {
       lineItems.push({
         price_data: {
-          currency: 'pln',
+          currency: STRIPE_CURRENCY,
           unit_amount: shippingCost,
           product_data: {
             name: 'Shipping',

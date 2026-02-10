@@ -1,5 +1,7 @@
 'use server';
 
+import { z } from 'zod';
+import { actionClient } from '@/lib/safe-action';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { v2 as cloudinary } from 'cloudinary';
@@ -10,21 +12,18 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function deleteProductAction(productId: string) {
-  try {
-    // Get product from database first
+export const deleteProductAction = actionClient
+  .inputSchema(z.object({ productId: z.string() }))
+  .action(async ({ parsedInput: { productId } }) => {
     const product = await prisma.product.findUnique({
       where: { id: productId },
-      include: {
-        orderItems: true, // Include related order items
-      },
+      include: { orderItems: true },
     });
 
     if (!product) {
       throw new Error('Product not found');
     }
 
-    // Check if product has been ordered
     if (product.orderItems.length > 0) {
       throw new Error(
         'Cannot delete product that has been ordered. Consider marking it as unavailable instead.'
@@ -38,48 +37,37 @@ export async function deleteProductAction(productId: string) {
           await cloudinary.uploader.destroy(publicId);
         } catch (cloudinaryError) {
           console.error('Cloudinary deletion error for publicId:', publicId, cloudinaryError);
-          // Continue with other images even if one fails
         }
       }
     }
 
-    // Delete from database
     await prisma.product.delete({
       where: { id: productId },
     });
 
     revalidatePath('/admin/products');
     return { success: true };
-  } catch (error) {
-    console.error('Error deleting product:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Failed to delete product';
-    return { success: false, error: errorMessage };
-  }
-}
+  });
 
-export async function toggleProductAvailabilityAction(productId: string, isAvailable: boolean) {
-  try {
+export const toggleProductAvailabilityAction = actionClient
+  .inputSchema(z.object({ productId: z.string(), isAvailable: z.boolean() }))
+  .action(async ({ parsedInput: { productId, isAvailable } }) => {
     const { updateProduct } = await import('@/lib/products');
     await updateProduct(productId, { isAvailable });
     revalidatePath('/admin/products');
     return { success: true };
-  } catch (error) {
-    console.error('Error toggling product availability:', error);
-    return { success: false, error: 'Failed to update product availability' };
-  }
-}
+  });
 
-export async function updateProductStatusAction(
-  productId: string,
-  productStatus: 'SHOP' | 'ORDERED' | 'SOLD'
-) {
-  try {
+export const updateProductStatusAction = actionClient
+  .inputSchema(
+    z.object({
+      productId: z.string(),
+      productStatus: z.enum(['SHOP', 'ORDERED', 'SOLD']),
+    })
+  )
+  .action(async ({ parsedInput: { productId, productStatus } }) => {
     const { updateProduct } = await import('@/lib/products');
     await updateProduct(productId, { productStatus });
     revalidatePath('/admin/products');
     return { success: true };
-  } catch (error) {
-    console.error('Error updating product status:', error);
-    return { success: false, error: 'Failed to update product status' };
-  }
-}
+  });

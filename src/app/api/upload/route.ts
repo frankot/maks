@@ -1,6 +1,14 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth/require-admin';
+import {
+  MAX_FILE_SIZE_BYTES,
+  MAX_FILE_SIZE_MB,
+  MAX_IMAGE_DIMENSION,
+  REUPLOAD_IMAGE_DIMENSION,
+  IMAGE_QUALITY,
+  REUPLOAD_IMAGE_QUALITY,
+} from '@/lib/constants';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -28,10 +36,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (10MB max)
-    if (file.size > 10 * 1024 * 1024) {
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE_BYTES) {
       return NextResponse.json(
-        { error: 'File too large. Maximum size is 10MB.' },
+        { error: `File too large. Maximum size is ${MAX_FILE_SIZE_MB}MB.` },
         { status: 400 }
       );
     }
@@ -55,12 +63,12 @@ export async function POST(request: NextRequest) {
             resource_type: 'image',
             folder: 'maks',
             transformation: [
-              { width: 2000, height: 2000, crop: 'limit' }, // Max dimensions for product images
-              { quality: 'auto:best' }, // Auto quality with best setting
-              { fetch_format: 'auto' }, // Automatically deliver best format (webp for modern browsers)
+              { width: MAX_IMAGE_DIMENSION, height: MAX_IMAGE_DIMENSION, crop: 'limit' },
+              { quality: 'auto:best' },
+              { fetch_format: 'auto' },
             ],
-            format: 'webp', // Force WebP format
-            quality: 85, // Good balance between quality and file size
+            format: 'webp',
+            quality: IMAGE_QUALITY,
             secure: true,
           },
           (error, result) => {
@@ -107,11 +115,11 @@ export async function POST(request: NextRequest) {
               resource_type: 'image',
               folder: 'maks',
               transformation: [
-                { width: 1600, height: 1600, crop: 'limit' }, // Slightly smaller max dimensions
-                { quality: 'auto:good' }, // Lower quality preset
+                { width: REUPLOAD_IMAGE_DIMENSION, height: REUPLOAD_IMAGE_DIMENSION, crop: 'limit' },
+                { quality: 'auto:good' },
               ],
               format: 'webp',
-              quality: 70, // More aggressive compression
+              quality: REUPLOAD_IMAGE_QUALITY,
               secure: true,
             },
             (error, result) => {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCollections, createCollection } from '@/lib/collections';
 import { errorHandler } from '@/lib/errorHandler';
 import { requireAdmin } from '@/lib/auth/require-admin';
+import { createCollectionSchema } from '@/lib/validators/collection';
 
 export async function GET() {
   try {
@@ -19,13 +20,9 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, slug } = body as { name: string; slug?: string };
+    const parsed = createCollectionSchema.parse(body);
 
-    if (!name) {
-      return NextResponse.json({ error: 'Collection name is required' }, { status: 400 });
-    }
-
-    const collection = await createCollection({ name, slug });
+    const collection = await createCollection({ name: parsed.name, slug: parsed.slug });
     return NextResponse.json(collection, { status: 201 });
   } catch (error) {
     console.error('Error creating collection:', error);

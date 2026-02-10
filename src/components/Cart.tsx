@@ -1,6 +1,6 @@
 'use client';
 
-import { useCart } from '@/contexts/CartContext';
+import { useCartStore } from '@/stores/cart-store';
 import { formatCartPrice } from '@/lib/cart';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { X, ShoppingBag } from 'lucide-react';
 
 export default function Cart() {
-  const { cart, isOpen, closeCart, removeItem } = useCart();
+  const { items, isOpen, closeCart, removeItem, totalPriceInCents } = useCartStore();
 
   return (
     <Sheet open={isOpen} onOpenChange={closeCart}>
@@ -23,7 +23,7 @@ export default function Cart() {
 
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto px-6 py-6">
-          {cart.items.length === 0 ? (
+          {items.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center space-y-4 text-center">
               <ShoppingBag className="h-12 w-12 text-gray-300" strokeWidth={1.5} />
               <div>
@@ -33,7 +33,7 @@ export default function Cart() {
             </div>
           ) : (
             <div className="space-y-6">
-              {cart.items.map((item) => (
+              {items.map((item) => (
                 <div key={item.productId} className="flex gap-4 border-b pb-6 last:border-b-0">
                   {/* Product Image */}
                   <Link
@@ -80,11 +80,11 @@ export default function Cart() {
         </div>
 
         {/* Footer with Total and Checkout */}
-        {cart.items.length > 0 && (
+        {items.length > 0 && (
           <div className="mx-2 space-y-4 border-t px-6 pt-6 pb-6">
             <div className="flex items-center justify-between text-sm">
               <span className="font-medium tracking-wide uppercase">Subtotal</span>
-              <span className="font-bold">{formatCartPrice(cart.totalPriceInCents)}</span>
+              <span className="font-bold">{formatCartPrice(totalPriceInCents())}</span>
             </div>
             <Button
               className="h-12 w-full bg-black text-xs font-medium tracking-wider text-white uppercase hover:bg-gray-900"

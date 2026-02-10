@@ -27,6 +27,7 @@ async function getUniqueSlug(name: string): Promise<string> {
 export async function getCollections(): Promise<Collection[]> {
   try {
     const collections = await prisma.collection.findMany({
+      where: { deletedAt: null },
       orderBy: {
         createdAt: 'desc',
       },
@@ -90,7 +91,8 @@ export async function updateCollection(
 }
 
 export async function deleteCollection(id: string): Promise<void> {
-  await prisma.collection.delete({
+  await prisma.collection.update({
     where: { id },
+    data: { deletedAt: new Date() },
   });
 }

@@ -31,9 +31,9 @@ export function CustomerActionsDropdown({
     ) {
       setIsLoading(true);
       try {
-        const result = await deleteCustomerAction(customerId);
-        if (!result.success) {
-          console.error('Failed to delete customer:', result.error);
+        const result = await deleteCustomerAction({ customerId });
+        if (result?.serverError) {
+          console.error('Failed to delete customer:', result.serverError);
         }
       } catch (error) {
         console.error('Error deleting customer:', error);

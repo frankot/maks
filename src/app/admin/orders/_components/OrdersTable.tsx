@@ -34,17 +34,17 @@ export function OrdersTable({ orders }: OrdersTableProps) {
   };
 
   const handleMarkAsShipped = async (orderId: string) => {
-    const result = await markAsShippedAction(orderId);
-    if (!result.success) {
-      console.error('Failed to mark as shipped:', result.error);
+    const result = await markAsShippedAction({ orderId });
+    if (result?.serverError) {
+      console.error('Failed to mark as shipped:', result.serverError);
     }
   };
 
   const handleDelete = async (orderId: string) => {
     if (window.confirm('Are you sure you want to delete this order?')) {
-      const result = await deleteOrderAction(orderId);
-      if (!result.success) {
-        console.error('Failed to delete order:', result.error);
+      const result = await deleteOrderAction({ orderId });
+      if (result?.serverError) {
+        console.error('Failed to delete order:', result.serverError);
       }
     }
   };

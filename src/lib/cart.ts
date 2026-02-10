@@ -13,7 +13,7 @@ export type Cart = {
   totalPriceInCents: number;
 };
 
-export const CART_STORAGE_KEY = 'maks-cart';
+export { CART_STORAGE_KEY } from './constants';
 
 // Calculate cart totals
 export function calculateCartTotals(items: CartItem[]): {

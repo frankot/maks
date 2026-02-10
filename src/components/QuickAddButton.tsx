@@ -1,6 +1,6 @@
 'use client';
 
-import { useCart } from '@/contexts/CartContext';
+import { useCartStore } from '@/stores/cart-store';
 import { ShoppingBag, Check } from 'lucide-react';
 
 interface QuickAddButtonProps {
@@ -19,7 +19,7 @@ interface QuickAddButtonProps {
  * Adds item to cart without opening the cart panel
  */
 export default function QuickAddButton({ product, className = '' }: QuickAddButtonProps) {
-  const { addItem, isInCart } = useCart();
+  const { addItem, isInCart } = useCartStore();
   const alreadyInCart = isInCart(product.id);
 
   const handleQuickAdd = (e: React.MouseEvent) => {

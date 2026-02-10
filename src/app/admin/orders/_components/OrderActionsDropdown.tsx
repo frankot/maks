@@ -23,9 +23,9 @@ export function OrderActionsDropdown({ orderId, onViewDetails }: OrderActionsDro
   const handleMarkAsShipped = async () => {
     setIsLoading(true);
     try {
-      const result = await markAsShippedAction(orderId);
-      if (!result.success) {
-        console.error('Failed to mark as shipped:', result.error);
+      const result = await markAsShippedAction({ orderId });
+      if (result?.serverError) {
+        console.error('Failed to mark as shipped:', result.serverError);
       }
     } catch (error) {
       console.error('Error marking as shipped:', error);
@@ -38,9 +38,9 @@ export function OrderActionsDropdown({ orderId, onViewDetails }: OrderActionsDro
     if (window.confirm('Are you sure you want to cancel this order? The customer will be notified.')) {
       setIsLoading(true);
       try {
-        const result = await cancelOrderAction(orderId);
-        if (!result.success) {
-          console.error('Failed to cancel order:', result.error);
+        const result = await cancelOrderAction({ orderId });
+        if (result?.serverError) {
+          console.error('Failed to cancel order:', result.serverError);
         }
       } catch (error) {
         console.error('Error cancelling order:', error);
@@ -54,9 +54,9 @@ export function OrderActionsDropdown({ orderId, onViewDetails }: OrderActionsDro
     if (window.confirm('Are you sure you want to delete this order?')) {
       setIsLoading(true);
       try {
-        const result = await deleteOrderAction(orderId);
-        if (!result.success) {
-          console.error('Failed to delete order:', result.error);
+        const result = await deleteOrderAction({ orderId });
+        if (result?.serverError) {
+          console.error('Failed to delete order:', result.serverError);
         }
       } catch (error) {
         console.error('Error deleting order:', error);

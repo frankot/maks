@@ -43,9 +43,9 @@ export function CustomersTable({ customers }: CustomersTableProps) {
         'Are you sure you want to delete this customer? This will also delete all their orders.'
       )
     ) {
-      const result = await deleteCustomerAction(customerId);
-      if (!result.success) {
-        console.error('Failed to delete customer:', result.error);
+      const result = await deleteCustomerAction({ customerId });
+      if (result?.serverError) {
+        console.error('Failed to delete customer:', result.serverError);
       }
     }
   };

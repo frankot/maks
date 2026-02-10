@@ -43,16 +43,16 @@ export function ProductsTable({ products }: ProductsTableProps) {
   };
 
   const handleToggleAvailability = async (productId: string, currentAvailability: boolean) => {
-    const result = await toggleProductAvailabilityAction(productId, !currentAvailability);
-    if (!result.success) {
-      console.error('Failed to toggle availability:', result.error);
+    const result = await toggleProductAvailabilityAction({ productId, isAvailable: !currentAvailability });
+    if (result?.serverError) {
+      console.error('Failed to toggle availability:', result.serverError);
     }
   };
 
   const handleStatusChange = async (productId: string, newStatus: 'SHOP' | 'ORDERED' | 'SOLD') => {
-    const result = await updateProductStatusAction(productId, newStatus);
-    if (!result.success) {
-      console.error('Failed to update status:', result.error);
+    const result = await updateProductStatusAction({ productId, productStatus: newStatus });
+    if (result?.serverError) {
+      console.error('Failed to update status:', result.serverError);
     }
   };
 
@@ -69,12 +69,12 @@ export function ProductsTable({ products }: ProductsTableProps) {
     setDeleteError(null);
 
     try {
-      const result = await deleteProductAction(productToDelete.id);
-      if (result.success) {
+      const result = await deleteProductAction({ productId: productToDelete.id });
+      if (result?.data?.success) {
         setDeleteModalOpen(false);
         setProductToDelete(null);
       } else {
-        setDeleteError(result.error || 'Failed to delete product');
+        setDeleteError(result?.serverError || 'Failed to delete product');
       }
     } catch (error) {
       console.error('Error deleting product:', error);

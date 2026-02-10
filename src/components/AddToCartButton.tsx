@@ -1,6 +1,6 @@
 'use client';
 
-import { useCart } from '@/contexts/CartContext';
+import { useCartStore } from '@/stores/cart-store';
 import { Button } from '@/components/ui/button';
 import { Check, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
@@ -24,7 +24,7 @@ export default function AddToCartButton({
   size = 'default',
   variant = 'default',
 }: AddToCartButtonProps) {
-  const { addItem, openCart, isInCart } = useCart();
+  const { addItem, openCart, isInCart } = useCartStore();
   const [added, setAdded] = useState(false);
   const alreadyInCart = isInCart(product.id);
 

@@ -1,9 +1,11 @@
 import { prisma } from './prisma';
 import { OrderStatus } from '@prisma/client';
+import { DEFAULT_PAGE_SIZE } from './constants';
 
 export async function getOrders() {
   try {
     const orders = await prisma.order.findMany({
+      where: { deletedAt: null },
       include: {
         user: {
           select: {
@@ -23,6 +25,38 @@ export async function getOrders() {
   }
 }
 
+export async function getOrdersPaginated(params: {
+  cursor?: string;
+  pageSize?: number;
+  status?: OrderStatus;
+}) {
+  const { cursor, pageSize = DEFAULT_PAGE_SIZE, status } = params;
+
+  const orders = await prisma.order.findMany({
+    take: pageSize + 1,
+    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+    where: {
+      deletedAt: null,
+      ...(status ? { status } : {}),
+    },
+    include: {
+      user: {
+        select: {
+          email: true,
+          phoneNumber: true,
+        },
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const hasMore = orders.length > pageSize;
+  const items = hasMore ? orders.slice(0, -1) : orders;
+  const nextCursor = hasMore ? items[items.length - 1]?.id : undefined;
+
+  return { items, nextCursor, hasMore };
+}
+
 export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   try {
     const updatedOrder = await prisma.order.update({
@@ -38,8 +72,9 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
 
 export async function deleteOrder(orderId: string) {
   try {
-    await prisma.order.delete({
+    await prisma.order.update({
       where: { id: orderId },
+      data: { deletedAt: new Date() },
     });
   } catch (error) {
     console.error('Error deleting order:', error);

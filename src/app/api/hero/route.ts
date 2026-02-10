@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getHeroContent, createHeroContent, updateHeroContent } from '@/lib/hero';
 import { requireAdmin } from '@/lib/auth/require-admin';
+import { createHeroSchema, updateHeroSchema } from '@/lib/validators/hero';
 
 export async function GET() {
   try {
@@ -18,16 +19,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { description, imagePaths, imagePublicIds } = body;
-
-    if (!imagePaths || !Array.isArray(imagePaths)) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
+    const parsed = createHeroSchema.parse(body);
 
     const heroContent = await createHeroContent({
-      description: description || '',
-      imagePaths,
-      imagePublicIds: imagePublicIds || [],
+      description: parsed.description,
+      imagePaths: parsed.imagePaths,
+      imagePublicIds: parsed.imagePublicIds,
     });
 
     return NextResponse.json(heroContent, { status: 201 });
@@ -43,16 +40,12 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, description, imagePaths, imagePublicIds } = body;
+    const parsed = updateHeroSchema.parse(body);
 
-    if (!id) {
-      return NextResponse.json({ error: 'Hero content ID is required' }, { status: 400 });
-    }
-
-    const heroContent = await updateHeroContent(id, {
-      ...(description && { description }),
-      ...(imagePaths && { imagePaths }),
-      ...(imagePublicIds && { imagePublicIds }),
+    const heroContent = await updateHeroContent(parsed.id, {
+      ...(parsed.description && { description: parsed.description }),
+      ...(parsed.imagePaths && { imagePaths: parsed.imagePaths }),
+      ...(parsed.imagePublicIds && { imagePublicIds: parsed.imagePublicIds }),
     });
 
     return NextResponse.json(heroContent);

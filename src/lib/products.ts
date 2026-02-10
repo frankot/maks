@@ -1,5 +1,6 @@
 import { prisma } from './prisma';
 import type { Product, OrderItem, ProductStatus, Category, Collection } from '@prisma/client';
+import { FEATURED_PRODUCTS_LIMIT, CATEGORY_PRODUCTS_LIMIT, DEFAULT_PAGE_SIZE } from './constants';
 
 // Extended Product type with orderItems
 export type ProductWithOrderItems = Product & {
@@ -39,6 +40,7 @@ export function getAvailabilityLabel(isAvailable: boolean) {
 export async function getProducts(): Promise<ProductWithOrderItems[]> {
   try {
     const products = await prisma.product.findMany({
+      where: { deletedAt: null },
       include: {
         orderItems: true,
         collection: true,
@@ -54,12 +56,41 @@ export async function getProducts(): Promise<ProductWithOrderItems[]> {
   }
 }
 
+// For admin - paginated products
+export async function getProductsPaginated(params: {
+  cursor?: string;
+  pageSize?: number;
+  status?: ProductStatus;
+  category?: Category;
+}) {
+  const { cursor, pageSize = DEFAULT_PAGE_SIZE, status, category } = params;
+
+  const products = await prisma.product.findMany({
+    take: pageSize + 1,
+    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+    where: {
+      deletedAt: null,
+      ...(status ? { productStatus: status } : {}),
+      ...(category ? { category } : {}),
+    },
+    include: { orderItems: true, collection: true },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const hasMore = products.length > pageSize;
+  const items = hasMore ? products.slice(0, -1) : products;
+  const nextCursor = hasMore ? items[items.length - 1]?.id : undefined;
+
+  return { items, nextCursor, hasMore };
+}
+
 // For customer-facing - only SHOP products
 export async function getShopProducts(): Promise<ProductWithOrderItems[]> {
   try {
     const products = await prisma.product.findMany({
       where: {
         productStatus: 'SHOP',
+        deletedAt: null,
       },
       include: {
         orderItems: true,
@@ -232,8 +263,9 @@ export async function updateProduct(
 }
 
 export async function deleteProduct(id: string): Promise<void> {
-  await prisma.product.delete({
+  await prisma.product.update({
     where: { id },
+    data: { deletedAt: new Date() },
   });
 }
 
@@ -243,12 +275,13 @@ export async function getFeaturedProducts(category?: Category): Promise<Product[
       where: {
         isAvailable: true,
         productStatus: 'SHOP',
+        deletedAt: null,
         ...(category ? { category } : {}),
       },
       orderBy: {
         createdAt: 'desc',
       },
-      take: 4,
+      take: FEATURED_PRODUCTS_LIMIT,
     });
     return products;
   } catch (error) {
@@ -259,7 +292,7 @@ export async function getFeaturedProducts(category?: Category): Promise<Product[
 
 export async function getProductsByCategory(
   category: Category,
-  take = 24,
+  take = CATEGORY_PRODUCTS_LIMIT,
   collectionSlug?: string
 ): Promise<Product[]> {
   try {
@@ -268,6 +301,7 @@ export async function getProductsByCategory(
         category,
         isAvailable: true,
         productStatus: 'SHOP',
+        deletedAt: null,
         ...(collectionSlug ? { collection: { slug: collectionSlug } } : {}),
       },
       orderBy: { createdAt: 'desc' },

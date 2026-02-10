@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import NavCarousel from './NavCarousel';
-import { useCart } from '@/contexts/CartContext';
-import { useNav } from '@/contexts/NavContext';
+import { useCartStore } from '@/stores/cart-store';
+import { useNavStore } from '@/stores/nav-store';
 
 const navLinks = [
   { href: '/shop', label: 'Shop' },
@@ -28,13 +28,14 @@ interface NavProps {
 
 export default function Nav({ showCollectionsBar = false }: NavProps) {
   const [collections, setCollections] = useState<Collection[]>([]);
-  const { showNav, setShowNav } = useNav();
+  const { showNav, setShowNav } = useNavStore();
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { cart, openCart } = useCart();
+  const openCart = useCartStore((s) => s.openCart);
+  const totalItems = useCartStore((s) => s.totalItems);
 
   const currentCollection = searchParams?.get('collection');
 
@@ -210,9 +211,9 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                 className="relative text-black hover:text-gray-700"
               >
                 <CartIcon size={18} />
-                {isMounted && cart.totalItems > 0 && (
+                {isMounted && totalItems() > 0 && (
                   <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-medium text-white">
-                    {cart.totalItems}
+                    {totalItems()}
                   </span>
                 )}
               </button>
@@ -224,18 +225,18 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
       </nav>
 
       {/* Mobile floating cart button */}
-      {isMounted && cart.totalItems > 0 && (
+      {isMounted && totalItems() > 0 && (
         <button
           onClick={openCart}
           aria-label="Open cart"
           className={`fixed bottom-4 left-4 z-50 bg-black p-3 text-white shadow-lg transition-transform duration-300 md:hidden ${
-            cart.totalItems > 0 ? 'translate-x-0' : '-translate-x-20'
+            totalItems() > 0 ? 'translate-x-0' : '-translate-x-20'
           }`}
         >
           <div className="relative">
             <CartIcon size={20} />
             <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-medium text-black">
-              {cart.totalItems}
+              {totalItems()}
             </span>
           </div>
         </button>

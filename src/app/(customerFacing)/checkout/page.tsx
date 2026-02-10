@@ -1,22 +1,23 @@
 'use client';
 
-import { useCart } from '@/contexts/CartContext';
+import { useCartStore } from '@/stores/cart-store';
 import { formatCartPrice } from '@/lib/cart';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ShoppingBag } from 'lucide-react';
 
 type DeliveryMethod = 'paczkomat' | 'address';
 
 export default function CheckoutPage() {
-  const { cart, isHydrated } = useCart();
+  const { items, totalPriceInCents } = useCartStore();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Form state
   const [email, setEmail] = useState('');
@@ -34,8 +35,12 @@ export default function CheckoutPage() {
   const [postalCode, setPostalCode] = useState('');
   const [country, setCountry] = useState('Poland');
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Show loading state while hydrating
-  if (!isHydrated) {
+  if (!isMounted) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
         <div className="space-y-4 text-center">
@@ -46,7 +51,7 @@ export default function CheckoutPage() {
   }
 
   // Redirect if cart is empty after hydration
-  if (cart.items.length === 0) {
+  if (items.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
         <div className="space-y-4 text-center">
@@ -74,7 +79,7 @@ export default function CheckoutPage() {
         firstName,
         lastName,
         deliveryMethod,
-        items: cart.items.map((item) => ({
+        items: items.map((item) => ({
           productId: item.productId,
           priceInCents: item.priceInCents,
           name: item.name,
@@ -113,7 +118,7 @@ export default function CheckoutPage() {
   };
 
   const shippingCost = 0; // Free shipping for now
-  const total = cart.totalPriceInCents + shippingCost;
+  const total = totalPriceInCents() + shippingCost;
 
   return (
     <div className="min-h-screen bg-gray-50 pt-[var(--nav-height)]">
@@ -353,7 +358,7 @@ export default function CheckoutPage() {
 
               {/* Cart Items */}
               <div className="mb-6 space-y-4 border-b pb-6">
-                {cart.items.map((item) => (
+                {items.map((item) => (
                   <div key={item.productId} className="flex gap-4">
                     <div className="relative h-16 w-16 flex-shrink-0 bg-gray-100">
                       {item.imagePath ? (
@@ -381,7 +386,7 @@ export default function CheckoutPage() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">{formatCartPrice(cart.totalPriceInCents)}</span>
+                  <span className="font-medium">{formatCartPrice(totalPriceInCents())}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
