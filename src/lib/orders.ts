@@ -64,7 +64,10 @@ export async function getOrderById(orderId: string) {
           include: {
             product: {
               select: {
+                id: true,
+                slug: true,
                 name: true,
+                imagePaths: true,
                 priceInGrosz: true,
                 priceInCents: true,
               },

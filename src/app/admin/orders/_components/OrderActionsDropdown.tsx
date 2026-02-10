@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MoreHorizontal, Eye, Truck, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Eye, Truck, XCircle, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { markAsShippedAction, deleteOrderAction } from '../actions';
+import { markAsShippedAction, cancelOrderAction, deleteOrderAction } from '../actions';
 
 interface OrderActionsDropdownProps {
   orderId: string;
@@ -31,6 +31,22 @@ export function OrderActionsDropdown({ orderId, onViewDetails }: OrderActionsDro
       console.error('Error marking as shipped:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    if (window.confirm('Are you sure you want to cancel this order? The customer will be notified.')) {
+      setIsLoading(true);
+      try {
+        const result = await cancelOrderAction(orderId);
+        if (!result.success) {
+          console.error('Failed to cancel order:', result.error);
+        }
+      } catch (error) {
+        console.error('Error cancelling order:', error);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -68,6 +84,10 @@ export function OrderActionsDropdown({ orderId, onViewDetails }: OrderActionsDro
           Mark as shipped
         </DropdownMenuItem>
         <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleCancel} className="text-orange-600">
+          <XCircle className="mr-2 h-4 w-4" />
+          Cancel order
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={handleDelete} className="text-red-600">
           <Trash2 className="mr-2 h-4 w-4" />
           Delete

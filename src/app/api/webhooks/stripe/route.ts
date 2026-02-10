@@ -198,6 +198,45 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     });
 
     console.log(`✅ Order ${order.id} created successfully for session ${session.id}`);
+
+    // Send order confirmation email (outside transaction — never affects webhook response)
+    try {
+      const { getOrderById } = await import('@/lib/orders');
+      const { sendOrderConfirmationEmail } = await import('@/lib/email');
+      const fullOrder = await getOrderById(order.id);
+
+      if (fullOrder && fullOrder.user) {
+        const emailData = {
+          orderId: fullOrder.id,
+          customerName: `${fullOrder.user.firstName || ''} ${fullOrder.user.lastName || ''}`.trim(),
+          customerEmail: fullOrder.user.email,
+          currency: session.currency?.toUpperCase() || 'PLN',
+          orderItems: fullOrder.orderItems.map((item) => ({
+            id: item.product.id,
+            name: item.product.name,
+            slug: item.product.slug ?? null,
+            imagePath: item.product.imagePaths?.[0] ?? null,
+            price: item.priceInGrosz,
+          })),
+          subtotal: fullOrder.subtotal,
+          shippingCost: fullOrder.shippingCost,
+          pricePaid: fullOrder.pricePaid,
+          shippingAddress: fullOrder.shippingAddress
+            ? {
+                street: fullOrder.shippingAddress.street,
+                city: fullOrder.shippingAddress.city,
+                postalCode: fullOrder.shippingAddress.postalCode,
+                country: fullOrder.shippingAddress.country,
+              }
+            : null,
+        };
+
+        await sendOrderConfirmationEmail(emailData);
+      }
+    } catch (emailError) {
+      console.error('⚠️ Failed to send confirmation email (order still created):', emailError);
+    }
+
     return order;
   } catch (error) {
     console.error('❌ Error handling checkout session completed:', error);
