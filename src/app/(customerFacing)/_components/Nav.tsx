@@ -258,9 +258,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
 
             {/* Logo at bottom */}
             <div className="flex justify-center pt-8">
-              <div className="text-3xl font-light tracking-[0.3em] text-black">
-                mami
-              </div>
+              <div className="text-3xl font-light tracking-[0.3em] text-black">mami</div>
             </div>
           </div>
 

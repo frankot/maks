@@ -9,8 +9,7 @@ interface MarqueeState {
 }
 
 const FALLBACK: MarqueeState = {
-  description:
-    'mami — a jewelry brand founded by Maks Michalak in 2024, based in Warsaw, Poland',
+  description: 'mami — a jewelry brand founded by Maks Michalak in 2024, based in Warsaw, Poland',
   href: '#',
   textHref: 'CHECK US OUT ;)',
 };
