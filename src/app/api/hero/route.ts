@@ -3,6 +3,9 @@ import { getHeroContent, createHeroContent, updateHeroContent } from '@/lib/hero
 import { requireAdmin } from '@/lib/auth/require-admin';
 import { createHeroSchema, updateHeroSchema } from '@/lib/validators/hero';
 
+// Enable ISR with 1 hour revalidation
+export const revalidate = 3600;
+
 export async function GET() {
   try {
     const heroContent = await getHeroContent();

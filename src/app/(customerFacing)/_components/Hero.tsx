@@ -92,7 +92,8 @@ export default function Hero() {
                 priority={index === 0}
                 placeholder="blur"
                 blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgZmlsbD0iI2YzZjRmNiIvPjwvc3ZnPg=="
-                unoptimized={true}
+                sizes="(max-width: 768px) 50vw, 960px"
+                quality={85}
               />
             </div>
             <div className="relative w-1/2">
@@ -104,7 +105,8 @@ export default function Hero() {
                 priority={index === 0}
                 placeholder="blur"
                 blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgZmlsbD0iI2YzZjRmNiIvPjwvc3ZnPg=="
-                unoptimized={true}
+                sizes="(max-width: 768px) 50vw, 960px"
+                quality={85}
               />
             </div>
           </div>

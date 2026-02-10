@@ -42,7 +42,7 @@ export default function ProductCard({
             fill
             className="object-cover transition-transform duration-300 hover:scale-110"
             sizes="360px"
-            unoptimized={product.imagePaths?.[0]?.includes('res.cloudinary.com') ?? false}
+            quality={85}
           />
         </div>
       </Link>

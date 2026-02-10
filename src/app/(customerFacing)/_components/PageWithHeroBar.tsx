@@ -24,7 +24,15 @@ export default function PageWithHeroBar({
         {/* Hero Image */}
         <div className="relative h-[120px] w-full lg:h-[400px]">
           <div className="absolute inset-0 z-10 bg-black/10" />
-          <Image src={imagePath} alt={imageAlt} fill className="object-cover" priority />
+          <Image
+            src={imagePath}
+            alt={imageAlt}
+            fill
+            className="object-cover"
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1920px) 100vw, 1920px"
+            quality={85}
+          />
           {title && (
             <div className="absolute inset-0 z-20 flex items-center justify-center">
               <h1 className="text-3xl font-semibold tracking-wider text-white uppercase">
