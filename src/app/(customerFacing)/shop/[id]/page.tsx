@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getProductById, getProductBySlug } from '@/lib/products';
@@ -15,6 +16,43 @@ const CATEGORY_SLUGS = ['necklaces', 'rings', 'earrings', 'bracelets', 'chains']
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  if (CATEGORY_SLUGS.includes(id.toLowerCase())) {
+    const label = id.charAt(0).toUpperCase() + id.slice(1).toLowerCase();
+    return {
+      title: `${label}`,
+      description: `Shop handmade ${id.toLowerCase()} by MAMI. Each piece is one-of-a-kind, crafted in our Warsaw studio with natural forms and raw stones.`,
+      alternates: { canonical: `https://mami.com.pl/shop/${id.toLowerCase()}` },
+    };
+  }
+
+  let product = await getProductBySlug(id);
+  if (!product) product = await getProductById(id);
+
+  if (!product) {
+    return { title: 'Product Not Found' };
+  }
+
+  const ogImage = product.imagePaths?.[0];
+
+  return {
+    title: product.name,
+    description:
+      product.description ||
+      `${product.name} — handmade jewelry by MAMI. One-of-a-kind piece crafted in Warsaw.`,
+    alternates: { canonical: `https://mami.com.pl/shop/${product.slug || product.id}` },
+    openGraph: {
+      title: `${product.name} | MAMI`,
+      description:
+        product.description ||
+        `${product.name} — handmade jewelry by MAMI.`,
+      ...(ogImage && { images: [{ url: ogImage, alt: product.name }] }),
+    },
+  };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {

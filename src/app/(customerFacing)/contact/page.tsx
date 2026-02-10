@@ -1,9 +1,12 @@
+import type { Metadata } from 'next';
 import PageWithHeroBar from '../_components/PageWithHeroBar';
 import ContactForm from './_components/ContactForm';
 
-export const metadata = {
-  title: 'Contact — MAKS',
-  description: 'Get in touch with Splot Studio.',
+export const metadata: Metadata = {
+  title: 'Contact',
+  description:
+    'Get in touch with MAMI. Questions about orders, custom pieces, or collaborations — we would love to hear from you.',
+  alternates: { canonical: 'https://mami.com.pl/contact' },
 };
 
 export default function ContactPage() {
