@@ -1,20 +1,20 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import type { Category, Product } from '@prisma/client';
-import FeaturedProductsBase from './FeaturedProductsBase';
+import React, { useState } from 'react'
+import type { Category, Product } from '@prisma/client'
+import FeaturedProductsBase from './FeaturedProductsBase'
 
 interface FeaturedProductsDynamicProps {
-  initialCategory: Category;
-  categoryProducts: Record<Category, Product[]>;
-  categoryTitles?: Partial<Record<Category, string>>;
+  initialCategory: Category
+  categoryProducts: Record<Category, Product[]>
+  categoryTitles?: Partial<Record<Category, string>>
 }
 
 const categoryOrder: Category[] = [
   'RINGS' as Category,
   'NECKLACES' as Category,
   'EARRINGS' as Category,
-];
+]
 
 function RefreshCategoryIcon() {
   return (
@@ -32,7 +32,7 @@ function RefreshCategoryIcon() {
         d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
       />
     </svg>
-  );
+  )
 }
 
 export default function FeaturedProductsDynamic({
@@ -41,17 +41,17 @@ export default function FeaturedProductsDynamic({
   categoryTitles,
 }: FeaturedProductsDynamicProps) {
   const [currentIndex, setCurrentIndex] = useState(() => {
-    const idx = categoryOrder.indexOf(initialCategory);
-    return idx >= 0 ? idx : 0;
-  });
+    const idx = categoryOrder.indexOf(initialCategory)
+    return idx >= 0 ? idx : 0
+  })
 
-  const currentCategory = categoryOrder[currentIndex] as Category;
-  const products = categoryProducts[currentCategory] || [];
-  const titleText = categoryTitles?.[currentCategory] ?? currentCategory;
+  const currentCategory = categoryOrder[currentIndex] as Category
+  const products = categoryProducts[currentCategory] || []
+  const titleText = categoryTitles?.[currentCategory] ?? currentCategory
 
   const handleCategoryNext = () => {
-    setCurrentIndex((i) => (i + 1) % categoryOrder.length);
-  };
+    setCurrentIndex((i) => (i + 1) % categoryOrder.length)
+  }
 
   const header = (
     <div className="mx-auto px-4">
@@ -72,7 +72,7 @@ export default function FeaturedProductsDynamic({
         </div>
       </div>
     </div>
-  );
+  )
 
   return (
     <FeaturedProductsBase
@@ -80,5 +80,5 @@ export default function FeaturedProductsDynamic({
       header={header}
       ariaLabel={`${titleText} product list`}
     />
-  );
+  )
 }

@@ -1,12 +1,12 @@
-'use client';
+'use client'
 
-import React from 'react';
-import type { Product } from '@prisma/client';
-import FeaturedProductsBase from './FeaturedProductsBase';
+import React from 'react'
+import type { Product } from '@prisma/client'
+import FeaturedProductsBase from './FeaturedProductsBase'
 
 interface FeaturedProductsProps {
-  title?: string;
-  products: Product[];
+  title?: string
+  products: Product[]
 }
 
 export default function FeaturedProducts({ title, products }: FeaturedProductsProps) {
@@ -18,7 +18,7 @@ export default function FeaturedProducts({ title, products }: FeaturedProductsPr
         </h2>
       </div>
     </div>
-  ) : null;
+  ) : null
 
   return (
     <FeaturedProductsBase
@@ -26,5 +26,5 @@ export default function FeaturedProducts({ title, products }: FeaturedProductsPr
       header={header}
       ariaLabel={title ? `${title} product list` : 'product list'}
     />
-  );
+  )
 }

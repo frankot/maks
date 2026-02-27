@@ -1,144 +1,144 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
-import NavCarousel from './NavCarousel';
-import { useCartStore } from '@/stores/cart-store';
-import { useNavStore } from '@/stores/nav-store';
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
+import NavCarousel from './NavCarousel'
+import { useCartStore } from '@/stores/cart-store'
+import { useNavStore } from '@/stores/nav-store'
 
 const navLinks = [
   { href: '/shop', label: 'Shop' },
   { href: '/about', label: 'About' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/contact', label: 'Contact' },
-];
+]
 
 interface Collection {
-  id: string;
-  name: string;
-  slug: string;
+  id: string
+  name: string
+  slug: string
 }
 
 interface NavProps {
-  showCollectionsBar?: boolean;
+  showCollectionsBar?: boolean
 }
 
 export default function Nav({ showCollectionsBar = false }: NavProps) {
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const { showNav, setShowNav } = useNavStore();
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [isMounted, setIsMounted] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const openCart = useCartStore((s) => s.openCart);
-  const totalItems = useCartStore((s) => s.totalItems);
+  const [collections, setCollections] = useState<Collection[]>([])
+  const { showNav, setShowNav } = useNavStore()
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [isMounted, setIsMounted] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const openCart = useCartStore((s) => s.openCart)
+  const totalItems = useCartStore((s) => s.totalItems)
 
-  const currentCollection = searchParams?.get('collection');
+  const currentCollection = searchParams?.get('collection')
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const response = await fetch('/api/collections');
+        const response = await fetch('/api/collections')
         if (response.ok) {
-          const data = await response.json();
-          setCollections(data);
+          const data = await response.json()
+          setCollections(data)
         }
       } catch (error) {
-        console.error('Error fetching collections:', error);
+        console.error('Error fetching collections:', error)
       }
-    };
-    fetchCollections();
-  }, []);
+    }
+    fetchCollections()
+  }, [])
 
   // Handle scroll behavior on desktop only
   useEffect(() => {
     const handleScroll = () => {
-      const isMobile = window.innerWidth < 768;
+      const isMobile = window.innerWidth < 768
 
       // Always show nav on mobile
       if (isMobile) {
-        setShowNav(true);
-        return;
+        setShowNav(true)
+        return
       }
 
-      const currentScrollY = window.scrollY;
-      const viewportHeight = window.innerHeight;
+      const currentScrollY = window.scrollY
+      const viewportHeight = window.innerHeight
 
       if (currentScrollY < 100) {
         // Always show nav at the top
-        setShowNav(true);
+        setShowNav(true)
       } else if (currentScrollY < viewportHeight) {
         // Always show nav if not scrolled past first page (100vh)
-        setShowNav(true);
+        setShowNav(true)
       } else if (currentScrollY > lastScrollY) {
         // Scrolling down (only hide after 100vh)
-        setShowNav(false);
+        setShowNav(false)
       } else {
         // Scrolling up
-        setShowNav(true);
+        setShowNav(true)
       }
 
-      setLastScrollY(currentScrollY);
-    };
+      setLastScrollY(currentScrollY)
+    }
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY, setShowNav]);
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY, setShowNav])
 
   // Handle scroll to section on page load if hash is present
   useEffect(() => {
     if (pathname === '/shop' && typeof window !== 'undefined') {
-      const hash = window.location.hash.slice(1);
+      const hash = window.location.hash.slice(1)
       if (hash) {
         // Wait for content to load
         setTimeout(() => {
-          const element = document.getElementById(hash);
+          const element = document.getElementById(hash)
           if (element) {
             // account for fixed nav + collections bar height
             const navH =
               parseFloat(
                 getComputedStyle(document.documentElement).getPropertyValue('--nav-height')
-              ) || 0;
+              ) || 0
             const colH =
               parseFloat(
                 getComputedStyle(document.documentElement).getPropertyValue(
                   '--collections-bar-height'
                 )
-              ) || 0;
-            const targetY = element.getBoundingClientRect().top + window.scrollY - (navH + colH);
-            window.scrollTo({ top: targetY, behavior: 'smooth' });
+              ) || 0
+            const targetY = element.getBoundingClientRect().top + window.scrollY - (navH + colH)
+            window.scrollTo({ top: targetY, behavior: 'smooth' })
           }
-        }, 100);
+        }, 100)
       }
     }
-  }, [pathname]);
+  }, [pathname])
 
   const scrollToSection = (id: string) => {
     // Check if we're on the shop page
     if (pathname === '/shop') {
-      const element = document.getElementById(id);
+      const element = document.getElementById(id)
       if (element) {
         const navH =
           parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) ||
-          0;
+          0
         const colH =
           parseFloat(
             getComputedStyle(document.documentElement).getPropertyValue('--collections-bar-height')
-          ) || 0;
-        const targetY = element.getBoundingClientRect().top + window.scrollY - (navH + colH);
-        window.scrollTo({ top: targetY, behavior: 'smooth' });
+          ) || 0
+        const targetY = element.getBoundingClientRect().top + window.scrollY - (navH + colH)
+        window.scrollTo({ top: targetY, behavior: 'smooth' })
       }
     } else {
       // Navigate to shop page with hash for scroll target
-      window.location.href = `/shop#${id}`;
+      window.location.href = `/shop#${id}`
     }
-  };
+  }
 
   return (
     <>
@@ -154,7 +154,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
         <div className="mx-auto px-4">
           <div className="relative flex h-14 items-center md:pr-16 lg:h-24">
             {/* Center group: brand + nav (desktop centered) */}
-            <div className="flex w-full items-center justify-between gap-4 md:justify-center md:gap-8">
+            <div className="flex w-full items-center justify-center gap-4 md:gap-8">
               <Link
                 href="/"
                 className="block text-lg font-light tracking-[0.3em] whitespace-nowrap text-black md:text-4xl"
@@ -178,17 +178,17 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                   </Link>
                 ))}
               </div>
+            </div>
 
-              {/* Mobile burger menu button */}
-              <div className="md:hidden">
-                <button
-                  onClick={() => setMobileMenuOpen(true)}
-                  aria-label="Open menu"
-                  className="text-black hover:text-gray-700"
-                >
-                  <MenuIcon size={20} />
-                </button>
-              </div>
+            {/* Mobile burger menu button - absolute at right */}
+            <div className="absolute inset-y-0 right-4 flex items-center md:hidden">
+              <button
+                onClick={() => setMobileMenuOpen(true)}
+                aria-label="Open menu"
+                className="text-black hover:text-gray-700"
+              >
+                <MenuIcon size={20} />
+              </button>
             </div>
 
             {/* Desktop cart: absolute at right-6 */}
@@ -217,13 +217,13 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
         <button
           onClick={openCart}
           aria-label="Open cart"
-          className={`fixed bottom-4 left-4 z-50 bg-black p-3 text-white shadow-lg transition-transform duration-300 md:hidden ${
+          className={`fixed bottom-4 left-4 z-50 bg-white  border-black border  p-3 text-white shadow-lg transition-transform duration-300 md:hidden ${
             totalItems() > 0 ? 'translate-x-0' : '-translate-x-20'
           }`}
         >
-          <div className="relative">
-            <CartIcon size={20} />
-            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-medium text-black">
+          <div className="text-black relative">
+            <CartIcon  size={20} />
+            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full  text-[10px] font-medium text-black">
               {totalItems()}
             </span>
           </div>
@@ -240,8 +240,8 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
           />
 
           {/* Menu content box */}
-          <div className="relative mx-4 w-full max-w-sm border border-black bg-white p-8 shadow-2xl">
-            <nav className="flex flex-col gap-6 border-b border-black pb-6">
+          <div className="relative mx-4 w-full max-w-sm  bg-white p-8 shadow">
+            <nav className="flex flex-col gap-6 border-b border-black/60 pb-6">
               {navLinks.map((l) => (
                 <Link
                   key={l.href}
@@ -265,7 +265,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
           {/* Close button - same position as burger button */}
           <button
             onClick={() => setMobileMenuOpen(false)}
-            className="absolute top-10 right-4 text-black transition-colors hover:text-gray-600"
+            className="absolute top-10 right-8 text-black transition-colors hover:text-gray-600"
             aria-label="Close menu"
           >
             <XIcon size={20} />
@@ -327,7 +327,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
         </div>
       )}
     </>
-  );
+  )
 }
 
 function CartIcon({ size = 20 }: { size?: number }) {
@@ -357,7 +357,7 @@ function CartIcon({ size = 20 }: { size?: number }) {
         />
       </g>
     </svg>
-  );
+  )
 }
 
 function MenuIcon({ size = 24 }: { size?: number }) {
@@ -377,7 +377,7 @@ function MenuIcon({ size = 24 }: { size?: number }) {
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }
 
 function XIcon({ size = 24 }: { size?: number }) {
@@ -397,5 +397,5 @@ function XIcon({ size = 24 }: { size?: number }) {
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

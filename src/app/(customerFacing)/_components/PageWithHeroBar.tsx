@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import Image from 'next/image';
-import { useNavStore } from '@/stores/nav-store';
+import Image from 'next/image'
+import { useNavStore } from '@/stores/nav-store'
 
 interface PageWithHeroBarProps {
-  imagePath: string;
-  imageAlt?: string;
-  title?: string;
-  children: React.ReactNode;
+  imagePath: string
+  imageAlt?: string
+  title?: string
+  children: React.ReactNode
 }
 
 export default function PageWithHeroBar({
@@ -16,7 +16,7 @@ export default function PageWithHeroBar({
   title,
   children,
 }: PageWithHeroBarProps) {
-  const showNav = useNavStore((s) => s.showNav);
+  const showNav = useNavStore((s) => s.showNav)
 
   return (
     <>
@@ -56,5 +56,5 @@ export default function PageWithHeroBar({
         </div>
       </div>
     </>
-  );
+  )
 }

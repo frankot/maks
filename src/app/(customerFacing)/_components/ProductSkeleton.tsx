@@ -16,5 +16,5 @@ export default function ProductSkeleton() {
         <div className="ml-4 h-3 w-16 rounded bg-gray-100" />
       </div>
     </div>
-  );
+  )
 }

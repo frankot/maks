@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import { SimpleCard } from '@/components/ui/card';
-import Link from 'next/link';
+import { SimpleCard } from '@/components/ui/card'
+import Link from 'next/link'
 
 const categories = [
   {
@@ -29,7 +29,7 @@ const categories = [
     image: '/products/chain.png',
     height: '615px',
   },
-];
+]
 
 export default function Sections() {
   return (
@@ -69,5 +69,5 @@ export default function Sections() {
         }
       `}</style>
     </section>
-  );
+  )
 }

@@ -1,45 +1,45 @@
-'use client';
+'use client'
 
-import { useState, ReactNode } from 'react';
-import { MoreHorizontal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState, ReactNode } from 'react'
+import { MoreHorizontal } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+} from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export interface DropdownAction {
-  label: string;
-  icon: ReactNode;
-  onClick: () => void | Promise<void>;
-  variant?: 'default' | 'destructive';
-  separator?: boolean;
-  disabled?: boolean;
-  disabledTooltip?: string;
+  label: string
+  icon: ReactNode
+  onClick: () => void | Promise<void>
+  variant?: 'default' | 'destructive'
+  separator?: boolean
+  disabled?: boolean
+  disabledTooltip?: string
 }
 
 interface AdminDropdownProps {
-  actions: DropdownAction[];
-  disabled?: boolean;
+  actions: DropdownAction[]
+  disabled?: boolean
 }
 
 export function AdminDropdown({ actions, disabled = false }: AdminDropdownProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleActionClick = async (action: DropdownAction) => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      await action.onClick();
+      await action.onClick()
     } catch (error) {
-      console.error('Action failed:', error);
+      console.error('Action failed:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <TooltipProvider>
@@ -90,5 +90,5 @@ export function AdminDropdown({ actions, disabled = false }: AdminDropdownProps)
         </DropdownMenuContent>
       </DropdownMenu>
     </TooltipProvider>
-  );
+  )
 }

@@ -1,21 +1,21 @@
-'use client';
+'use client'
 
-import { useCartStore } from '@/stores/cart-store';
-import { Button } from '@/components/ui/button';
-import { Check, ShoppingBag } from 'lucide-react';
-import { useState } from 'react';
+import { useCartStore } from '@/stores/cart-store'
+import { Button } from '@/components/ui/button'
+import { Check, ShoppingBag } from 'lucide-react'
+import { useState } from 'react'
 
 interface AddToCartButtonProps {
   product: {
-    id: string;
-    name: string;
-    priceInGrosz: number;
-    imagePath?: string;
-    slug: string;
-  };
-  className?: string;
-  size?: 'default' | 'sm' | 'lg' | 'icon';
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+    id: string
+    name: string
+    priceInGrosz: number
+    imagePath?: string
+    slug: string
+  }
+  className?: string
+  size?: 'default' | 'sm' | 'lg' | 'icon'
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
 }
 
 export default function AddToCartButton({
@@ -24,15 +24,15 @@ export default function AddToCartButton({
   size = 'default',
   variant = 'default',
 }: AddToCartButtonProps) {
-  const { addItem, openCart, isInCart } = useCartStore();
-  const [added, setAdded] = useState(false);
-  const alreadyInCart = isInCart(product.id);
+  const { addItem, openCart, isInCart } = useCartStore()
+  const [added, setAdded] = useState(false)
+  const alreadyInCart = isInCart(product.id)
 
   const handleAddToCart = () => {
     if (alreadyInCart) {
       // Just open cart to show it's already there
-      openCart();
-      return;
+      openCart()
+      return
     }
 
     addItem({
@@ -41,14 +41,14 @@ export default function AddToCartButton({
       priceInCents: product.priceInGrosz,
       imagePath: product.imagePath,
       slug: product.slug,
-    });
+    })
 
-    setAdded(true);
+    setAdded(true)
     setTimeout(() => {
-      setAdded(false);
-      openCart();
-    }, 800);
-  };
+      setAdded(false)
+      openCart()
+    }, 800)
+  }
 
   return (
     <Button
@@ -72,5 +72,5 @@ export default function AddToCartButton({
         'Add to Cart'
       )}
     </Button>
-  );
+  )
 }

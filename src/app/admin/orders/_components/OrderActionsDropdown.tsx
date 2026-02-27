@@ -1,70 +1,72 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { MoreHorizontal, Eye, Truck, XCircle, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { MoreHorizontal, Eye, Truck, XCircle, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { markAsShippedAction, cancelOrderAction, deleteOrderAction } from '../actions';
+} from '@/components/ui/dropdown-menu'
+import { markAsShippedAction, cancelOrderAction, deleteOrderAction } from '../actions'
 
 interface OrderActionsDropdownProps {
-  orderId: string;
-  onViewDetails: (orderId: string) => void;
+  orderId: string
+  onViewDetails: (orderId: string) => void
 }
 
 export function OrderActionsDropdown({ orderId, onViewDetails }: OrderActionsDropdownProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleMarkAsShipped = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const result = await markAsShippedAction({ orderId });
+      const result = await markAsShippedAction({ orderId })
       if (result?.serverError) {
-        console.error('Failed to mark as shipped:', result.serverError);
+        console.error('Failed to mark as shipped:', result.serverError)
       }
     } catch (error) {
-      console.error('Error marking as shipped:', error);
+      console.error('Error marking as shipped:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleCancel = async () => {
-    if (window.confirm('Are you sure you want to cancel this order? The customer will be notified.')) {
-      setIsLoading(true);
+    if (
+      window.confirm('Are you sure you want to cancel this order? The customer will be notified.')
+    ) {
+      setIsLoading(true)
       try {
-        const result = await cancelOrderAction({ orderId });
+        const result = await cancelOrderAction({ orderId })
         if (result?.serverError) {
-          console.error('Failed to cancel order:', result.serverError);
+          console.error('Failed to cancel order:', result.serverError)
         }
       } catch (error) {
-        console.error('Error cancelling order:', error);
+        console.error('Error cancelling order:', error)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     }
-  };
+  }
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this order?')) {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
-        const result = await deleteOrderAction({ orderId });
+        const result = await deleteOrderAction({ orderId })
         if (result?.serverError) {
-          console.error('Failed to delete order:', result.serverError);
+          console.error('Failed to delete order:', result.serverError)
         }
       } catch (error) {
-        console.error('Error deleting order:', error);
+        console.error('Error deleting order:', error)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     }
-  };
+  }
 
   return (
     <DropdownMenu>
@@ -94,5 +96,5 @@ export function OrderActionsDropdown({ orderId, onViewDetails }: OrderActionsDro
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

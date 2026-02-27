@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { Button } from './button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link'
+import { Button } from './button'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface PaginationControlsProps {
-  basePath: string;
-  nextCursor?: string;
-  prevCursor?: string;
-  hasMore: boolean;
-  hasPrev: boolean;
+  basePath: string
+  nextCursor?: string
+  prevCursor?: string
+  hasMore: boolean
+  hasPrev: boolean
 }
 
 export function PaginationControls({
@@ -19,7 +19,7 @@ export function PaginationControls({
   hasMore,
   hasPrev,
 }: PaginationControlsProps) {
-  if (!hasMore && !hasPrev) return null;
+  if (!hasMore && !hasPrev) return null
 
   return (
     <div className="flex items-center justify-center gap-4 pt-4">
@@ -51,5 +51,5 @@ export function PaginationControls({
         </Button>
       )}
     </div>
-  );
+  )
 }

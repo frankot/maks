@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import type { Category } from '@prisma/client';
+import { useEffect, useState } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import type { Category } from '@prisma/client'
 
 interface Collection {
-  id: string;
-  name: string;
-  slug: string;
+  id: string
+  name: string
+  slug: string
 }
 
 const CATEGORIES: { label: string; value: Category }[] = [
@@ -17,37 +17,37 @@ const CATEGORIES: { label: string; value: Category }[] = [
   { label: 'Earrings', value: 'EARRINGS' },
   { label: 'Bracelets', value: 'BRACELETS' },
   { label: 'Chains', value: 'CHAINS' },
-];
+]
 
 interface CollectionsBarProps {
-  highlightedCollection?: string | null;
-  highlightedCategory?: string | null;
+  highlightedCollection?: string | null
+  highlightedCategory?: string | null
 }
 
 export default function CollectionsBar({
   highlightedCollection,
   highlightedCategory,
 }: CollectionsBarProps = {}) {
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const [collections, setCollections] = useState<Collection[]>([])
+  const searchParams = useSearchParams()
+  const router = useRouter()
 
-  const currentCollection = highlightedCollection ?? searchParams?.get('collection');
+  const currentCollection = highlightedCollection ?? searchParams?.get('collection')
 
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const response = await fetch('/api/collections');
+        const response = await fetch('/api/collections')
         if (response.ok) {
-          const data = await response.json();
-          setCollections(data);
+          const data = await response.json()
+          setCollections(data)
         }
       } catch (error) {
-        console.error('Error fetching collections:', error);
+        console.error('Error fetching collections:', error)
       }
-    };
-    fetchCollections();
-  }, []);
+    }
+    fetchCollections()
+  }, [])
 
   return (
     <>
@@ -89,5 +89,5 @@ export default function CollectionsBar({
         </button>
       ))}
     </>
-  );
+  )
 }

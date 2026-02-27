@@ -1,9 +1,9 @@
-import React from 'react';
+import React from 'react'
 
 interface StudioStatementProps {
-  text: string;
-  href?: string;
-  linkText?: string;
+  text: string
+  href?: string
+  linkText?: string
 }
 
 /**
@@ -24,5 +24,5 @@ export default function StudioStatement({
         </a>
       </div>
     </div>
-  );
+  )
 }

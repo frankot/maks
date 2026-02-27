@@ -1,22 +1,22 @@
-'use client';
+'use client'
 
-import React from 'react';
-import type { Product, Category } from '@prisma/client';
-import Link from 'next/link';
-import ProductCard from './ProductCard';
+import React from 'react'
+import type { Product, Category } from '@prisma/client'
+import Link from 'next/link'
+import ProductCard from './ProductCard'
 
 interface ProductsProps {
-  title: string;
-  category: Category;
-  products: Product[];
+  title: string
+  category: Category
+  products: Product[]
 }
 
 export default function Products({ title, category, products }: ProductsProps) {
-  const sectionId = title.toLowerCase();
-  const categorySlug = category.toLowerCase();
+  const sectionId = title.toLowerCase()
+  const categorySlug = category.toLowerCase()
 
   if (!products?.length) {
-    return null;
+    return null
   }
 
   return (
@@ -42,5 +42,5 @@ export default function Products({ title, category, products }: ProductsProps) {
         ))}
       </div>
     </section>
-  );
+  )
 }

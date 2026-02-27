@@ -1,12 +1,12 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import HeroCms from './_components/HeroCms';
-import MarqueeCms from './_components/MarqueeCms';
-import NavCarouselCms from './_components/NavCarouselCms';
-import GalleryCms from './_components/GalleryCms';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import HeroCms from './_components/HeroCms'
+import MarqueeCms from './_components/MarqueeCms'
+import NavCarouselCms from './_components/NavCarouselCms'
+import GalleryCms from './_components/GalleryCms'
 
 export default function CmsPage() {
   return (
-    <div className="container max-w-5xl mx-auto pt-20 p-6">
+    <div className="container mx-auto max-w-5xl p-6 pt-20">
       <h1 className="mb-6 text-3xl font-bold">Content Management System</h1>
       <Tabs defaultValue="hero">
         <TabsList>
@@ -29,5 +29,5 @@ export default function CmsPage() {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

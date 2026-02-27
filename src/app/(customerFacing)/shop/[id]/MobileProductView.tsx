@@ -1,28 +1,28 @@
-'use client';
+'use client'
 
-import Image from 'next/image';
-import { useState } from 'react';
-import Link from 'next/link';
-import AddToCartButton from '@/components/AddToCartButton';
-import ProductDetailsTabs from './ProductDetailsTabs';
+import Image from 'next/image'
+import { useState } from 'react'
+import Link from 'next/link'
+import AddToCartButton from '@/components/AddToCartButton'
+import ProductDetailsTabs from './ProductDetailsTabs'
 
 interface MobileProductViewProps {
   product: {
-    id: string;
-    name: string;
-    description: string;
-    priceInGrosz: number;
-    imagePaths: string[];
-    slug: string | null;
-    productStatus: string;
-    materials: string | null;
-  };
-  priceInPLN: string;
-  isSold: boolean;
+    id: string
+    name: string
+    description: string
+    priceInGrosz: number
+    imagePaths: string[]
+    slug: string | null
+    productStatus: string
+    materials: string | null
+  }
+  priceInPLN: string
+  isSold: boolean
 }
 
 export default function MobileProductView({ product, priceInPLN, isSold }: MobileProductViewProps) {
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
   return (
     <div className="lg:hidden">
@@ -201,5 +201,5 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
         </div>
       </div>
     </div>
-  );
+  )
 }

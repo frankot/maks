@@ -1,40 +1,40 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getProductById, updateProduct } from '@/lib/products';
-import type { Category } from '@prisma/client';
-import { errorHandler } from '@/lib/errorHandler';
-import { requireAdmin } from '@/lib/auth/require-admin';
+import { NextRequest, NextResponse } from 'next/server'
+import { getProductById, updateProduct } from '@/lib/products'
+import type { Category } from '@prisma/client'
+import { errorHandler } from '@/lib/errorHandler'
+import { requireAdmin } from '@/lib/auth/require-admin'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id: productId } = await params;
+    const { id: productId } = await params
 
     if (!productId) {
-      return NextResponse.json({ error: 'Product ID is required' }, { status: 400 });
+      return NextResponse.json({ error: 'Product ID is required' }, { status: 400 })
     }
 
-    const product = await getProductById(productId);
+    const product = await getProductById(productId)
 
     if (!product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    return NextResponse.json(product);
+    return NextResponse.json(product)
   } catch (error) {
-    console.error('Error fetching product:', error);
-    return errorHandler(error);
+    console.error('Error fetching product:', error)
+    return errorHandler(error)
   }
 }
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const unauthorized = await requireAdmin();
-  if (unauthorized) return unauthorized;
+  const unauthorized = await requireAdmin()
+  if (unauthorized) return unauthorized
 
   try {
-    const { id: productId } = await params;
-    const body = await request.json();
+    const { id: productId } = await params
+    const body = await request.json()
 
     if (!productId) {
-      return NextResponse.json({ error: 'Product ID is required' }, { status: 400 });
+      return NextResponse.json({ error: 'Product ID is required' }, { status: 400 })
     }
 
     const {
@@ -50,23 +50,23 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       category,
       collectionId,
     } = body as {
-      slug?: string | null;
-      name?: string;
-      priceInGrosz?: number | string;
-      priceInCents?: number | string;
-      description?: string;
-      materials?: string | null;
-      imagePaths?: string[];
-      imagePublicIds?: string[];
-      isAvailable?: boolean;
-      category?: Category;
-      collectionId?: string | null;
-    };
+      slug?: string | null
+      name?: string
+      priceInGrosz?: number | string
+      priceInCents?: number | string
+      description?: string
+      materials?: string | null
+      imagePaths?: string[]
+      imagePublicIds?: string[]
+      isAvailable?: boolean
+      category?: Category
+      collectionId?: string | null
+    }
 
-    const priceG = priceInGrosz !== undefined ? Number(priceInGrosz) : undefined;
-    const priceC = priceInCents !== undefined ? Number(priceInCents) : undefined;
+    const priceG = priceInGrosz !== undefined ? Number(priceInGrosz) : undefined
+    const priceC = priceInCents !== undefined ? Number(priceInCents) : undefined
 
-    const sanitizedCategory = category ? (String(category).toUpperCase() as Category) : undefined;
+    const sanitizedCategory = category ? (String(category).toUpperCase() as Category) : undefined
 
     const product = await updateProduct(productId, {
       ...(slug !== undefined && { slug: slug || undefined }),
@@ -80,11 +80,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       ...(isAvailable !== undefined && { isAvailable }),
       ...(sanitizedCategory && { category: sanitizedCategory }),
       ...(collectionId !== undefined && { collectionId: collectionId || null }),
-    });
+    })
 
-    return NextResponse.json(product);
+    return NextResponse.json(product)
   } catch (error) {
-    console.error('Error updating product:', error);
-    return errorHandler(error);
+    console.error('Error updating product:', error)
+    return errorHandler(error)
   }
 }

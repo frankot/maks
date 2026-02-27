@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import { useCartStore } from '@/stores/cart-store';
-import { ShoppingBag, Check } from 'lucide-react';
+import { useCartStore } from '@/stores/cart-store'
+import { ShoppingBag, Check } from 'lucide-react'
 
 interface QuickAddButtonProps {
   product: {
-    id: string;
-    name: string;
-    priceInGrosz: number;
-    imagePath?: string;
-    slug: string;
-  };
-  className?: string;
+    id: string
+    name: string
+    priceInGrosz: number
+    imagePath?: string
+    slug: string
+  }
+  className?: string
 }
 
 /**
@@ -19,15 +19,15 @@ interface QuickAddButtonProps {
  * Adds item to cart without opening the cart panel
  */
 export default function QuickAddButton({ product, className = '' }: QuickAddButtonProps) {
-  const { addItem, isInCart } = useCartStore();
-  const alreadyInCart = isInCart(product.id);
+  const { addItem, isInCart } = useCartStore()
+  const alreadyInCart = isInCart(product.id)
 
   const handleQuickAdd = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation if inside a link
-    e.stopPropagation();
+    e.preventDefault() // Prevent navigation if inside a link
+    e.stopPropagation()
 
     if (alreadyInCart) {
-      return; // Don't add if already in cart
+      return // Don't add if already in cart
     }
 
     addItem({
@@ -36,8 +36,8 @@ export default function QuickAddButton({ product, className = '' }: QuickAddButt
       priceInCents: product.priceInGrosz,
       imagePath: product.imagePath,
       slug: product.slug,
-    });
-  };
+    })
+  }
 
   return (
     <button
@@ -62,5 +62,5 @@ export default function QuickAddButton({ product, className = '' }: QuickAddButt
         </>
       )}
     </button>
-  );
+  )
 }

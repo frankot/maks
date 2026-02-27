@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const checkoutSchema = z.object({
   email: z.string().email(),
@@ -21,10 +21,10 @@ export const checkoutSchema = z.object({
   postalCode: z.string().min(1),
   country: z.string().min(1),
   paczkomatPointId: z.string().optional(),
-});
+})
 
 export const orderIdSchema = z.object({
   orderId: z.string().uuid(),
-});
+})
 
-export type CheckoutInput = z.infer<typeof checkoutSchema>;
+export type CheckoutInput = z.infer<typeof checkoutSchema>

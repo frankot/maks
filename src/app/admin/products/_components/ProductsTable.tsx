@@ -1,91 +1,94 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { format } from 'date-fns';
-import { Eye, Edit, ToggleLeft, ToggleRight, Trash2, Package } from 'lucide-react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { Switch } from '@/components/ui/switch';
-import { AdminTable, TableColumn } from '../../components/Table';
-import { AdminDropdown, DropdownAction } from '../../components/Dropdown';
-import { formatPrice } from '@/lib/utils/products';
-import type { ProductWithOrderItems } from '@/lib/products';
-import { ProductDetailsModal } from './ProductDetailsModal';
-import { DeleteConfirmationModal } from './DeleteConfirmationModal';
+import { useState } from 'react'
+import { format } from 'date-fns'
+import { Eye, Edit, ToggleLeft, ToggleRight, Trash2, Package } from 'lucide-react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { Switch } from '@/components/ui/switch'
+import { AdminTable, TableColumn } from '../../components/Table'
+import { AdminDropdown, DropdownAction } from '../../components/Dropdown'
+import { formatPrice } from '@/lib/utils/products'
+import type { ProductWithOrderItems } from '@/lib/products'
+import { ProductDetailsModal } from './ProductDetailsModal'
+import { DeleteConfirmationModal } from './DeleteConfirmationModal'
 import {
   deleteProductAction,
   toggleProductAvailabilityAction,
   updateProductStatusAction,
-} from '../actions';
+} from '../actions'
 
 interface ProductsTableProps {
-  products: ProductWithOrderItems[];
+  products: ProductWithOrderItems[]
 }
 
 export function ProductsTable({ products }: ProductsTableProps) {
-  const router = useRouter();
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [productToDelete, setProductToDelete] = useState<ProductWithOrderItems | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const router = useRouter()
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [productToDelete, setProductToDelete] = useState<ProductWithOrderItems | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const handleViewDetails = (productId: string) => {
-    setSelectedProductId(productId);
-  };
+    setSelectedProductId(productId)
+  }
 
   const handleCloseModal = () => {
-    setSelectedProductId(null);
-  };
+    setSelectedProductId(null)
+  }
 
   const handleEdit = (productId: string) => {
-    router.push(`/admin/products/edit/${productId}`);
-  };
+    router.push(`/admin/products/edit/${productId}`)
+  }
 
   const handleToggleAvailability = async (productId: string, currentAvailability: boolean) => {
-    const result = await toggleProductAvailabilityAction({ productId, isAvailable: !currentAvailability });
+    const result = await toggleProductAvailabilityAction({
+      productId,
+      isAvailable: !currentAvailability,
+    })
     if (result?.serverError) {
-      console.error('Failed to toggle availability:', result.serverError);
+      console.error('Failed to toggle availability:', result.serverError)
     }
-  };
+  }
 
   const handleStatusChange = async (productId: string, newStatus: 'SHOP' | 'ORDERED' | 'SOLD') => {
-    const result = await updateProductStatusAction({ productId, productStatus: newStatus });
+    const result = await updateProductStatusAction({ productId, productStatus: newStatus })
     if (result?.serverError) {
-      console.error('Failed to update status:', result.serverError);
+      console.error('Failed to update status:', result.serverError)
     }
-  };
+  }
 
   const handleDeleteClick = (product: ProductWithOrderItems) => {
-    setProductToDelete(product);
-    setDeleteError(null); // Clear any previous errors
-    setDeleteModalOpen(true);
-  };
+    setProductToDelete(product)
+    setDeleteError(null) // Clear any previous errors
+    setDeleteModalOpen(true)
+  }
 
   const handleDeleteConfirm = async () => {
-    if (!productToDelete) return;
+    if (!productToDelete) return
 
-    setIsDeleting(true);
-    setDeleteError(null);
+    setIsDeleting(true)
+    setDeleteError(null)
 
     try {
-      const result = await deleteProductAction({ productId: productToDelete.id });
+      const result = await deleteProductAction({ productId: productToDelete.id })
       if (result?.data?.success) {
-        setDeleteModalOpen(false);
-        setProductToDelete(null);
+        setDeleteModalOpen(false)
+        setProductToDelete(null)
       } else {
-        setDeleteError(result?.serverError || 'Failed to delete product');
+        setDeleteError(result?.serverError || 'Failed to delete product')
       }
     } catch (error) {
-      console.error('Error deleting product:', error);
-      setDeleteError('An unexpected error occurred while deleting the product');
+      console.error('Error deleting product:', error)
+      setDeleteError('An unexpected error occurred while deleting the product')
     } finally {
-      setIsDeleting(false);
+      setIsDeleting(false)
     }
-  };
+  }
 
   const getProductActions = (product: ProductWithOrderItems): DropdownAction[] => {
-    const hasBeenOrdered = product.orderItems.length > 0;
+    const hasBeenOrdered = product.orderItems.length > 0
 
     const baseActions: DropdownAction[] = [
       {
@@ -113,17 +116,17 @@ export function ProductsTable({ products }: ProductsTableProps) {
             : undefined,
         separator: true,
       },
-    ];
+    ]
 
     // Add status change options
-    const statusActions: DropdownAction[] = [];
+    const statusActions: DropdownAction[] = []
 
     if (product.productStatus !== 'SHOP') {
       statusActions.push({
         label: 'Mark as Shop',
         icon: <Package className="mr-2 h-4 w-4" />,
         onClick: () => handleStatusChange(product.id, 'SHOP'),
-      });
+      })
     }
 
     if (product.productStatus !== 'ORDERED') {
@@ -131,7 +134,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
         label: 'Mark as Ordered',
         icon: <Package className="mr-2 h-4 w-4" />,
         onClick: () => handleStatusChange(product.id, 'ORDERED'),
-      });
+      })
     }
 
     if (product.productStatus !== 'SOLD') {
@@ -139,7 +142,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
         label: 'Mark as Sold',
         icon: <Package className="mr-2 h-4 w-4" />,
         onClick: () => handleStatusChange(product.id, 'SOLD'),
-      });
+      })
     }
 
     const deleteAction: DropdownAction = {
@@ -150,10 +153,10 @@ export function ProductsTable({ products }: ProductsTableProps) {
       separator: true,
       disabled: hasBeenOrdered,
       disabledTooltip: hasBeenOrdered ? 'Cannot delete product that has been ordered' : undefined,
-    };
+    }
 
-    return [...baseActions, ...statusActions, deleteAction];
-  };
+    return [...baseActions, ...statusActions, deleteAction]
+  }
 
   const columns: TableColumn<ProductWithOrderItems>[] = [
     {
@@ -201,24 +204,24 @@ export function ProductsTable({ products }: ProductsTableProps) {
       label: 'Collection',
       sortValue: (product) => {
         type ProductWithCollection = ProductWithOrderItems & {
-          collection?: { name?: string | null };
-        };
-        const p = product as ProductWithCollection;
-        return p.collection?.name ?? '';
+          collection?: { name?: string | null }
+        }
+        const p = product as ProductWithCollection
+        return p.collection?.name ?? ''
       },
       render: (product) => {
         type ProductWithCollection = ProductWithOrderItems & {
-          collection?: { name?: string | null };
-        };
-        const p = product as ProductWithCollection;
-        const collectionName = p.collection?.name;
+          collection?: { name?: string | null }
+        }
+        const p = product as ProductWithCollection
+        const collectionName = p.collection?.name
         return collectionName ? (
           <span className="rounded-md bg-purple-50 px-2 py-0.5 text-xs text-purple-700">
             {collectionName}
           </span>
         ) : (
           <span className="text-xs text-gray-400">—</span>
-        );
+        )
       },
     },
     {
@@ -239,15 +242,15 @@ export function ProductsTable({ products }: ProductsTableProps) {
       render: (product) => {
         const getStatusColor = (status: string, isAvailable: boolean) => {
           if (status === 'SHOP' && !isAvailable) {
-            return 'bg-gray-200 text-gray-500'; // Greyed out for unavailable shop items
+            return 'bg-gray-200 text-gray-500' // Greyed out for unavailable shop items
           }
           const statusColors = {
             SHOP: 'bg-green-100 text-green-800',
             ORDERED: 'bg-yellow-100 text-yellow-800',
             SOLD: 'bg-blue-200 text-gray-800',
-          };
-          return statusColors[status as keyof typeof statusColors] || 'bg-gray-100 text-gray-800';
-        };
+          }
+          return statusColors[status as keyof typeof statusColors] || 'bg-gray-100 text-gray-800'
+        }
 
         return (
           <span
@@ -256,7 +259,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
             {product.productStatus}
             {product.productStatus === 'SHOP' && !product.isAvailable}
           </span>
-        );
+        )
       },
     },
     {
@@ -271,7 +274,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
       className: 'text-right',
       render: (product) => <AdminDropdown actions={getProductActions(product)} />,
     },
-  ];
+  ]
 
   return (
     <>
@@ -290,9 +293,9 @@ export function ProductsTable({ products }: ProductsTableProps) {
         open={deleteModalOpen}
         onOpenChange={(open) => {
           if (!open) {
-            setDeleteModalOpen(false);
-            setProductToDelete(null);
-            setDeleteError(null);
+            setDeleteModalOpen(false)
+            setProductToDelete(null)
+            setDeleteError(null)
           }
         }}
         onConfirm={handleDeleteConfirm}
@@ -301,5 +304,5 @@ export function ProductsTable({ products }: ProductsTableProps) {
         error={deleteError}
       />
     </>
-  );
+  )
 }

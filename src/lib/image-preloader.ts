@@ -4,11 +4,11 @@
  */
 export function preloadImage(src: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve();
-    img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
-    img.src = src;
-  });
+    const img = new Image()
+    img.onload = () => resolve()
+    img.onerror = () => reject(new Error(`Failed to load image: ${src}`))
+    img.src = src
+  })
 }
 
 /**
@@ -17,9 +17,9 @@ export function preloadImage(src: string): Promise<void> {
  */
 export async function preloadImages(srcs: string[]): Promise<void> {
   try {
-    await Promise.all(srcs.map((src) => preloadImage(src)));
+    await Promise.all(srcs.map((src) => preloadImage(src)))
   } catch (error) {
-    console.error('Error preloading images:', error);
+    console.error('Error preloading images:', error)
     // Don't throw - we want to show the page even if some images fail
   }
 }
@@ -29,16 +29,16 @@ export async function preloadImages(srcs: string[]): Promise<void> {
  */
 export async function fetchHeroImages(): Promise<string[]> {
   try {
-    const response = await fetch('/api/hero');
+    const response = await fetch('/api/hero')
     if (!response.ok) {
-      console.error('Failed to fetch hero content:', response.status);
-      return [];
+      console.error('Failed to fetch hero content:', response.status)
+      return []
     }
-    const data = await response.json();
-    return data?.imagePaths || [];
+    const data = await response.json()
+    return data?.imagePaths || []
   } catch (error) {
-    console.error('Error fetching hero images:', error);
-    return [];
+    console.error('Error fetching hero images:', error)
+    return []
   }
 }
 
@@ -49,7 +49,7 @@ export const CRITICAL_LOCAL_IMAGES = [
   '/about_bg.jpg', // About & Contact pages
   '/shop_main.jpg', // Shop pages
   '/gall_bg.jpg', // Gallery page
-];
+]
 
 /**
  * Preload all critical images (hero + subpages)
@@ -58,18 +58,18 @@ export const CRITICAL_LOCAL_IMAGES = [
 export async function preloadAllCriticalImages(): Promise<void> {
   try {
     // Fetch hero images from CMS
-    const heroImages = await fetchHeroImages();
+    const heroImages = await fetchHeroImages()
 
     // Combine hero images with local critical images
-    const allImages = [...heroImages, ...CRITICAL_LOCAL_IMAGES];
+    const allImages = [...heroImages, ...CRITICAL_LOCAL_IMAGES]
 
     // Remove duplicates
-    const uniqueImages = Array.from(new Set(allImages));
+    const uniqueImages = Array.from(new Set(allImages))
 
     // Preload all images in parallel
-    await preloadImages(uniqueImages);
+    await preloadImages(uniqueImages)
   } catch (error) {
-    console.error('Error in preloadAllCriticalImages:', error);
+    console.error('Error in preloadAllCriticalImages:', error)
     // Don't throw - show the page anyway
   }
 }

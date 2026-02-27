@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
-import PageWithHeroBar from '../_components/PageWithHeroBar';
-import Gallery from './components/Gallery';
+import type { Metadata } from 'next'
+import PageWithHeroBar from '../_components/PageWithHeroBar'
+import Gallery from './components/Gallery'
 
 export const metadata: Metadata = {
   title: 'Gallery',
   description:
     'Browse the MAMI gallery — editorial photography showcasing our handmade jewelry pieces, studio sessions, and behind-the-scenes craftsmanship.',
   alternates: { canonical: 'https://mami.com.pl/gallery' },
-};
+}
 
 export default function GalleryPage() {
   return (
@@ -26,5 +26,5 @@ export default function GalleryPage() {
       {/* Gallery content */}
       <Gallery />
     </>
-  );
+  )
 }

@@ -1,16 +1,16 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,17 +20,17 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Settings, RefreshCw, Trash2, Plus } from 'lucide-react';
+} from '@/components/ui/alert-dialog'
+import { Settings, RefreshCw, Trash2, Plus } from 'lucide-react'
 
 interface Collection {
-  id: string;
-  name: string;
-  slug: string;
+  id: string
+  name: string
+  slug: string
 }
 
 interface EditCollectionsProps {
-  onCollectionsChanged?: () => void;
+  onCollectionsChanged?: () => void
 }
 
 function generateSlug(name: string): string {
@@ -40,59 +40,59 @@ function generateSlug(name: string): string {
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
+    .replace(/^-|-$/g, '')
 }
 
 export function EditCollections({ onCollectionsChanged }: EditCollectionsProps) {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const [name, setName] = useState('');
-  const [slug, setSlug] = useState('');
-  const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [collectionToDelete, setCollectionToDelete] = useState<Collection | null>(null);
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [collections, setCollections] = useState<Collection[]>([])
+  const [name, setName] = useState('')
+  const [slug, setSlug] = useState('')
+  const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const [collectionToDelete, setCollectionToDelete] = useState<Collection | null>(null)
 
   const fetchCollections = async () => {
     try {
-      const response = await fetch('/api/collections');
+      const response = await fetch('/api/collections')
       if (response.ok) {
-        const data = await response.json();
-        setCollections(data);
+        const data = await response.json()
+        setCollections(data)
       }
     } catch (error) {
-      console.error('Error fetching collections:', error);
+      console.error('Error fetching collections:', error)
     }
-  };
+  }
 
   useEffect(() => {
     if (open) {
-      fetchCollections();
+      fetchCollections()
     }
-  }, [open]);
+  }, [open])
 
   const handleNameChange = (value: string) => {
-    setName(value);
+    setName(value)
     if (!isSlugManuallyEdited && value) {
-      setSlug(generateSlug(value));
+      setSlug(generateSlug(value))
     }
-  };
+  }
 
   const handleSlugChange = (value: string) => {
-    setSlug(value);
-    setIsSlugManuallyEdited(true);
-  };
+    setSlug(value)
+    setIsSlugManuallyEdited(true)
+  }
 
   const handleRegenerateSlug = () => {
     if (name) {
-      setSlug(generateSlug(name));
-      setIsSlugManuallyEdited(false);
+      setSlug(generateSlug(name))
+      setIsSlugManuallyEdited(false)
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
     try {
       const response = await fetch('/api/collections', {
@@ -104,58 +104,58 @@ export function EditCollections({ onCollectionsChanged }: EditCollectionsProps) 
           name,
           slug: slug || undefined,
         }),
-      });
+      })
 
       if (response.ok) {
-        setName('');
-        setSlug('');
-        setIsSlugManuallyEdited(false);
-        await fetchCollections();
+        setName('')
+        setSlug('')
+        setIsSlugManuallyEdited(false)
+        await fetchCollections()
         if (onCollectionsChanged) {
-          onCollectionsChanged();
+          onCollectionsChanged()
         }
       } else {
-        const errorData = await response.json();
-        console.error('Error creating collection:', errorData.error);
+        const errorData = await response.json()
+        console.error('Error creating collection:', errorData.error)
       }
     } catch (error) {
-      console.error('Error creating collection:', error);
+      console.error('Error creating collection:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleDeleteClick = (collection: Collection) => {
-    setCollectionToDelete(collection);
-    setDeleteConfirmOpen(true);
-  };
+    setCollectionToDelete(collection)
+    setDeleteConfirmOpen(true)
+  }
 
   const handleDeleteConfirm = async () => {
-    if (!collectionToDelete) return;
+    if (!collectionToDelete) return
 
-    setLoading(true);
+    setLoading(true)
     try {
       const response = await fetch(`/api/collections/${collectionToDelete.id}`, {
         method: 'DELETE',
-      });
+      })
 
       if (response.ok) {
-        await fetchCollections();
+        await fetchCollections()
         if (onCollectionsChanged) {
-          onCollectionsChanged();
+          onCollectionsChanged()
         }
       } else {
-        const errorData = await response.json();
-        console.error('Error deleting collection:', errorData.error);
+        const errorData = await response.json()
+        console.error('Error deleting collection:', errorData.error)
       }
     } catch (error) {
-      console.error('Error deleting collection:', error);
+      console.error('Error deleting collection:', error)
     } finally {
-      setLoading(false);
-      setDeleteConfirmOpen(false);
-      setCollectionToDelete(null);
+      setLoading(false)
+      setDeleteConfirmOpen(false)
+      setCollectionToDelete(null)
     }
-  };
+  }
 
   return (
     <>
@@ -292,5 +292,5 @@ export function EditCollections({ onCollectionsChanged }: EditCollectionsProps) 
         </AlertDialogContent>
       </AlertDialog>
     </>
-  );
+  )
 }

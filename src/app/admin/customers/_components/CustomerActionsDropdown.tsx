@@ -1,27 +1,27 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { MoreHorizontal, Eye, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { MoreHorizontal, Eye, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { deleteCustomerAction } from '../actions';
+} from '@/components/ui/dropdown-menu'
+import { deleteCustomerAction } from '../actions'
 
 interface CustomerActionsDropdownProps {
-  customerId: string;
-  onViewDetails: (customerId: string) => void;
+  customerId: string
+  onViewDetails: (customerId: string) => void
 }
 
 export function CustomerActionsDropdown({
   customerId,
   onViewDetails,
 }: CustomerActionsDropdownProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleDelete = async () => {
     if (
@@ -29,19 +29,19 @@ export function CustomerActionsDropdown({
         'Are you sure you want to delete this customer? This will also delete all their orders.'
       )
     ) {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
-        const result = await deleteCustomerAction({ customerId });
+        const result = await deleteCustomerAction({ customerId })
         if (result?.serverError) {
-          console.error('Failed to delete customer:', result.serverError);
+          console.error('Failed to delete customer:', result.serverError)
         }
       } catch (error) {
-        console.error('Error deleting customer:', error);
+        console.error('Error deleting customer:', error)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     }
-  };
+  }
 
   return (
     <DropdownMenu>
@@ -63,5 +63,5 @@ export function CustomerActionsDropdown({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

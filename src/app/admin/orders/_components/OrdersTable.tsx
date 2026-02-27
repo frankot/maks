@@ -1,53 +1,53 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { format } from 'date-fns';
-import { Eye, Truck, Trash2 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { AdminTable, TableColumn } from '../../components/Table';
-import { AdminDropdown, DropdownAction } from '../../components/Dropdown';
-import { OrderDetailsModal } from './OrderDetailsModal';
-import { formatPrice, getStatusVariant, getStatusLabel } from '@/lib/utils/orders';
-import { markAsShippedAction, deleteOrderAction } from '../actions';
-import type { Order } from '@prisma/client';
+import { useState } from 'react'
+import { format } from 'date-fns'
+import { Eye, Truck, Trash2 } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { AdminTable, TableColumn } from '../../components/Table'
+import { AdminDropdown, DropdownAction } from '../../components/Dropdown'
+import { OrderDetailsModal } from './OrderDetailsModal'
+import { formatPrice, getStatusVariant, getStatusLabel } from '@/lib/utils/orders'
+import { markAsShippedAction, deleteOrderAction } from '../actions'
+import type { Order } from '@prisma/client'
 
 interface OrderWithUser extends Order {
   user: {
-    email: string;
-    phoneNumber: string | null;
-  };
+    email: string
+    phoneNumber: string | null
+  }
 }
 
 interface OrdersTableProps {
-  orders: OrderWithUser[];
+  orders: OrderWithUser[]
 }
 
 export function OrdersTable({ orders }: OrdersTableProps) {
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
 
   const handleViewDetails = (orderId: string) => {
-    setSelectedOrderId(orderId);
-  };
+    setSelectedOrderId(orderId)
+  }
 
   const handleCloseModal = () => {
-    setSelectedOrderId(null);
-  };
+    setSelectedOrderId(null)
+  }
 
   const handleMarkAsShipped = async (orderId: string) => {
-    const result = await markAsShippedAction({ orderId });
+    const result = await markAsShippedAction({ orderId })
     if (result?.serverError) {
-      console.error('Failed to mark as shipped:', result.serverError);
+      console.error('Failed to mark as shipped:', result.serverError)
     }
-  };
+  }
 
   const handleDelete = async (orderId: string) => {
     if (window.confirm('Are you sure you want to delete this order?')) {
-      const result = await deleteOrderAction({ orderId });
+      const result = await deleteOrderAction({ orderId })
       if (result?.serverError) {
-        console.error('Failed to delete order:', result.serverError);
+        console.error('Failed to delete order:', result.serverError)
       }
     }
-  };
+  }
 
   const getOrderActions = (order: OrderWithUser): DropdownAction[] => [
     {
@@ -67,7 +67,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
       variant: 'destructive' as const,
       separator: true,
     },
-  ];
+  ]
 
   const columns: TableColumn<OrderWithUser>[] = [
     {
@@ -112,7 +112,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
       className: 'text-right',
       render: (order) => <AdminDropdown actions={getOrderActions(order)} />,
     },
-  ];
+  ]
 
   return (
     <>
@@ -127,5 +127,5 @@ export function OrdersTable({ orders }: OrdersTableProps) {
         <OrderDetailsModal orderId={selectedOrderId} onClose={handleCloseModal} />
       )}
     </>
-  );
+  )
 }

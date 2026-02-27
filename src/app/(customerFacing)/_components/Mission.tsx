@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import Image from 'next/image';
+import Image from 'next/image'
 
 export default function Mission() {
   return (
@@ -20,7 +20,7 @@ export default function Mission() {
 
         {/* Top-left text */}
         <div className="absolute top-6 left-4 max-w-xl text-white md:top-10">
-          <h2 className="text-2xl font-bold tracking-tight uppercase md:text-4xl lg:text-8xl">
+          <h2 className=" font-bold tracking-tight uppercase text-5xl lg:text-8xl">
             Mission
           </h2>
           <p className="mt-3 text-sm leading-relaxed opacity-95 md:text-base">
@@ -30,5 +30,5 @@ export default function Mission() {
         </div>
       </div>
     </section>
-  );
+  )
 }

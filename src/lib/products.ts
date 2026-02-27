@@ -1,23 +1,23 @@
-import { prisma } from './prisma';
-import type { Product, OrderItem, ProductStatus, Category, Collection } from '@prisma/client';
-import { FEATURED_PRODUCTS_LIMIT, CATEGORY_PRODUCTS_LIMIT, DEFAULT_PAGE_SIZE } from './constants';
+import { prisma } from './prisma'
+import type { Product, OrderItem, ProductStatus, Category, Collection } from '@prisma/client'
+import { FEATURED_PRODUCTS_LIMIT, CATEGORY_PRODUCTS_LIMIT, DEFAULT_PAGE_SIZE } from './constants'
 
 // Extended Product type with orderItems
 export type ProductWithOrderItems = Product & {
-  orderItems: OrderItem[];
-};
+  orderItems: OrderItem[]
+}
 
 // Product with collection relation
 export type ProductWithCollection = Product & {
-  collection: Collection | null;
-};
+  collection: Collection | null
+}
 
 export function formatPrice(priceInGrosz: number): string {
   return new Intl.NumberFormat('pl-PL', {
     style: 'currency',
     currency: 'PLN',
     minimumFractionDigits: 2,
-  }).format(priceInGrosz / 100);
+  }).format(priceInGrosz / 100)
 }
 
 export function formatPriceEur(priceInCents: number): string {
@@ -25,15 +25,15 @@ export function formatPriceEur(priceInCents: number): string {
     style: 'currency',
     currency: 'EUR',
     minimumFractionDigits: 2,
-  }).format(priceInCents / 100);
+  }).format(priceInCents / 100)
 }
 
 export function getAvailabilityBadgeVariant(isAvailable: boolean) {
-  return isAvailable ? 'default' : 'destructive';
+  return isAvailable ? 'default' : 'destructive'
 }
 
 export function getAvailabilityLabel(isAvailable: boolean) {
-  return isAvailable ? 'Available' : 'Unavailable';
+  return isAvailable ? 'Available' : 'Unavailable'
 }
 
 // For admin - gets all products regardless of status
@@ -48,22 +48,22 @@ export async function getProducts(): Promise<ProductWithOrderItems[]> {
       orderBy: {
         createdAt: 'desc',
       },
-    });
-    return products;
+    })
+    return products
   } catch (error) {
-    console.error('Error fetching products:', error);
-    return [];
+    console.error('Error fetching products:', error)
+    return []
   }
 }
 
 // For admin - paginated products
 export async function getProductsPaginated(params: {
-  cursor?: string;
-  pageSize?: number;
-  status?: ProductStatus;
-  category?: Category;
+  cursor?: string
+  pageSize?: number
+  status?: ProductStatus
+  category?: Category
 }) {
-  const { cursor, pageSize = DEFAULT_PAGE_SIZE, status, category } = params;
+  const { cursor, pageSize = DEFAULT_PAGE_SIZE, status, category } = params
 
   const products = await prisma.product.findMany({
     take: pageSize + 1,
@@ -75,13 +75,13 @@ export async function getProductsPaginated(params: {
     },
     include: { orderItems: true, collection: true },
     orderBy: { createdAt: 'desc' },
-  });
+  })
 
-  const hasMore = products.length > pageSize;
-  const items = hasMore ? products.slice(0, -1) : products;
-  const nextCursor = hasMore ? items[items.length - 1]?.id : undefined;
+  const hasMore = products.length > pageSize
+  const items = hasMore ? products.slice(0, -1) : products
+  const nextCursor = hasMore ? items[items.length - 1]?.id : undefined
 
-  return { items, nextCursor, hasMore };
+  return { items, nextCursor, hasMore }
 }
 
 // For customer-facing - only SHOP products
@@ -99,11 +99,11 @@ export async function getShopProducts(): Promise<ProductWithOrderItems[]> {
       orderBy: {
         createdAt: 'desc',
       },
-    });
-    return products;
+    })
+    return products
   } catch (error) {
-    console.error('Error fetching shop products:', error);
-    return [];
+    console.error('Error fetching shop products:', error)
+    return []
   }
 }
 
@@ -114,11 +114,11 @@ export async function getProductById(id: string): Promise<ProductWithCollection 
       include: {
         collection: true,
       },
-    });
-    return product;
+    })
+    return product
   } catch (error) {
-    console.error('Error fetching product:', error);
-    return null;
+    console.error('Error fetching product:', error)
+    return null
   }
 }
 
@@ -129,11 +129,11 @@ export async function getProductBySlug(slug: string): Promise<ProductWithCollect
       include: {
         collection: true,
       },
-    });
-    return product;
+    })
+    return product
   } catch (error) {
-    console.error('Error fetching product by slug:', error);
-    return null;
+    console.error('Error fetching product by slug:', error)
+    return null
   }
 }
 
@@ -144,74 +144,74 @@ function generateProductId(name: string): string {
     .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-    .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
 }
 
 function generateSlug(name: string): string {
-  return generateProductId(name);
+  return generateProductId(name)
 }
 
 async function getUniqueProductId(name: string): Promise<string> {
-  const baseId = generateProductId(name);
-  let uniqueId = baseId;
-  let counter = 1;
+  const baseId = generateProductId(name)
+  let uniqueId = baseId
+  let counter = 1
 
   while (true) {
     const existingProduct = await prisma.product.findUnique({
       where: { id: uniqueId },
-    });
+    })
 
     if (!existingProduct) {
-      return uniqueId;
+      return uniqueId
     }
 
-    uniqueId = `${baseId}-${counter}`;
-    counter++;
+    uniqueId = `${baseId}-${counter}`
+    counter++
   }
 }
 
 async function getUniqueSlug(name: string): Promise<string> {
-  const base = generateSlug(name);
-  let unique = base;
-  let counter = 1;
+  const base = generateSlug(name)
+  let unique = base
+  let counter = 1
 
   while (true) {
-    const existing = await prisma.product.findUnique({ where: { slug: unique } });
-    if (!existing) return unique;
-    unique = `${base}-${counter}`;
-    counter++;
+    const existing = await prisma.product.findUnique({ where: { slug: unique } })
+    if (!existing) return unique
+    unique = `${base}-${counter}`
+    counter++
   }
 }
 
 export async function createProduct(data: {
-  id?: string;
-  slug?: string;
-  name: string;
-  priceInGrosz: number;
-  priceInCents: number;
-  description: string;
-  materials?: string | null;
-  imagePaths?: string[];
-  imagePublicIds?: string[];
-  productStatus?: ProductStatus;
-  isAvailable?: boolean;
-  category?: Category;
-  collectionId?: string | null;
+  id?: string
+  slug?: string
+  name: string
+  priceInGrosz: number
+  priceInCents: number
+  description: string
+  materials?: string | null
+  imagePaths?: string[]
+  imagePublicIds?: string[]
+  productStatus?: ProductStatus
+  isAvailable?: boolean
+  category?: Category
+  collectionId?: string | null
 }): Promise<Product> {
   // Use provided ID or generate one from name
-  const id = data.id || (await getUniqueProductId(data.name));
+  const id = data.id || (await getUniqueProductId(data.name))
 
   // Resolve slug: provided or generated unique
-  const slug = data.slug ? data.slug : await getUniqueSlug(data.name);
+  const slug = data.slug ? data.slug : await getUniqueSlug(data.name)
 
   // Check if custom ID already exists
   if (data.id) {
     const existingProduct = await prisma.product.findUnique({
       where: { id: data.id },
-    });
+    })
 
     if (existingProduct) {
-      throw new Error(`Product with ID "${data.id}" already exists`);
+      throw new Error(`Product with ID "${data.id}" already exists`)
     }
   }
 
@@ -231,42 +231,42 @@ export async function createProduct(data: {
       category: data.category ?? undefined,
       collectionId: data.collectionId ?? null,
     },
-  });
-  return product;
+  })
+  return product
 }
 
 export async function updateProduct(
   id: string,
   data: {
-    slug?: string;
-    name?: string;
-    priceInGrosz?: number;
-    priceInCents?: number;
-    description?: string;
-    materials?: string | null;
-    imagePaths?: string[];
-    imagePublicIds?: string[];
-    productStatus?: ProductStatus;
-    isAvailable?: boolean;
-    category?: Category;
-    collectionId?: string | null;
+    slug?: string
+    name?: string
+    priceInGrosz?: number
+    priceInCents?: number
+    description?: string
+    materials?: string | null
+    imagePaths?: string[]
+    imagePublicIds?: string[]
+    productStatus?: ProductStatus
+    isAvailable?: boolean
+    category?: Category
+    collectionId?: string | null
   }
 ): Promise<Product> {
   // If slug is provided, ensure it's assigned in update data
-  const updateData = { ...data };
+  const updateData = { ...data }
 
   const product = await prisma.product.update({
     where: { id },
     data: updateData,
-  });
-  return product;
+  })
+  return product
 }
 
 export async function deleteProduct(id: string): Promise<void> {
   await prisma.product.update({
     where: { id },
     data: { deletedAt: new Date() },
-  });
+  })
 }
 
 export async function getFeaturedProducts(category?: Category): Promise<Product[]> {
@@ -282,11 +282,11 @@ export async function getFeaturedProducts(category?: Category): Promise<Product[
         createdAt: 'desc',
       },
       take: FEATURED_PRODUCTS_LIMIT,
-    });
-    return products;
+    })
+    return products
   } catch (error) {
-    console.error('Error fetching featured products:', error);
-    return [];
+    console.error('Error fetching featured products:', error)
+    return []
   }
 }
 
@@ -306,10 +306,10 @@ export async function getProductsByCategory(
       },
       orderBy: { createdAt: 'desc' },
       take,
-    });
-    return products;
+    })
+    return products
   } catch (error) {
-    console.error(`Error fetching products for category ${category}:`, error);
-    return [];
+    console.error(`Error fetching products for category ${category}:`, error)
+    return []
   }
 }

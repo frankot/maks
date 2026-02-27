@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
-import { Badge } from '@/components/ui/badge';
-import { DetailsModal } from '@/app/admin/components/DetailsModal';
-import { formatCustomerName, calculateTotalSpent, formatPrice } from '@/lib/utils/customers';
-import { getStatusVariant, getStatusLabel } from '@/lib/utils/orders';
-import { OrderDetailsModal } from '../../orders/_components/OrderDetailsModal';
-import type { User, Order, OrderItem, Address } from '@prisma/client';
+import { useEffect, useState } from 'react'
+import { format } from 'date-fns'
+import { Badge } from '@/components/ui/badge'
+import { DetailsModal } from '@/app/admin/components/DetailsModal'
+import { formatCustomerName, calculateTotalSpent, formatPrice } from '@/lib/utils/customers'
+import { getStatusVariant, getStatusLabel } from '@/lib/utils/orders'
+import { OrderDetailsModal } from '../../orders/_components/OrderDetailsModal'
+import type { User, Order, OrderItem, Address } from '@prisma/client'
 import {
   User as UserIcon,
   Mail,
@@ -17,71 +17,71 @@ import {
   DollarSign,
   MapPin,
   Package,
-} from 'lucide-react';
+} from 'lucide-react'
 
 interface CustomerDetailsModalProps {
-  customerId: string;
-  onClose: () => void;
+  customerId: string
+  onClose: () => void
 }
 
 interface CustomerWithDetails extends User {
   orders: (Order & {
     orderItems: (OrderItem & {
       product: {
-        name: string;
-        priceInGrosz: number;
-        priceInCents: number;
-      };
-    })[];
-    billingAddress: Address;
-    shippingAddress: Address;
-  })[];
-  addresses: Address[];
+        name: string
+        priceInGrosz: number
+        priceInCents: number
+      }
+    })[]
+    billingAddress: Address
+    shippingAddress: Address
+  })[]
+  addresses: Address[]
   _count: {
-    orders: number;
-  };
+    orders: number
+  }
 }
 
 export function CustomerDetailsModal({ customerId, onClose }: CustomerDetailsModalProps) {
-  const [customer, setCustomer] = useState<CustomerWithDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [customer, setCustomer] = useState<CustomerWithDetails | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
 
   const handleOrderClick = (orderId: string) => {
-    setSelectedOrderId(orderId);
-  };
+    setSelectedOrderId(orderId)
+  }
 
   const handleCloseOrderModal = () => {
-    setSelectedOrderId(null);
-  };
+    setSelectedOrderId(null)
+  }
 
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        setLoading(true);
-        const response = await fetch(`/api/customers/${customerId}`);
+        setLoading(true)
+        const response = await fetch(`/api/customers/${customerId}`)
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
 
-        const customerData = await response.json();
-        setCustomer(customerData as CustomerWithDetails);
+        const customerData = await response.json()
+        setCustomer(customerData as CustomerWithDetails)
       } catch (err) {
-        setError('Failed to fetch customer details');
-        console.error('Error fetching customer details:', err);
+        setError('Failed to fetch customer details')
+        console.error('Error fetching customer details:', err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchCustomer();
-  }, [customerId]);
+    fetchCustomer()
+  }, [customerId])
 
   const title = customer
     ? `${formatCustomerName(customer.firstName, customer.lastName)}`
-    : 'Loading Customer Details';
+    : 'Loading Customer Details'
 
   return (
     <>
@@ -322,5 +322,5 @@ export function CustomerDetailsModal({ customerId, onClose }: CustomerDetailsMod
         <OrderDetailsModal orderId={selectedOrderId} onClose={handleCloseOrderModal} />
       )}
     </>
-  );
+  )
 }

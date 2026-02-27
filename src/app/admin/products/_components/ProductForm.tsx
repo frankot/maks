@@ -1,33 +1,33 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import type { Category } from '@prisma/client';
-import { Switch } from '@/components/ui/switch';
-import { X, Upload, Loader2, Link2, RefreshCw } from 'lucide-react';
-import Image from 'next/image';
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import type { Category } from '@prisma/client'
+import { Switch } from '@/components/ui/switch'
+import { X, Upload, Loader2, Link2, RefreshCw } from 'lucide-react'
+import Image from 'next/image'
 
 interface ProductFormProps {
-  productId?: string;
-  onSuccess?: () => void;
+  productId?: string
+  onSuccess?: () => void
 }
 
 interface UploadedImage {
-  publicId: string;
-  url: string;
-  width: number;
-  height: number;
-  format: string;
+  publicId: string
+  url: string
+  width: number
+  height: number
+  format: string
 }
 
 interface Collection {
-  id: string;
-  name: string;
-  slug: string;
+  id: string
+  name: string
+  slug: string
 }
 
 // Function to generate URL-friendly ID from product name
@@ -38,15 +38,15 @@ function generateProductId(name: string): string {
     .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-    .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
 }
 
 export function ProductForm({ productId, onSuccess }: ProductFormProps) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [uploadingImages, setUploadingImages] = useState<string[]>([]);
-  const [images, setImages] = useState<UploadedImage[]>([]);
-  const [collections, setCollections] = useState<Collection[]>([]);
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [uploadingImages, setUploadingImages] = useState<string[]>([])
+  const [images, setImages] = useState<UploadedImage[]>([])
+  const [collections, setCollections] = useState<Collection[]>([])
   const [formData, setFormData] = useState({
     id: '',
     slug: '',
@@ -59,18 +59,18 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     category: 'RINGS' as Category,
     collectionId: '',
     productStatus: 'SHOP' as 'SHOP' | 'ORDERED' | 'SOLD',
-  });
-  const [isIdManuallyEdited, setIsIdManuallyEdited] = useState(false);
+  })
+  const [isIdManuallyEdited, setIsIdManuallyEdited] = useState(false)
 
-  const isEditing = Boolean(productId);
+  const isEditing = Boolean(productId)
 
   useEffect(() => {
     if (productId) {
       const fetchProduct = async () => {
         try {
-          const response = await fetch(`/api/products/${productId}`);
+          const response = await fetch(`/api/products/${productId}`)
           if (response.ok) {
-            const product = await response.json();
+            const product = await response.json()
             setFormData({
               id: product.id,
               slug: product.slug || '',
@@ -83,8 +83,8 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
               category: (product.category ?? 'RINGS') as Category,
               collectionId: product.collectionId || '',
               productStatus: product.productStatus || 'SHOP',
-            });
-            setIsIdManuallyEdited(true); // Existing product ID should not auto-update
+            })
+            setIsIdManuallyEdited(true) // Existing product ID should not auto-update
 
             // Load existing images
             if (product.imagePublicIds && product.imagePaths) {
@@ -96,82 +96,82 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
                   height: 800,
                   format: 'webp',
                 })
-              );
-              setImages(existingImages);
+              )
+              setImages(existingImages)
             }
           }
         } catch (error) {
-          console.error('Error fetching product:', error);
+          console.error('Error fetching product:', error)
         }
-      };
-      fetchProduct();
+      }
+      fetchProduct()
     }
-  }, [productId]);
+  }, [productId])
 
   // Fetch collections
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const response = await fetch('/api/collections');
+        const response = await fetch('/api/collections')
         if (response.ok) {
-          const data = await response.json();
-          setCollections(data);
+          const data = await response.json()
+          setCollections(data)
         }
       } catch (error) {
-        console.error('Error fetching collections:', error);
+        console.error('Error fetching collections:', error)
       }
-    };
-    fetchCollections();
-  }, []);
+    }
+    fetchCollections()
+  }, [])
 
   // Auto-generate ID from name when name changes (only for new products or when not manually edited)
   useEffect(() => {
     if (!isIdManuallyEdited && formData.name) {
-      const generatedSlug = generateProductId(formData.name);
+      const generatedSlug = generateProductId(formData.name)
       // For new products set slug, for editing do not overwrite unless manually allowed
       if (!isEditing) {
-        setFormData((prev) => ({ ...prev, slug: generatedSlug, id: prev.id || generatedSlug }));
+        setFormData((prev) => ({ ...prev, slug: generatedSlug, id: prev.id || generatedSlug }))
       } else if (!formData.slug) {
-        setFormData((prev) => ({ ...prev, slug: generatedSlug }));
+        setFormData((prev) => ({ ...prev, slug: generatedSlug }))
       }
     }
-  }, [formData.name, formData.slug, isEditing, isIdManuallyEdited]);
+  }, [formData.name, formData.slug, isEditing, isIdManuallyEdited])
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files) return;
+    const files = event.target.files
+    if (!files) return
 
     for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const fileId = `${Date.now()}-${i}`;
+      const file = files[i]
+      const fileId = `${Date.now()}-${i}`
 
-      setUploadingImages((prev) => [...prev, fileId]);
+      setUploadingImages((prev) => [...prev, fileId])
 
       try {
-        const formData = new FormData();
-        formData.append('file', file);
+        const formData = new FormData()
+        formData.append('file', file)
 
         const response = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
-        });
+        })
 
         if (response.ok) {
-          const result = await response.json();
-          setImages((prev) => [...prev, result]);
+          const result = await response.json()
+          setImages((prev) => [...prev, result])
         } else {
-          console.error('Upload failed');
+          console.error('Upload failed')
         }
       } catch (error) {
-        console.error('Upload error:', error);
+        console.error('Upload error:', error)
       } finally {
-        setUploadingImages((prev) => prev.filter((id) => id !== fileId));
+        setUploadingImages((prev) => prev.filter((id) => id !== fileId))
       }
     }
 
     // Reset file input
-    event.target.value = '';
-  };
+    event.target.value = ''
+  }
 
   const handleImageDelete = async (publicId: string) => {
     try {
@@ -181,21 +181,21 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ publicId }),
-      });
+      })
 
       if (response.ok) {
-        setImages((prev) => prev.filter((img) => img.publicId !== publicId));
+        setImages((prev) => prev.filter((img) => img.publicId !== publicId))
       } else {
-        console.error('Delete failed');
+        console.error('Delete failed')
       }
     } catch (error) {
-      console.error('Delete error:', error);
+      console.error('Delete error:', error)
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
     try {
       const productData = {
         id: formData.id || undefined,
@@ -211,9 +211,9 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         imagePaths: images.map((img) => img.url),
         imagePublicIds: images.map((img) => img.publicId),
         productStatus: formData.productStatus,
-      };
+      }
 
-      let response;
+      let response
       if (isEditing && productId) {
         response = await fetch(`/api/products/${productId}`, {
           method: 'PUT',
@@ -221,7 +221,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(productData),
-        });
+        })
       } else {
         response = await fetch('/api/products', {
           method: 'POST',
@@ -229,47 +229,47 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(productData),
-        });
+        })
       }
 
       if (response.ok) {
         if (onSuccess) {
-          onSuccess();
+          onSuccess()
         } else {
-          router.push('/admin/products');
+          router.push('/admin/products')
         }
       } else {
-        const errorData = await response.json();
-        console.error('Error saving product:', errorData.error);
+        const errorData = await response.json()
+        console.error('Error saving product:', errorData.error)
       }
     } catch (error) {
-      console.error('Error saving product:', error);
+      console.error('Error saving product:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }));
-  };
+    }))
+  }
 
   const handleSlugChange = (value: string) => {
-    setIsIdManuallyEdited(true);
-    handleInputChange('slug', value);
-  };
+    setIsIdManuallyEdited(true)
+    handleInputChange('slug', value)
+  }
 
   const handleRegenerateId = () => {
     if (formData.name) {
-      const generated = generateProductId(formData.name);
-      setFormData((prev) => ({ ...prev, slug: generated, id: prev.id || generated }));
-      setIsIdManuallyEdited(false);
+      const generated = generateProductId(formData.name)
+      setFormData((prev) => ({ ...prev, slug: generated, id: prev.id || generated }))
+      setIsIdManuallyEdited(false)
     }
-  };
+  }
 
-  const previewUrl = formData.slug ? `/shop/${formData.slug}` : '';
+  const previewUrl = formData.slug ? `/shop/${formData.slug}` : ''
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -521,5 +521,5 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         </Button>
       </div>
     </form>
-  );
+  )
 }

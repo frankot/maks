@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import { EditCollections } from '../../components/EditCollections';
-import { useRouter } from 'next/navigation';
+import { EditCollections } from '../../components/EditCollections'
+import { useRouter } from 'next/navigation'
 
 export function EditCollectionsClient() {
-  const router = useRouter();
+  const router = useRouter()
 
   const handleCollectionsChanged = () => {
-    router.refresh();
-  };
+    router.refresh()
+  }
 
-  return <EditCollections onCollectionsChanged={handleCollectionsChanged} />;
+  return <EditCollections onCollectionsChanged={handleCollectionsChanged} />
 }

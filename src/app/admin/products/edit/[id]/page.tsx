@@ -1,13 +1,13 @@
-import { ProductForm } from '../../_components/ProductForm';
+import { ProductForm } from '../../_components/ProductForm'
 
 interface EditProductPageProps {
   params: Promise<{
-    id: string;
-  }>;
+    id: string
+  }>
 }
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
-  const { id } = await params;
+  const { id } = await params
 
   return (
     <div className="mx-auto mt-16 max-w-5xl space-y-6 py-6">
@@ -20,5 +20,5 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
         <ProductForm productId={id} />
       </div>
     </div>
-  );
+  )
 }

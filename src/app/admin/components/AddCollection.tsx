@@ -1,20 +1,20 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Plus, RefreshCw } from 'lucide-react';
+} from '@/components/ui/dialog'
+import { Plus, RefreshCw } from 'lucide-react'
 
 interface AddCollectionProps {
-  onCollectionAdded?: () => void;
+  onCollectionAdded?: () => void
 }
 
 function generateSlug(name: string): string {
@@ -24,38 +24,38 @@ function generateSlug(name: string): string {
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
+    .replace(/^-|-$/g, '')
 }
 
 export function AddCollection({ onCollectionAdded }: AddCollectionProps) {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [name, setName] = useState('');
-  const [slug, setSlug] = useState('');
-  const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [name, setName] = useState('')
+  const [slug, setSlug] = useState('')
+  const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false)
 
   const handleNameChange = (value: string) => {
-    setName(value);
+    setName(value)
     if (!isSlugManuallyEdited && value) {
-      setSlug(generateSlug(value));
+      setSlug(generateSlug(value))
     }
-  };
+  }
 
   const handleSlugChange = (value: string) => {
-    setSlug(value);
-    setIsSlugManuallyEdited(true);
-  };
+    setSlug(value)
+    setIsSlugManuallyEdited(true)
+  }
 
   const handleRegenerateSlug = () => {
     if (name) {
-      setSlug(generateSlug(name));
-      setIsSlugManuallyEdited(false);
+      setSlug(generateSlug(name))
+      setIsSlugManuallyEdited(false)
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
     try {
       const response = await fetch('/api/collections', {
@@ -67,26 +67,26 @@ export function AddCollection({ onCollectionAdded }: AddCollectionProps) {
           name,
           slug: slug || undefined,
         }),
-      });
+      })
 
       if (response.ok) {
-        setOpen(false);
-        setName('');
-        setSlug('');
-        setIsSlugManuallyEdited(false);
+        setOpen(false)
+        setName('')
+        setSlug('')
+        setIsSlugManuallyEdited(false)
         if (onCollectionAdded) {
-          onCollectionAdded();
+          onCollectionAdded()
         }
       } else {
-        const errorData = await response.json();
-        console.error('Error creating collection:', errorData.error);
+        const errorData = await response.json()
+        console.error('Error creating collection:', errorData.error)
       }
     } catch (error) {
-      console.error('Error creating collection:', error);
+      console.error('Error creating collection:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -157,5 +157,5 @@ export function AddCollection({ onCollectionAdded }: AddCollectionProps) {
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

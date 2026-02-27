@@ -1,38 +1,38 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import PageLoader from '@/components/PageLoader';
-import { preloadAllCriticalImages } from '@/lib/image-preloader';
+import { useEffect, useState } from 'react'
+import PageLoader from '@/components/PageLoader'
+import { preloadAllCriticalImages } from '@/lib/image-preloader'
 
 interface PreloadProviderProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export default function PreloadProvider({ children }: PreloadProviderProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const loadImages = async () => {
       try {
-        await preloadAllCriticalImages();
+        await preloadAllCriticalImages()
       } catch (error) {
-        console.error('Preload error:', error);
+        console.error('Preload error:', error)
       } finally {
         // Add minimum loading time for smooth UX (optional)
-        const minLoadTime = 500; // 500ms minimum
+        const minLoadTime = 500 // 500ms minimum
         setTimeout(() => {
-          setIsLoading(false);
-        }, minLoadTime);
+          setIsLoading(false)
+        }, minLoadTime)
       }
-    };
+    }
 
-    void loadImages();
-  }, []);
+    void loadImages()
+  }, [])
 
   return (
     <>
       <PageLoader isLoading={isLoading} />
       <div className={isLoading ? 'invisible' : 'visible'}>{children}</div>
     </>
-  );
+  )
 }

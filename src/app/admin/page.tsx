@@ -1,8 +1,8 @@
-import { getDashboardStats } from '@/lib/dashboard';
-import { DashboardStats } from './components/DashboardStats';
+import { getDashboardStats } from '@/lib/dashboard'
+import { DashboardStats } from './components/DashboardStats'
 
 export default async function AdminPage() {
-  const stats = await getDashboardStats();
+  const stats = await getDashboardStats()
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -17,5 +17,5 @@ export default async function AdminPage() {
 
       <DashboardStats stats={stats} />
     </div>
-  );
+  )
 }

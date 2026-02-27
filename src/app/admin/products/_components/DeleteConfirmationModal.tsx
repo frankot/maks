@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   AlertDialog,
@@ -9,16 +9,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Loader2, AlertCircle } from 'lucide-react';
+} from '@/components/ui/alert-dialog'
+import { Loader2, AlertCircle } from 'lucide-react'
 
 interface DeleteConfirmationModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
-  productName: string;
-  isDeleting: boolean;
-  error?: string | null;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onConfirm: () => void
+  productName: string
+  isDeleting: boolean
+  error?: string | null
 }
 
 export function DeleteConfirmationModal({
@@ -71,5 +71,5 @@ export function DeleteConfirmationModal({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }

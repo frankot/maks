@@ -1,40 +1,41 @@
-'use client';
+'use client'
 
-import React, { useEffect, useState } from 'react';
-import type { Product, Collection } from '@prisma/client';
-import ProductCard from '@/app/(customerFacing)/_components/ProductCard';
+import React, { useEffect, useState } from 'react'
+import type { Product, Collection } from '@prisma/client'
+import ProductCard from '@/app/(customerFacing)/_components/ProductCard'
 
-type ProductWithCollection = Product & { collection: Collection | null };
+type ProductWithCollection = Product & { collection: Collection | null }
 
 interface CategoryPageProps {
-  category: string;
+  category: string
 }
 
 export default function CategoryPage({ category }: CategoryPageProps) {
-  const [products, setProducts] = useState<ProductWithCollection[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<ProductWithCollection[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const title = category.charAt(0).toUpperCase() + category.slice(1);
+  const title = category.charAt(0).toUpperCase() + category.slice(1)
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('/api/products');
+        const res = await fetch('/api/products')
         if (res.ok) {
-          const data = (await res.json()) as ProductWithCollection[];
+          const data = (await res.json()) as ProductWithCollection[]
           const filtered = data.filter(
-            (p) => p.category === category.toUpperCase() && p.isAvailable && p.productStatus === 'SHOP'
-          );
-          setProducts(filtered);
+            (p) =>
+              p.category === category.toUpperCase() && p.isAvailable && p.productStatus === 'SHOP'
+          )
+          setProducts(filtered)
         }
       } catch (err) {
-        console.error('Failed to fetch products', err);
+        console.error('Failed to fetch products', err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchProducts();
-  }, [category]);
+    }
+    fetchProducts()
+  }, [category])
 
   if (loading) {
     return (
@@ -52,7 +53,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
           ))}
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -75,5 +76,5 @@ export default function CategoryPage({ category }: CategoryPageProps) {
         </div>
       )}
     </section>
-  );
+  )
 }

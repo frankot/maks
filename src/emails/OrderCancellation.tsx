@@ -1,24 +1,17 @@
-import {
-  Html,
-  Head,
-  Body,
-  Container,
-  Text,
-  Hr,
-} from '@react-email/components';
+import { Html, Head, Body, Container, Text, Hr } from '@react-email/components'
 
-const fontFamily = 'Inter, Helvetica, Arial, sans-serif';
+const fontFamily = 'Inter, Helvetica, Arial, sans-serif'
 
 const main = {
   backgroundColor: '#ffffff',
   fontFamily,
-};
+}
 
 const container = {
   maxWidth: '560px',
   margin: '0 auto',
   padding: '40px 20px',
-};
+}
 
 const heading = {
   fontSize: '24px',
@@ -27,7 +20,7 @@ const heading = {
   textAlign: 'center' as const,
   margin: '0 0 32px',
   color: '#000000',
-};
+}
 
 const subheading = {
   fontSize: '16px',
@@ -35,7 +28,7 @@ const subheading = {
   textAlign: 'center' as const,
   color: '#333333',
   margin: '0 0 8px',
-};
+}
 
 const body = {
   fontSize: '14px',
@@ -43,19 +36,19 @@ const body = {
   textAlign: 'center' as const,
   lineHeight: '1.6',
   margin: '0 0 8px',
-};
+}
 
 const orderRef = {
   fontSize: '13px',
   color: '#666666',
   textAlign: 'center' as const,
   margin: '0 0 32px',
-};
+}
 
 const hr = {
   borderColor: '#e5e5e5',
   margin: '32px 0',
-};
+}
 
 const footer = {
   fontSize: '12px',
@@ -63,11 +56,11 @@ const footer = {
   textAlign: 'center' as const,
   lineHeight: '1.6',
   margin: '0',
-};
+}
 
 interface OrderCancellationProps {
-  customerName: string;
-  orderId: string;
+  customerName: string
+  orderId: string
 }
 
 export default function OrderCancellation({ customerName, orderId }: OrderCancellationProps) {
@@ -82,12 +75,10 @@ export default function OrderCancellation({ customerName, orderId }: OrderCancel
 
           <Hr style={hr} />
 
+          <Text style={body}>Hi {customerName},</Text>
           <Text style={body}>
-            Hi {customerName},
-          </Text>
-          <Text style={body}>
-            Your order has been cancelled. If you did not request this cancellation
-            or have any questions, please don&apos;t hesitate to contact us.
+            Your order has been cancelled. If you did not request this cancellation or have any
+            questions, please don&apos;t hesitate to contact us.
           </Text>
 
           <Hr style={hr} />
@@ -100,5 +91,5 @@ export default function OrderCancellation({ customerName, orderId }: OrderCancel
         </Container>
       </Body>
     </Html>
-  );
+  )
 }

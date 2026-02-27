@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import React, { useMemo, useRef } from 'react';
-import type { Product } from '@prisma/client';
-import ProductCard from './ProductCard';
+import React, { useMemo, useRef } from 'react'
+import type { Product } from '@prisma/client'
+import ProductCard from './ProductCard'
 
 interface FeaturedProductsBaseProps {
-  products: Product[];
-  header: React.ReactNode;
-  emptyMessage?: string;
-  ariaLabel: string;
+  products: Product[]
+  header: React.ReactNode
+  emptyMessage?: string
+  ariaLabel: string
 }
 
 function ChevronLeftIcon() {
@@ -23,7 +23,7 @@ function ChevronLeftIcon() {
     >
       <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
-  );
+  )
 }
 
 function ChevronRightIcon() {
@@ -38,7 +38,7 @@ function ChevronRightIcon() {
     >
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
     </svg>
-  );
+  )
 }
 
 export default function FeaturedProductsBase({
@@ -47,28 +47,28 @@ export default function FeaturedProductsBase({
   emptyMessage = 'No products found.',
   ariaLabel,
 }: FeaturedProductsBaseProps) {
-  const scrollerRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null)
 
-  const cardWidth = 300; // approximate min card width in px
-  const gap = 16; // tailwind gap-4
+  const cardWidth = 300 // approximate min card width in px
+  const gap = 16 // tailwind gap-4
 
   const scrollBy = useMemo(() => {
-    if (typeof window === 'undefined') return 0;
-    const vw = Math.min(window.innerWidth, 1280);
-    return Math.max(cardWidth + gap, Math.floor(vw * 0.8));
-  }, []);
+    if (typeof window === 'undefined') return 0
+    const vw = Math.min(window.innerWidth, 1280)
+    return Math.max(cardWidth + gap, Math.floor(vw * 0.8))
+  }, [])
 
   const handlePrev = () => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    el.scrollBy({ left: -scrollBy, behavior: 'smooth' });
-  };
+    const el = scrollerRef.current
+    if (!el) return
+    el.scrollBy({ left: -scrollBy, behavior: 'smooth' })
+  }
 
   const handleNext = () => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    el.scrollBy({ left: scrollBy, behavior: 'smooth' });
-  };
+    const el = scrollerRef.current
+    if (!el) return
+    el.scrollBy({ left: scrollBy, behavior: 'smooth' })
+  }
 
   if (!products?.length) {
     return (
@@ -76,7 +76,7 @@ export default function FeaturedProductsBase({
         {header}
         <div className="py-8 text-center text-gray-500">{emptyMessage}</div>
       </section>
-    );
+    )
   }
 
   return (
@@ -121,5 +121,5 @@ export default function FeaturedProductsBase({
         </div>
       </div>
     </section>
-  );
+  )
 }

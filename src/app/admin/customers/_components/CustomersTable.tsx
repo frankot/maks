@@ -1,41 +1,41 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { format } from 'date-fns';
-import { Eye, Trash2 } from 'lucide-react';
-import { AdminTable, TableColumn } from '../../components/Table';
-import { AdminDropdown, DropdownAction } from '../../components/Dropdown';
-import { CustomerDetailsModal } from './CustomerDetailsModal';
-import { formatCustomerName, calculateTotalSpent, formatPrice } from '@/lib/utils/customers';
-import { deleteCustomerAction } from '../actions';
-import type { User, OrderStatus } from '@prisma/client';
+import { useState } from 'react'
+import { format } from 'date-fns'
+import { Eye, Trash2 } from 'lucide-react'
+import { AdminTable, TableColumn } from '../../components/Table'
+import { AdminDropdown, DropdownAction } from '../../components/Dropdown'
+import { CustomerDetailsModal } from './CustomerDetailsModal'
+import { formatCustomerName, calculateTotalSpent, formatPrice } from '@/lib/utils/customers'
+import { deleteCustomerAction } from '../actions'
+import type { User, OrderStatus } from '@prisma/client'
 
 interface CustomerWithOrders extends User {
   orders: Array<{
-    id: string;
-    status: OrderStatus;
-    pricePaid: number;
-    createdAt: Date;
-  }>;
+    id: string
+    status: OrderStatus
+    pricePaid: number
+    createdAt: Date
+  }>
   _count: {
-    orders: number;
-  };
+    orders: number
+  }
 }
 
 interface CustomersTableProps {
-  customers: CustomerWithOrders[];
+  customers: CustomerWithOrders[]
 }
 
 export function CustomersTable({ customers }: CustomersTableProps) {
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null)
 
   const handleViewDetails = (customerId: string) => {
-    setSelectedCustomerId(customerId);
-  };
+    setSelectedCustomerId(customerId)
+  }
 
   const handleCloseModal = () => {
-    setSelectedCustomerId(null);
-  };
+    setSelectedCustomerId(null)
+  }
 
   const handleDelete = async (customerId: string) => {
     if (
@@ -43,12 +43,12 @@ export function CustomersTable({ customers }: CustomersTableProps) {
         'Are you sure you want to delete this customer? This will also delete all their orders.'
       )
     ) {
-      const result = await deleteCustomerAction({ customerId });
+      const result = await deleteCustomerAction({ customerId })
       if (result?.serverError) {
-        console.error('Failed to delete customer:', result.serverError);
+        console.error('Failed to delete customer:', result.serverError)
       }
     }
-  };
+  }
 
   const getCustomerActions = (customer: CustomerWithOrders): DropdownAction[] => [
     {
@@ -63,7 +63,7 @@ export function CustomersTable({ customers }: CustomersTableProps) {
       variant: 'destructive' as const,
       separator: true,
     },
-  ];
+  ]
 
   const columns: TableColumn<CustomerWithOrders>[] = [
     {
@@ -111,7 +111,7 @@ export function CustomersTable({ customers }: CustomersTableProps) {
       className: 'text-right',
       render: (customer) => <AdminDropdown actions={getCustomerActions(customer)} />,
     },
-  ];
+  ]
 
   return (
     <>
@@ -126,5 +126,5 @@ export function CustomersTable({ customers }: CustomersTableProps) {
         <CustomerDetailsModal customerId={selectedCustomerId} onClose={handleCloseModal} />
       )}
     </>
-  );
+  )
 }

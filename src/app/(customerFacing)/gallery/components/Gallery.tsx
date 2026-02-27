@@ -1,22 +1,22 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import GalleryCard from './GalleryCard';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useEffect, useState } from 'react'
+import GalleryCard from './GalleryCard'
+import Image from 'next/image'
+import Link from 'next/link'
 
 interface GalleryImage {
-  id: string;
-  imagePath: string;
-  order: number;
-  artist: { name: string };
+  id: string
+  imagePath: string
+  order: number
+  artist: { name: string }
 }
 
 interface GalleryRow {
-  id: string;
-  layout: 'THREE_COL' | 'FIVE_COL';
-  order: number;
-  images: GalleryImage[];
+  id: string
+  layout: 'THREE_COL' | 'FIVE_COL'
+  order: number
+  images: GalleryImage[]
 }
 
 // Hardcoded fallback items
@@ -37,7 +37,7 @@ const fallbackItems = [
   { id: 'gal14', name: 'Anna Kowalska', imagePath: '/gallery/gal1_b.jpg' },
   { id: 'gal15', name: 'Anna Kowalska', imagePath: '/gallery/gal2_b.jpg' },
   { id: 'gal16', name: 'Anna Kowalska', imagePath: '/gallery/gal3_b.jpg' },
-];
+]
 
 function FallbackGallery() {
   return (
@@ -67,54 +67,56 @@ function FallbackGallery() {
         ))}
       </div>
     </>
-  );
+  )
 }
 
 export default function Gallery() {
-  const [rows, setRows] = useState<GalleryRow[] | null>(null);
+  const [rows, setRows] = useState<GalleryRow[] | null>(null)
 
   useEffect(() => {
     const fetchRows = async () => {
       try {
-        const res = await fetch('/api/gallery/rows');
+        const res = await fetch('/api/gallery/rows')
         if (res.ok) {
-          const data: GalleryRow[] = await res.json();
+          const data: GalleryRow[] = await res.json()
           if (data.length > 0) {
-            setRows(data);
+            setRows(data)
           }
         }
       } catch {
         // fallback will render
       }
-    };
-    void fetchRows();
-  }, []);
+    }
+    void fetchRows()
+  }, [])
 
   return (
     <div className="mx-auto">
       <div className="space-y-0">
-        {rows && rows.length > 0
-          ? rows.map((row) => {
-              const gridCols =
-                row.layout === 'FIVE_COL'
-                  ? 'grid grid-cols-2 gap-0 md:grid-cols-3 lg:grid-cols-5'
-                  : 'grid grid-cols-2 gap-0 md:grid-cols-3';
+        {rows && rows.length > 0 ? (
+          rows.map((row) => {
+            const gridCols =
+              row.layout === 'FIVE_COL'
+                ? 'grid grid-cols-2 gap-0 md:grid-cols-3 lg:grid-cols-5'
+                : 'grid grid-cols-2 gap-0 md:grid-cols-3'
 
-              const sortedImages = [...row.images].sort((a, b) => a.order - b.order);
+            const sortedImages = [...row.images].sort((a, b) => a.order - b.order)
 
-              return (
-                <div key={row.id} className={gridCols}>
-                  {sortedImages.map((img) => (
-                    <GalleryCard
-                      key={img.id}
-                      imagePath={img.imagePath}
-                      artistName={img.artist.name}
-                    />
-                  ))}
-                </div>
-              );
-            })
-          : <FallbackGallery />}
+            return (
+              <div key={row.id} className={gridCols}>
+                {sortedImages.map((img) => (
+                  <GalleryCard
+                    key={img.id}
+                    imagePath={img.imagePath}
+                    artistName={img.artist.name}
+                  />
+                ))}
+              </div>
+            )
+          })
+        ) : (
+          <FallbackGallery />
+        )}
 
         {/* Shop CTA Section - Full width with image */}
         <div className="relative mt-20 h-[60vh] w-full">
@@ -158,5 +160,5 @@ export default function Gallery() {
         </div>
       </div>
     </div>
-  );
+  )
 }

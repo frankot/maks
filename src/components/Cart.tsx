@@ -1,20 +1,29 @@
-'use client';
+'use client'
 
-import { useCartStore } from '@/stores/cart-store';
-import { formatCartPrice } from '@/lib/cart';
-import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import Link from 'next/link';
-import { X, ShoppingBag } from 'lucide-react';
+import { useCartStore } from '@/stores/cart-store'
+import { formatCartPrice } from '@/lib/cart'
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
+import { Button } from '@/components/ui/button'
+import Image from 'next/image'
+import Link from 'next/link'
+import { X, ShoppingBag } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 export default function Cart() {
-  const { items, isOpen, closeCart, removeItem, totalPriceInCents } = useCartStore();
+  const { items, isOpen, closeCart, removeItem, totalPriceInCents } = useCartStore()
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   return (
     <Sheet open={isOpen} onOpenChange={closeCart}>
       <SheetContent
-        side="right"
+        side={isMobile ? 'bottom' : 'right'}
         className="flex w-full flex-col border-l bg-stone-100 p-0 sm:max-w-lg"
       >
         <div className="mx-2 border-b px-6 py-4">
@@ -102,5 +111,5 @@ export default function Cart() {
         )}
       </SheetContent>
     </Sheet>
-  );
+  )
 }

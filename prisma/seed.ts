@@ -6,26 +6,26 @@ import {
   AddressType,
   ProductStatus,
   Category,
-} from '@prisma/client';
+} from '@prisma/client'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 async function main() {
-  console.log('Starting seed...');
+  console.log('Starting seed...')
   // Diagnostic: print DATABASE_URL visible to this process (redacted in logs)
   try {
-    console.log('process.env.DATABASE_URL:', process.env.DATABASE_URL ? '[REDACTED]' : 'undefined');
+    console.log('process.env.DATABASE_URL:', process.env.DATABASE_URL ? '[REDACTED]' : 'undefined')
   } catch (err) {
-    console.log('Could not read process.env.DATABASE_URL', err);
+    console.log('Could not read process.env.DATABASE_URL', err)
   }
 
   // Clear existing data
-  await prisma.payment.deleteMany();
-  await prisma.orderItem.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.address.deleteMany();
-  await prisma.user.deleteMany();
+  await prisma.payment.deleteMany()
+  await prisma.orderItem.deleteMany()
+  await prisma.order.deleteMany()
+  await prisma.product.deleteMany()
+  await prisma.address.deleteMany()
+  await prisma.user.deleteMany()
 
   // Create Users
   const users = await Promise.all([
@@ -65,9 +65,9 @@ async function main() {
         phoneNumber: '+48 666 789 123',
       },
     }),
-  ]);
+  ])
 
-  console.log('Created users:', users.length);
+  console.log('Created users:', users.length)
 
   // Create Addresses
   const addresses = await Promise.all([
@@ -119,9 +119,9 @@ async function main() {
         addressType: AddressType.BOTH,
       },
     }),
-  ]);
+  ])
 
-  console.log('Created addresses:', addresses.length);
+  console.log('Created addresses:', addresses.length)
 
   // Create Jewelry Products with both PLN and EUR prices
   const products = await Promise.all([
@@ -277,9 +277,9 @@ async function main() {
         category: Category.RINGS,
       },
     }),
-  ]);
+  ])
 
-  console.log('Created products:', products.length);
+  console.log('Created products:', products.length)
 
   // Create Orders
   const orders = await Promise.all([
@@ -358,9 +358,9 @@ async function main() {
         updatedAt: new Date('2024-01-24T15:45:00Z'),
       },
     }),
-  ]);
+  ])
 
-  console.log('Created orders:', orders.length);
+  console.log('Created orders:', orders.length)
 
   // Create Order Items using the new priceInGrosz field
   const orderItems = await Promise.all([
@@ -433,9 +433,9 @@ async function main() {
         currency: 'PLN',
       },
     }),
-  ]);
+  ])
 
-  console.log('Created order items:', orderItems.length);
+  console.log('Created order items:', orderItems.length)
 
   // Create Payments
   const payments = await Promise.all([
@@ -508,25 +508,25 @@ async function main() {
         updatedAt: new Date('2024-01-24T15:45:00Z'),
       },
     }),
-  ]);
+  ])
 
-  console.log('Created payments:', payments.length);
+  console.log('Created payments:', payments.length)
 
-  console.log('Seed completed successfully!');
-  console.log('Created:');
-  console.log(`- ${users.length} users`);
-  console.log(`- ${addresses.length} addresses`);
-  console.log(`- ${products.length} products`);
-  console.log(`- ${orders.length} orders`);
-  console.log(`- ${orderItems.length} order items`);
-  console.log(`- ${payments.length} payments`);
+  console.log('Seed completed successfully!')
+  console.log('Created:')
+  console.log(`- ${users.length} users`)
+  console.log(`- ${addresses.length} addresses`)
+  console.log(`- ${products.length} products`)
+  console.log(`- ${orders.length} orders`)
+  console.log(`- ${orderItems.length} order items`)
+  console.log(`- ${payments.length} payments`)
 }
 
 main()
   .catch((e) => {
-    console.error(e);
-    process.exit(1);
+    console.error(e)
+    process.exit(1)
   })
   .finally(async () => {
-    await prisma.$disconnect();
-  });
+    await prisma.$disconnect()
+  })

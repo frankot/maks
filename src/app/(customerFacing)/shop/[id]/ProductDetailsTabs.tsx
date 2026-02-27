@@ -1,23 +1,23 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-type Section = 'DETAILS' | 'MATERIAL' | 'CARE';
+type Section = 'DETAILS' | 'MATERIAL' | 'CARE'
 
 interface ProductDetailsTabsProps {
-  details: React.ReactNode;
-  material: React.ReactNode;
-  care: React.ReactNode;
+  details: React.ReactNode
+  material: React.ReactNode
+  care: React.ReactNode
 }
 
 export default function ProductDetailsTabs({ details, material, care }: ProductDetailsTabsProps) {
-  const [activeSection, setActiveSection] = useState<Section>('DETAILS');
+  const [activeSection, setActiveSection] = useState<Section>('DETAILS')
 
   const sections: { name: Section; content: React.ReactNode }[] = [
     { name: 'DETAILS', content: details },
     { name: 'MATERIAL', content: material },
     { name: 'CARE', content: care },
-  ];
+  ]
 
   return (
     <div className="mt-10">
@@ -41,5 +41,5 @@ export default function ProductDetailsTabs({ details, material, care }: ProductD
         {sections.find((s) => s.name === activeSection)?.content}
       </div>
     </div>
-  );
+  )
 }

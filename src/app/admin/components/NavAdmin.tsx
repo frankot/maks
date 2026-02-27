@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   NavigationMenu,
@@ -6,12 +6,12 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
-import { cn } from '@/lib/utils';
-import { LogOut } from 'lucide-react';
-import Link from 'next/link';
-import { signOut } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
+} from '@/components/ui/navigation-menu'
+import { cn } from '@/lib/utils'
+import { LogOut } from 'lucide-react'
+import Link from 'next/link'
+import { signOut } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
 
 const navItems = [
   { name: 'Home', href: '/admin' },
@@ -20,20 +20,20 @@ const navItems = [
   { name: 'Products', href: '/admin/products' },
   { name: 'Settings', href: '/admin/settings' },
   { name: 'CMS', href: '/admin/cms' },
-];
+]
 
 export default function NavAdmin() {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   const isActive = (href: string) => {
     if (href === '/admin') {
-      return pathname === '/admin';
+      return pathname === '/admin'
     }
-    return pathname.startsWith(href);
-  };
+    return pathname.startsWith(href)
+  }
 
   return (
-    <nav className="fixed top-0 z-50 h-16 w-full border-b border-border bg-background shadow-sm">
+    <nav className="border-border bg-background fixed top-0 z-50 h-16 w-full border-b shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-center">
           <NavigationMenu>
@@ -46,7 +46,7 @@ export default function NavAdmin() {
                       navigationMenuTriggerStyle(),
                       'relative transition-colors',
                       isActive(item.href)
-                        ? 'font-semibold text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary'
+                        ? 'text-foreground after:bg-primary font-semibold after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5'
                         : 'text-muted-foreground hover:text-foreground'
                     )}
                   >
@@ -59,7 +59,7 @@ export default function NavAdmin() {
                   onClick={() => signOut({ callbackUrl: '/admin/login' })}
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    'cursor-pointer text-muted-foreground transition-colors hover:text-foreground'
+                    'text-muted-foreground hover:text-foreground cursor-pointer transition-colors'
                   )}
                 >
                   <LogOut className="mr-1 h-4 w-4" />
@@ -71,5 +71,5 @@ export default function NavAdmin() {
         </div>
       </div>
     </nav>
-  );
+  )
 }

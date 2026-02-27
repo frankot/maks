@@ -1,17 +1,17 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 
-import { getOrdersPaginated } from '@/lib/orders';
-import { OrdersTable } from './_components/OrdersTable';
-import AdminPageWrapper from '../components/AdminPageWrapper';
-import { PaginationControls } from '@/components/ui/pagination-controls';
+import { getOrdersPaginated } from '@/lib/orders'
+import { OrdersTable } from './_components/OrdersTable'
+import AdminPageWrapper from '../components/AdminPageWrapper'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 
 export default async function OrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ cursor?: string }>;
+  searchParams: Promise<{ cursor?: string }>
 }) {
-  const { cursor } = await searchParams;
-  const { items: orders, nextCursor, hasMore } = await getOrdersPaginated({ cursor });
+  const { cursor } = await searchParams
+  const { items: orders, nextCursor, hasMore } = await getOrdersPaginated({ cursor })
 
   return (
     <AdminPageWrapper>
@@ -28,5 +28,5 @@ export default async function OrdersPage({
         hasPrev={!!cursor}
       />
     </AdminPageWrapper>
-  );
+  )
 }

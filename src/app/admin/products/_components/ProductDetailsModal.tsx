@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
-import Image from 'next/image';
-import { Badge } from '@/components/ui/badge';
-import { DetailsModal } from '@/app/admin/components/DetailsModal';
+import { useEffect, useState } from 'react'
+import { format } from 'date-fns'
+import Image from 'next/image'
+import { Badge } from '@/components/ui/badge'
+import { DetailsModal } from '@/app/admin/components/DetailsModal'
 import {
   formatPrice,
   formatPriceEur,
   getAvailabilityBadgeVariant,
   getAvailabilityLabel,
-} from '@/lib/utils/products';
-import type { Product } from '@prisma/client';
+} from '@/lib/utils/products'
+import type { Product } from '@prisma/client'
 import {
   Package,
   DollarSign,
@@ -20,46 +20,46 @@ import {
   ImageIcon,
   ToggleLeft,
   ToggleRight,
-} from 'lucide-react';
+} from 'lucide-react'
 
 interface ProductDetailsModalProps {
-  productId: string;
-  onClose: () => void;
+  productId: string
+  onClose: () => void
 }
 
 export function ProductDetailsModal({ productId, onClose }: ProductDetailsModalProps) {
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        setLoading(true);
-        setError(null);
+        setLoading(true)
+        setError(null)
 
-        const response = await fetch(`/api/products/${productId}`);
+        const response = await fetch(`/api/products/${productId}`)
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch product');
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to fetch product')
         }
 
-        const productData = await response.json();
-        setProduct(productData);
+        const productData = await response.json()
+        setProduct(productData)
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch product details';
-        setError(errorMessage);
-        console.error('Error fetching product details:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch product details'
+        setError(errorMessage)
+        console.error('Error fetching product details:', err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchProduct();
-  }, [productId]);
+    fetchProduct()
+  }, [productId])
 
-  const title = product ? product.name : 'Loading Product Details';
+  const title = product ? product.name : 'Loading Product Details'
 
   return (
     <DetailsModal
@@ -278,5 +278,5 @@ export function ProductDetailsModal({ productId, onClose }: ProductDetailsModalP
         </>
       )}
     </DetailsModal>
-  );
+  )
 }

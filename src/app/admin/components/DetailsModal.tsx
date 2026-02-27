@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import { X } from 'lucide-react';
+import React, { useEffect } from 'react'
+import { X } from 'lucide-react'
 
 interface DetailsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-  loading?: boolean;
-  error?: string | null;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
+  isOpen: boolean
+  onClose: () => void
+  title: string
+  children: React.ReactNode
+  loading?: boolean
+  error?: string | null
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full'
 }
 
 const sizeClasses = {
@@ -19,7 +19,7 @@ const sizeClasses = {
   '2xl': 'max-w-6xl',
   '3xl': 'max-w-7xl',
   full: 'max-w-[95vw]',
-};
+}
 
 export function DetailsModal({
   isOpen,
@@ -30,21 +30,21 @@ export function DetailsModal({
   error = null,
   size = '3xl',
 }: DetailsModalProps) {
-  const sizeClass = sizeClasses[size];
+  const sizeClass = sizeClasses[size]
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = 'unset'
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   if (loading) {
     return (
@@ -74,7 +74,7 @@ export function DetailsModal({
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -118,7 +118,7 @@ export function DetailsModal({
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -150,5 +150,5 @@ export function DetailsModal({
         </div>
       </div>
     </div>
-  );
+  )
 }

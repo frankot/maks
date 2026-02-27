@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
 interface ProductDetailsSectionProps {
-  title: string;
-  children: React.ReactNode;
+  title: string
+  children: React.ReactNode
 }
 
 export default function ProductDetailsSection({ title, children }: ProductDetailsSectionProps) {
@@ -14,5 +14,5 @@ export default function ProductDetailsSection({ title, children }: ProductDetail
       </summary>
       <div className="mt-3 text-xs leading-relaxed text-gray-600">{children}</div>
     </details>
-  );
+  )
 }

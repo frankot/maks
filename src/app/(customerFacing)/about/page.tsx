@@ -1,24 +1,24 @@
-import type { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
-import PageWithHeroBar from '../_components/PageWithHeroBar';
-import FeaturedProducts from '../_components/FeaturedProducts';
-import { ChevronRight } from 'lucide-react';
-import { getShopProducts } from '@/lib/products';
+import type { Metadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
+import PageWithHeroBar from '../_components/PageWithHeroBar'
+import FeaturedProducts from '../_components/FeaturedProducts'
+import { ChevronRight } from 'lucide-react'
+import { getShopProducts } from '@/lib/products'
 
 export const metadata: Metadata = {
   title: 'About',
   description:
     'MAMI — a jewelry brand founded by Maks Michalak in 2024, based in Warsaw. Organic yet bold designs with natural forms, raw and cut stones, and molten luxury.',
   alternates: { canonical: 'https://mami.com.pl/about' },
-};
+}
 
 export default async function AboutPage() {
-  const brandText = `06.33.11 STUDIO. A JEWELRY BRAND FOUNDED BY MAKS MICHALAK IN 2024, BASED IN WARSAW, POLAND. IN OUR STUDIO WE MAKE THINKS ORGANIC YET BOLD, AS WE HOPE OUR AUDIENCE TO BE. NATURAL FORMS, RAW AND CUT STONES, MOLTEN DESIGNS AND SPARKLE OF LUXURY ON YOURSELF.`;
+  const brandText = `06.33.11 STUDIO. A JEWELRY BRAND FOUNDED BY MAKS MICHALAK IN 2024, BASED IN WARSAW, POLAND. IN OUR STUDIO WE MAKE THINKS ORGANIC YET BOLD, AS WE HOPE OUR AUDIENCE TO BE. NATURAL FORMS, RAW AND CUT STONES, MOLTEN DESIGNS AND SPARKLE OF LUXURY ON YOURSELF.`
 
   // Fetch 10 most recent SHOP products (excludes SOLD and ORDERED)
-  const allProducts = await getShopProducts();
-  const recentProducts = allProducts.slice(0, 10);
+  const allProducts = await getShopProducts()
+  const recentProducts = allProducts.slice(0, 10)
 
   return (
     <>
@@ -120,5 +120,5 @@ export default async function AboutPage() {
       {/* Featured Products Section */}
       <FeaturedProducts products={recentProducts} />
     </>
-  );
+  )
 }

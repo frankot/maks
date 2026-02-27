@@ -1,32 +1,32 @@
-'use client';
+'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 
 const FALLBACK_TEXTS = [
   'Handmade jewelry — natural stones & gold vermeil',
   'Free shipping in Poland over 300 zł — worldwide shipping available',
   'Limited editions — small batches, sustainably made',
-];
+]
 
 export default function NavCarousel() {
-  const [texts, setTexts] = useState<string[]>(FALLBACK_TEXTS);
+  const [texts, setTexts] = useState<string[]>(FALLBACK_TEXTS)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('/api/nav-carousel');
+        const res = await fetch('/api/nav-carousel')
         if (res.ok) {
-          const data = await res.json();
+          const data = await res.json()
           if (data?.texts?.length > 0) {
-            setTexts(data.texts);
+            setTexts(data.texts)
           }
         }
       } catch {
         // fallbacks will render
       }
-    };
-    void fetchData();
-  }, []);
+    }
+    void fetchData()
+  }, [])
 
   return (
     <div
@@ -60,5 +60,5 @@ export default function NavCarousel() {
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import type { ImageLoaderProps } from 'next/image';
+import type { ImageLoaderProps } from 'next/image'
 
 /**
  * Custom image loader for Next.js that handles both:
@@ -13,20 +13,20 @@ export default function cloudinaryLoader({ src, width, quality }: ImageLoaderPro
   // Note: Local images bypass Next.js optimization when using custom loader
   // Consider uploading them to Cloudinary for optimization
   if (src.startsWith('/')) {
-    return src;
+    return src
   }
 
   // Handle Cloudinary URLs
   if (src.includes('res.cloudinary.com')) {
     // Parse the Cloudinary URL to extract parts
     // Format: https://res.cloudinary.com/{cloud_name}/image/upload/{transformations}/{version}/{path}
-    const urlParts = src.split('/upload/');
+    const urlParts = src.split('/upload/')
     if (urlParts.length !== 2) {
       // Malformed URL, return as-is
-      return src;
+      return src
     }
 
-    const [baseUrl, assetPath] = urlParts;
+    const [baseUrl, assetPath] = urlParts
 
     // Build transformation string
     // f_auto: automatic format selection (WebP/AVIF based on browser support)
@@ -38,12 +38,12 @@ export default function cloudinaryLoader({ src, width, quality }: ImageLoaderPro
       `q_${quality || 'auto'}`, // Quality: auto or specific value
       `w_${width}`, // Width: requested size
       'dpr_auto', // DPR: automatic (handles retina displays)
-    ].join(',');
+    ].join(',')
 
     // Reconstruct URL with transformations
-    return `${baseUrl}/upload/${transformations}/${assetPath}`;
+    return `${baseUrl}/upload/${transformations}/${assetPath}`
   }
 
   // For any other URLs, return as-is
-  return src;
+  return src
 }

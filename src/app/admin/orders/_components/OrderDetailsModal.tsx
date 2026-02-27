@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
-import { Badge } from '@/components/ui/badge';
-import { DetailsModal } from '@/app/admin/components/DetailsModal';
-import { formatPrice, getStatusVariant, getStatusLabel } from '@/lib/utils/orders';
-import type { Order, OrderItem, Address } from '@prisma/client';
+import { useEffect, useState } from 'react'
+import { format } from 'date-fns'
+import { Badge } from '@/components/ui/badge'
+import { DetailsModal } from '@/app/admin/components/DetailsModal'
+import { formatPrice, getStatusVariant, getStatusLabel } from '@/lib/utils/orders'
+import type { Order, OrderItem, Address } from '@prisma/client'
 import {
   Package,
   User,
@@ -15,65 +15,65 @@ import {
   DollarSign,
   ShoppingBag,
   Truck,
-} from 'lucide-react';
+} from 'lucide-react'
 
 interface OrderDetailsModalProps {
-  orderId: string;
-  onClose: () => void;
+  orderId: string
+  onClose: () => void
 }
 
 interface OrderWithDetails extends Order {
   user: {
-    email: string;
-    phoneNumber: string | null;
-    firstName: string | null;
-    lastName: string | null;
-  };
+    email: string
+    phoneNumber: string | null
+    firstName: string | null
+    lastName: string | null
+  }
   orderItems: (OrderItem & {
     product: {
-      name: string;
-      priceInGrosz: number;
-      priceInCents: number;
-    };
-  })[];
-  billingAddress: Address;
-  shippingAddress: Address;
+      name: string
+      priceInGrosz: number
+      priceInCents: number
+    }
+  })[]
+  billingAddress: Address
+  shippingAddress: Address
 }
 
 export function OrderDetailsModal({ orderId, onClose }: OrderDetailsModalProps) {
-  const [order, setOrder] = useState<OrderWithDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [order, setOrder] = useState<OrderWithDetails | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        setLoading(true);
-        const response = await fetch(`/api/orders/${orderId}`);
+        setLoading(true)
+        const response = await fetch(`/api/orders/${orderId}`)
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
 
-        const orderData = await response.json();
-        setOrder(orderData as OrderWithDetails);
+        const orderData = await response.json()
+        setOrder(orderData as OrderWithDetails)
       } catch (err) {
-        setError('Failed to fetch order details');
-        console.error('Error fetching order details:', err);
+        setError('Failed to fetch order details')
+        console.error('Error fetching order details:', err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchOrder();
-  }, [orderId]);
+    fetchOrder()
+  }, [orderId])
 
-  const title = order ? `Order #${order.id.slice(0, 8)}` : 'Loading Order Details';
+  const title = order ? `Order #${order.id.slice(0, 8)}` : 'Loading Order Details'
 
   const formatCustomerName = (firstName: string | null, lastName: string | null) => {
-    if (!firstName && !lastName) return 'N/A';
-    return `${firstName || ''} ${lastName || ''}`.trim();
-  };
+    if (!firstName && !lastName) return 'N/A'
+    return `${firstName || ''} ${lastName || ''}`.trim()
+  }
 
   return (
     <DetailsModal
@@ -319,5 +319,5 @@ export function OrderDetailsModal({ orderId, onClose }: OrderDetailsModalProps) 
         </>
       )}
     </DetailsModal>
-  );
+  )
 }

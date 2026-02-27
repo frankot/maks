@@ -1,4 +1,4 @@
-import ProductSkeleton from './ProductSkeleton';
+import ProductSkeleton from './ProductSkeleton'
 
 export default function ProductsSkeleton() {
   return (
@@ -54,5 +54,5 @@ export default function ProductsSkeleton() {
         </div>
       </section>
     </div>
-  );
+  )
 }

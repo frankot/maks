@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const createProductSchema = z.object({
   id: z.string().optional(),
@@ -14,9 +14,9 @@ export const createProductSchema = z.object({
   isAvailable: z.boolean().optional(),
   category: z.enum(['NECKLACES', 'RINGS', 'EARRINGS', 'BRACELETS', 'CHAINS']).optional(),
   collectionId: z.string().nullable().optional(),
-});
+})
 
-export const updateProductSchema = createProductSchema.partial();
+export const updateProductSchema = createProductSchema.partial()
 
-export type CreateProductInput = z.infer<typeof createProductSchema>;
-export type UpdateProductInput = z.infer<typeof updateProductSchema>;
+export type CreateProductInput = z.infer<typeof createProductSchema>
+export type UpdateProductInput = z.infer<typeof updateProductSchema>

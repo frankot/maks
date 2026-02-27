@@ -1,16 +1,16 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from 'next/image'
+import Link from 'next/link'
 // ShoppingCart removed — not used anymore
-import { Product } from '@prisma/client';
+import { Product } from '@prisma/client'
 
 type ProductWithMaterials = Omit<Product, 'materials'> & {
-  materials?: string | null;
-};
+  materials?: string | null
+}
 
 interface ProductCardProps {
-  product: ProductWithMaterials;
-  simplified?: boolean; // For gallery use - shows only title
-  className?: string; // Additional classes for the card wrapper
+  product: ProductWithMaterials
+  simplified?: boolean // For gallery use - shows only title
+  className?: string // Additional classes for the card wrapper
 }
 
 export default function ProductCard({
@@ -19,7 +19,7 @@ export default function ProductCard({
   className = '',
 }: ProductCardProps) {
   // Convert price from grosz to PLN
-  const priceInPLN = (product.priceInGrosz / 100).toFixed(2);
+  const priceInPLN = (product.priceInGrosz / 100).toFixed(2)
 
   // Get a very short materials description — prefer `materials` field
   const materials =
@@ -29,7 +29,7 @@ export default function ProductCard({
           ?.split(/\.|,|;|\n/)
           .map((s) => s.trim())
           .find(Boolean)
-          ?.slice(0, 80);
+          ?.slice(0, 80)
 
   return (
     <div className={`flex w-full flex-col ${simplified ? 'h-[480px]' : ''} ${className}`}>
@@ -74,5 +74,5 @@ export default function ProductCard({
         </div>
       )}
     </div>
-  );
+  )
 }

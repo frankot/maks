@@ -1,43 +1,43 @@
-import type { Metadata } from 'next';
-import Image from 'next/image';
-import { notFound } from 'next/navigation';
-import { getProductById, getProductBySlug } from '@/lib/products';
-import ProductDetailsTabs from '@/app/(customerFacing)/shop/[id]/ProductDetailsTabs';
-import { formatPriceInPLN } from '@/lib/utils';
-import AddToCartButton from '@/components/AddToCartButton';
-import CollectionsBar from '@/app/(customerFacing)/_components/CollectionsBar';
-import { Suspense } from 'react';
-import CollectionsBarSkeleton from '@/app/(customerFacing)/_components/CollectionsBarSkeleton';
-import MobileProductView from './MobileProductView';
-import PageWithHeroBar from '@/app/(customerFacing)/_components/PageWithHeroBar';
-import CategoryPage from './CategoryPage';
+import type { Metadata } from 'next'
+import Image from 'next/image'
+import { notFound } from 'next/navigation'
+import { getProductById, getProductBySlug } from '@/lib/products'
+import ProductDetailsTabs from '@/app/(customerFacing)/shop/[id]/ProductDetailsTabs'
+import { formatPriceInPLN } from '@/lib/utils'
+import AddToCartButton from '@/components/AddToCartButton'
+import CollectionsBar from '@/app/(customerFacing)/_components/CollectionsBar'
+import { Suspense } from 'react'
+import CollectionsBarSkeleton from '@/app/(customerFacing)/_components/CollectionsBarSkeleton'
+import MobileProductView from './MobileProductView'
+import PageWithHeroBar from '@/app/(customerFacing)/_components/PageWithHeroBar'
+import CategoryPage from './CategoryPage'
 
-const CATEGORY_SLUGS = ['necklaces', 'rings', 'earrings', 'bracelets', 'chains'];
+const CATEGORY_SLUGS = ['necklaces', 'rings', 'earrings', 'bracelets', 'chains']
 
 interface ProductPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const { id } = await params;
+  const { id } = await params
 
   if (CATEGORY_SLUGS.includes(id.toLowerCase())) {
-    const label = id.charAt(0).toUpperCase() + id.slice(1).toLowerCase();
+    const label = id.charAt(0).toUpperCase() + id.slice(1).toLowerCase()
     return {
       title: `${label}`,
       description: `Shop handmade ${id.toLowerCase()} by MAMI. Each piece is one-of-a-kind, crafted in our Warsaw studio with natural forms and raw stones.`,
       alternates: { canonical: `https://mami.com.pl/shop/${id.toLowerCase()}` },
-    };
+    }
   }
 
-  let product = await getProductBySlug(id);
-  if (!product) product = await getProductById(id);
+  let product = await getProductBySlug(id)
+  if (!product) product = await getProductById(id)
 
   if (!product) {
-    return { title: 'Product Not Found' };
+    return { title: 'Product Not Found' }
   }
 
-  const ogImage = product.imagePaths?.[0];
+  const ogImage = product.imagePaths?.[0]
 
   return {
     title: product.name,
@@ -47,41 +47,41 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     alternates: { canonical: `https://mami.com.pl/shop/${product.slug || product.id}` },
     openGraph: {
       title: `${product.name} | MAMI`,
-      description:
-        product.description ||
-        `${product.name} — handmade jewelry by MAMI.`,
+      description: product.description || `${product.name} — handmade jewelry by MAMI.`,
       ...(ogImage && { images: [{ url: ogImage, alt: product.name }] }),
     },
-  };
+  }
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { id } = await params;
+  const { id } = await params
 
   if (CATEGORY_SLUGS.includes(id.toLowerCase())) {
     return (
       <>
         <PageWithHeroBar imagePath="/shop_main.jpg" imageAlt="Shop">
           <Suspense fallback={<CollectionsBarSkeleton />}>
-            <CollectionsBar highlightedCategory={id.toUpperCase() as 'RINGS' | 'NECKLACES' | 'EARRINGS'} />
+            <CollectionsBar
+              highlightedCategory={id.toUpperCase() as 'RINGS' | 'NECKLACES' | 'EARRINGS'}
+            />
           </Suspense>
         </PageWithHeroBar>
         <CategoryPage category={id.toLowerCase()} />
       </>
-    );
+    )
   }
 
-  let product = await getProductBySlug(id);
+  let product = await getProductBySlug(id)
   if (!product) {
-    product = await getProductById(id);
+    product = await getProductById(id)
   }
 
   if (!product) {
-    notFound();
+    notFound()
   }
 
-  const priceInPLN = formatPriceInPLN(product.priceInGrosz);
-  const isSold = product.productStatus === 'ORDERED' || product.productStatus === 'SOLD';
+  const priceInPLN = formatPriceInPLN(product.priceInGrosz)
+  const isSold = product.productStatus === 'ORDERED' || product.productStatus === 'SOLD'
 
   return (
     <>
@@ -282,5 +282,5 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </div>
     </>
-  );
+  )
 }

@@ -1,11 +1,11 @@
-import type { Category } from '@prisma/client';
-import { getProductsByCategory } from '@/lib/products';
-import Products from './Products';
+import type { Category } from '@prisma/client'
+import { getProductsByCategory } from '@/lib/products'
+import Products from './Products'
 
 interface ProductsServerProps {
-  category: Category;
-  title: string;
-  collectionSlug?: string;
+  category: Category
+  title: string
+  collectionSlug?: string
 }
 
 export default async function ProductsServer({
@@ -13,7 +13,7 @@ export default async function ProductsServer({
   title,
   collectionSlug,
 }: ProductsServerProps) {
-  const products = await getProductsByCategory(category, 24, collectionSlug);
+  const products = await getProductsByCategory(category, 24, collectionSlug)
 
-  return <Products title={title} category={category} products={products} />;
+  return <Products title={title} category={category} products={products} />
 }

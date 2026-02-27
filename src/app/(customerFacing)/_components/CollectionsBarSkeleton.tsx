@@ -13,5 +13,5 @@ export default function CollectionsBarSkeleton() {
       <div className="h-3 w-24 animate-pulse rounded bg-gray-100" />
       <div className="h-3 w-20 animate-pulse rounded bg-gray-100" />
     </>
-  );
+  )
 }

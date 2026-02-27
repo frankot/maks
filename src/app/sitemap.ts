@@ -1,8 +1,8 @@
-import type { MetadataRoute } from 'next';
-import { prisma } from '@/lib/prisma';
+import type { MetadataRoute } from 'next'
+import { prisma } from '@/lib/prisma'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://mami.com.pl';
+  const baseUrl = 'https://mami.com.pl'
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
@@ -36,34 +36,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'yearly',
       priority: 0.5,
     },
-  ];
+  ]
 
   // Category pages
-  const categories = ['necklaces', 'rings', 'earrings', 'bracelets', 'chains'];
+  const categories = ['necklaces', 'rings', 'earrings', 'bracelets', 'chains']
   const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
     url: `${baseUrl}/shop/${category}`,
     lastModified: new Date(),
     changeFrequency: 'daily' as const,
     priority: 0.8,
-  }));
+  }))
 
   // Product pages (only available products)
-  let productPages: MetadataRoute.Sitemap = [];
+  let productPages: MetadataRoute.Sitemap = []
   try {
     const products = await prisma.product.findMany({
       where: { productStatus: 'SHOP', deletedAt: null },
       select: { slug: true, id: true, updatedAt: true },
-    });
+    })
 
     productPages = products.map((product) => ({
       url: `${baseUrl}/shop/${product.slug || product.id}`,
       lastModified: product.updatedAt,
       changeFrequency: 'weekly' as const,
       priority: 0.6,
-    }));
+    }))
   } catch (error) {
-    console.error('Error generating product sitemap entries:', error);
+    console.error('Error generating product sitemap entries:', error)
   }
 
-  return [...staticPages, ...categoryPages, ...productPages];
+  return [...staticPages, ...categoryPages, ...productPages]
 }

@@ -1,31 +1,31 @@
-'use client';
+'use client'
 
-import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { CheckCircle2, Loader2 } from 'lucide-react';
-import { useCartStore } from '@/stores/cart-store';
+import { useEffect, useState, Suspense } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { CheckCircle2, Loader2 } from 'lucide-react'
+import { useCartStore } from '@/stores/cart-store'
 
 function CheckoutSuccessContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const clearCart = useCartStore((s) => s.clearCart);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const clearCart = useCartStore((s) => s.clearCart)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const sessionId = searchParams.get('session_id');
+  const sessionId = searchParams.get('session_id')
 
   useEffect(() => {
     if (!sessionId) {
-      setError('No session ID found');
-      setIsLoading(false);
-      return;
+      setError('No session ID found')
+      setIsLoading(false)
+      return
     }
 
     // Clear cart on successful payment
-    clearCart();
-    setIsLoading(false);
-  }, [sessionId, clearCart]);
+    clearCart()
+    setIsLoading(false)
+  }, [sessionId, clearCart])
 
   if (isLoading) {
     return (
@@ -35,7 +35,7 @@ function CheckoutSuccessContent() {
           <p className="text-gray-600">Processing your order...</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -46,7 +46,7 @@ function CheckoutSuccessContent() {
           <Button onClick={() => router.push('/shop')}>Return to Shop</Button>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -85,7 +85,7 @@ function CheckoutSuccessContent() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default function CheckoutSuccessPage() {
@@ -99,5 +99,5 @@ export default function CheckoutSuccessPage() {
     >
       <CheckoutSuccessContent />
     </Suspense>
-  );
+  )
 }

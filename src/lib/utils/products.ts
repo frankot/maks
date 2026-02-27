@@ -5,7 +5,7 @@ export function formatPrice(priceInGrosz: number): string {
     style: 'currency',
     currency: 'PLN',
     minimumFractionDigits: 2,
-  }).format(priceInGrosz / 100);
+  }).format(priceInGrosz / 100)
 }
 
 export function formatPriceEur(priceInCents: number): string {
@@ -13,7 +13,7 @@ export function formatPriceEur(priceInCents: number): string {
     style: 'currency',
     currency: 'EUR',
     minimumFractionDigits: 2,
-  }).format(priceInCents / 100);
+  }).format(priceInCents / 100)
 }
 
 export function formatPriceUsd(priceInCents: number): string {
@@ -21,13 +21,13 @@ export function formatPriceUsd(priceInCents: number): string {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,
-  }).format(priceInCents / 100);
+  }).format(priceInCents / 100)
 }
 
 export function getAvailabilityBadgeVariant(isAvailable: boolean) {
-  return isAvailable ? 'default' : 'destructive';
+  return isAvailable ? 'default' : 'destructive'
 }
 
 export function getAvailabilityLabel(isAvailable: boolean) {
-  return isAvailable ? 'Available' : 'Unavailable';
+  return isAvailable ? 'Available' : 'Unavailable'
 }

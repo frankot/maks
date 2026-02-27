@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
 interface TitleProps {
-  text: string;
-  onPrev?: () => void;
-  onNext?: () => void;
+  text: string
+  onPrev?: () => void
+  onNext?: () => void
 }
 
 export default function Title({ text, onPrev, onNext }: TitleProps) {
@@ -37,7 +37,7 @@ export default function Title({ text, onPrev, onNext }: TitleProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function ChevronLeftIcon() {
@@ -52,7 +52,7 @@ function ChevronLeftIcon() {
     >
       <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
-  );
+  )
 }
 
 function ChevronRightIcon() {
@@ -67,5 +67,5 @@ function ChevronRightIcon() {
     >
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
     </svg>
-  );
+  )
 }

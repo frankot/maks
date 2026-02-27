@@ -1,8 +1,8 @@
-import Image from 'next/image';
+import Image from 'next/image'
 
 interface GalleryCardProps {
-  imagePath: string;
-  artistName: string;
+  imagePath: string
+  artistName: string
 }
 
 export default function GalleryCard({ imagePath, artistName }: GalleryCardProps) {
@@ -24,5 +24,5 @@ export default function GalleryCard({ imagePath, artistName }: GalleryCardProps)
         </div>
       </div>
     </div>
-  );
+  )
 }

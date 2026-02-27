@@ -1,48 +1,48 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { HeroContent } from '@prisma/client';
-import { Loader2, Upload, Trash2, Plus } from 'lucide-react';
-import { toast } from 'sonner';
-import ImageUploadSlot from './ImageUploadSlot';
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { HeroContent } from '@prisma/client'
+import { Loader2, Upload, Trash2, Plus } from 'lucide-react'
+import { toast } from 'sonner'
+import ImageUploadSlot from './ImageUploadSlot'
 
 interface ImageSlot {
-  url: string;
-  publicId: string;
+  url: string
+  publicId: string
 }
 
 interface ImagePair {
-  image1: ImageSlot | null;
-  image2: ImageSlot | null;
+  image1: ImageSlot | null
+  image2: ImageSlot | null
 }
 
 export default function HeroCms() {
-  const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
-  const [imagePairs, setImagePairs] = useState<ImagePair[]>([]);
-  const [saving, setSaving] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [heroContent, setHeroContent] = useState<HeroContent | null>(null)
+  const [imagePairs, setImagePairs] = useState<ImagePair[]>([])
+  const [saving, setSaving] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    void fetchHeroContent();
-  }, []);
+    void fetchHeroContent()
+  }, [])
 
   const fetchHeroContent = async () => {
     try {
-      const response = await fetch('/api/hero');
-      
+      const response = await fetch('/api/hero')
+
       if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`)
       }
-      
-      const data: HeroContent | null = await response.json();
+
+      const data: HeroContent | null = await response.json()
 
       if (data) {
-        setHeroContent(data);
+        setHeroContent(data)
 
         // Convert flat arrays to pairs
-        const pairs: ImagePair[] = [];
+        const pairs: ImagePair[] = []
         for (let i = 0; i < data.imagePaths.length; i += 2) {
           pairs.push({
             image1:
@@ -53,18 +53,18 @@ export default function HeroCms() {
               i + 1 < data.imagePaths.length
                 ? { url: data.imagePaths[i + 1]!, publicId: data.imagePublicIds[i + 1] || '' }
                 : null,
-          });
+          })
         }
-        setImagePairs(pairs);
+        setImagePairs(pairs)
       }
     } catch (error) {
-      console.error('Error fetching hero content:', error);
-      const message = error instanceof Error ? error.message : 'Failed to load hero content';
-      toast.error(message);
+      console.error('Error fetching hero content:', error)
+      const message = error instanceof Error ? error.message : 'Failed to load hero content'
+      toast.error(message)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleImageUpload = async (
     data: ImageSlot,
@@ -72,95 +72,95 @@ export default function HeroCms() {
     imageSlot: 'image1' | 'image2'
   ) => {
     setImagePairs((prev) => {
-      const newPairs = [...prev];
+      const newPairs = [...prev]
       if (!newPairs[pairIndex]) {
-        newPairs[pairIndex] = { image1: null, image2: null };
+        newPairs[pairIndex] = { image1: null, image2: null }
       }
-      newPairs[pairIndex]![imageSlot] = data;
-      return newPairs;
-    });
-  };
+      newPairs[pairIndex]![imageSlot] = data
+      return newPairs
+    })
+  }
 
   const addNewPair = () => {
-    setImagePairs([{ image1: null, image2: null }, ...imagePairs]);
-  };
+    setImagePairs([{ image1: null, image2: null }, ...imagePairs])
+  }
 
   const removePair = (index: number) => {
-    setImagePairs((prev) => prev.filter((_, i) => i !== index));
-  };
+    setImagePairs((prev) => prev.filter((_, i) => i !== index))
+  }
 
   const removeImage = (pairIndex: number, slot: 'image1' | 'image2') => {
     setImagePairs((prev) => {
-      const newPairs = [...prev];
-      newPairs[pairIndex]![slot] = null;
-      return newPairs;
-    });
-  };
+      const newPairs = [...prev]
+      newPairs[pairIndex]![slot] = null
+      return newPairs
+    })
+  }
 
   const saveHeroContent = async () => {
     // Validate that we have at least one complete pair
-    const hasCompleteData = imagePairs.some((pair) => pair.image1 || pair.image2);
+    const hasCompleteData = imagePairs.some((pair) => pair.image1 || pair.image2)
     if (!hasCompleteData) {
-      toast.error('Please add at least one image before saving');
-      return;
+      toast.error('Please add at least one image before saving')
+      return
     }
 
-    setSaving(true);
+    setSaving(true)
 
     try {
-      const imagePaths: string[] = [];
-      const imagePublicIds: string[] = [];
+      const imagePaths: string[] = []
+      const imagePublicIds: string[] = []
 
       imagePairs.forEach((pair) => {
         if (pair.image1) {
-          imagePaths.push(pair.image1.url);
-          imagePublicIds.push(pair.image1.publicId);
+          imagePaths.push(pair.image1.url)
+          imagePublicIds.push(pair.image1.publicId)
         }
         if (pair.image2) {
-          imagePaths.push(pair.image2.url);
-          imagePublicIds.push(pair.image2.publicId);
+          imagePaths.push(pair.image2.url)
+          imagePublicIds.push(pair.image2.publicId)
         }
-      });
+      })
 
-      const payload = { imagePaths, imagePublicIds };
-      const url = '/api/hero';
-      const method = heroContent ? 'PUT' : 'POST';
+      const payload = { imagePaths, imagePublicIds }
+      const url = '/api/hero'
+      const method = heroContent ? 'PUT' : 'POST'
 
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(heroContent ? { ...payload, id: heroContent.id } : payload),
-      });
+      })
 
       if (!response.ok) {
-        let errorMessage = 'Failed to save hero content';
+        let errorMessage = 'Failed to save hero content'
         try {
-          const error = await response.json();
-          errorMessage = error.error || error.message || errorMessage;
+          const error = await response.json()
+          errorMessage = error.error || error.message || errorMessage
         } catch {
-          errorMessage = `Save failed with status ${response.status}`;
+          errorMessage = `Save failed with status ${response.status}`
         }
-        throw new Error(errorMessage);
+        throw new Error(errorMessage)
       }
 
-      const savedContent: HeroContent = await response.json();
-      setHeroContent(savedContent);
-      toast.success('Hero content saved successfully!');
+      const savedContent: HeroContent = await response.json()
+      setHeroContent(savedContent)
+      toast.success('Hero content saved successfully!')
     } catch (error) {
-      console.error('Save error:', error);
-      const message = error instanceof Error ? error.message : 'Failed to save hero content';
-      toast.error(message);
+      console.error('Save error:', error)
+      const message = error instanceof Error ? error.message : 'Failed to save hero content'
+      toast.error(message)
     } finally {
-      setSaving(false);
+      setSaving(false)
     }
-  };
+  }
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
       </div>
-    );
+    )
   }
 
   return (
@@ -182,8 +182,8 @@ export default function HeroCms() {
         </CardHeader>
         <CardContent className="space-y-6">
           {imagePairs.length === 0 ? (
-            <div className="rounded-lg border-2 border-dashed border-muted-foreground/25 p-12 text-center">
-              <Upload className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+            <div className="border-muted-foreground/25 rounded-lg border-2 border-dashed p-12 text-center">
+              <Upload className="text-muted-foreground mx-auto mb-3 h-8 w-8" />
               <p className="text-muted-foreground mb-4">No image pairs yet</p>
               <Button onClick={addNewPair} variant="outline" type="button">
                 Add First Pair
@@ -194,7 +194,7 @@ export default function HeroCms() {
               {imagePairs.map((pair, pairIndex) => (
                 <div
                   key={pairIndex}
-                  className="rounded-lg border bg-card p-4 transition-colors hover:bg-muted/50"
+                  className="bg-card hover:bg-muted/50 rounded-lg border p-4 transition-colors"
                 >
                   {/* Pair Header */}
                   <div className="mb-4 flex items-center justify-between">
@@ -217,17 +217,17 @@ export default function HeroCms() {
                   {/* Images Grid */}
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {(['image1', 'image2'] as const).map((slot) => {
-                      const image = pair[slot];
-                      const slotKey = `${pairIndex}-${slot}`;
-                      const slotLabel = slot === 'image1' ? 'Left' : 'Right';
+                      const image = pair[slot]
+                      const slotKey = `${pairIndex}-${slot}`
+                      const slotLabel = slot === 'image1' ? 'Left' : 'Right'
 
                       return (
                         <ImageUploadSlot
                           key={slot}
                           imageUrl={image?.url}
                           onUpload={async (data) => {
-                            handleImageUpload(data, pairIndex, slot);
-                            return data;
+                            handleImageUpload(data, pairIndex, slot)
+                            return data
                           }}
                           onRemove={() => removeImage(pairIndex, slot)}
                           uploadEndpoint="/api/upload/hero"
@@ -235,7 +235,7 @@ export default function HeroCms() {
                           label={slotLabel}
                           altText={`Hero ${slotLabel} image for pair ${imagePairs.length - pairIndex}`}
                         />
-                      );
+                      )
                     })}
                   </div>
                 </div>
@@ -245,11 +245,7 @@ export default function HeroCms() {
 
           {/* Save Button */}
           <div className="flex justify-end border-t pt-6">
-            <Button
-              onClick={saveHeroContent}
-              disabled={saving}
-              size="lg"
-            >
+            <Button onClick={saveHeroContent} disabled={saving} size="lg">
               {saving ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -263,5 +259,5 @@ export default function HeroCms() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

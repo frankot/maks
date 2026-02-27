@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { Badge } from '@/components/ui/badge'
 import {
   ShoppingBag,
   Users,
@@ -9,19 +9,19 @@ import {
   TrendingUp,
   TrendingDown,
   Activity,
-} from 'lucide-react';
-import type { DashboardStats as DashboardStatsType } from '@/lib/dashboard';
-import { formatPrice, getStatusColor } from '@/lib/utils/dashboard';
+} from 'lucide-react'
+import type { DashboardStats as DashboardStatsType } from '@/lib/dashboard'
+import { formatPrice, getStatusColor } from '@/lib/utils/dashboard'
 
 interface DashboardStatsProps {
-  stats: DashboardStatsType;
+  stats: DashboardStatsType
 }
 
 export function DashboardStats({ stats }: DashboardStatsProps) {
   const totalOrdersCount = Object.values(stats.ordersByStatus).reduce(
     (sum, count) => sum + count,
     0
-  );
+  )
 
   return (
     <div className="space-y-6">
@@ -121,7 +121,7 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
           <CardContent>
             <div className="space-y-3">
               {Object.entries(stats.ordersByStatus).map(([status, count]) => {
-                const percentage = totalOrdersCount > 0 ? (count / totalOrdersCount) * 100 : 0;
+                const percentage = totalOrdersCount > 0 ? (count / totalOrdersCount) * 100 : 0
                 return (
                   <div key={status} className="space-y-1">
                     <div className="flex justify-between text-sm">
@@ -135,12 +135,12 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
                     </div>
                     <Progress value={percentage} className="h-1" />
                   </div>
-                );
+                )
               })}
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import { ProductForm } from '../_components/ProductForm';
+import { ProductForm } from '../_components/ProductForm'
 
 export default function AddProductPage() {
   return (
@@ -12,5 +12,5 @@ export default function AddProductPage() {
         <ProductForm />
       </div>
     </div>
-  );
+  )
 }

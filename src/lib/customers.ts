@@ -1,5 +1,5 @@
-import { prisma } from './prisma';
-import { DEFAULT_PAGE_SIZE } from './constants';
+import { prisma } from './prisma'
+import { DEFAULT_PAGE_SIZE } from './constants'
 
 export async function getCustomers() {
   try {
@@ -23,19 +23,16 @@ export async function getCustomers() {
       orderBy: {
         createdAt: 'desc',
       },
-    });
-    return customers;
+    })
+    return customers
   } catch (error) {
-    console.error('Error fetching customers:', error);
-    throw new Error('Failed to fetch customers');
+    console.error('Error fetching customers:', error)
+    throw new Error('Failed to fetch customers')
   }
 }
 
-export async function getCustomersPaginated(params: {
-  cursor?: string;
-  pageSize?: number;
-}) {
-  const { cursor, pageSize = DEFAULT_PAGE_SIZE } = params;
+export async function getCustomersPaginated(params: { cursor?: string; pageSize?: number }) {
+  const { cursor, pageSize = DEFAULT_PAGE_SIZE } = params
 
   const customers = await prisma.user.findMany({
     take: pageSize + 1,
@@ -57,13 +54,13 @@ export async function getCustomersPaginated(params: {
       },
     },
     orderBy: { createdAt: 'desc' },
-  });
+  })
 
-  const hasMore = customers.length > pageSize;
-  const items = hasMore ? customers.slice(0, -1) : customers;
-  const nextCursor = hasMore ? items[items.length - 1]?.id : undefined;
+  const hasMore = customers.length > pageSize
+  const items = hasMore ? customers.slice(0, -1) : customers
+  const nextCursor = hasMore ? items[items.length - 1]?.id : undefined
 
-  return { items, nextCursor, hasMore };
+  return { items, nextCursor, hasMore }
 }
 
 export async function getCustomerById(customerId: string) {
@@ -98,11 +95,11 @@ export async function getCustomerById(customerId: string) {
           },
         },
       },
-    });
-    return customer;
+    })
+    return customer
   } catch (error) {
-    console.error('Error fetching customer by ID:', error);
-    throw new Error('Failed to fetch customer details');
+    console.error('Error fetching customer by ID:', error)
+    throw new Error('Failed to fetch customer details')
   }
 }
 
@@ -111,20 +108,20 @@ export async function deleteCustomer(customerId: string) {
     await prisma.user.update({
       where: { id: customerId },
       data: { deletedAt: new Date() },
-    });
+    })
   } catch (error) {
-    console.error('Error deleting customer:', error);
-    throw new Error('Failed to delete customer');
+    console.error('Error deleting customer:', error)
+    throw new Error('Failed to delete customer')
   }
 }
 
 export function formatCustomerName(firstName: string | null, lastName: string | null): string {
-  if (!firstName && !lastName) return 'N/A';
-  return `${firstName || ''} ${lastName || ''}`.trim();
+  if (!firstName && !lastName) return 'N/A'
+  return `${firstName || ''} ${lastName || ''}`.trim()
 }
 
 export function calculateTotalSpent(orders: Array<{ pricePaid: number }>): number {
-  return orders.reduce((total, order) => total + order.pricePaid, 0);
+  return orders.reduce((total, order) => total + order.pricePaid, 0)
 }
 
 export function formatPrice(priceInGrosz: number, currency: string = 'PLN'): string {
@@ -132,11 +129,11 @@ export function formatPrice(priceInGrosz: number, currency: string = 'PLN'): str
     return new Intl.NumberFormat('en-EU', {
       style: 'currency',
       currency: 'EUR',
-    }).format(priceInGrosz / 100);
+    }).format(priceInGrosz / 100)
   }
 
   return new Intl.NumberFormat('pl-PL', {
     style: 'currency',
     currency: 'PLN',
-  }).format(priceInGrosz / 100);
+  }).format(priceInGrosz / 100)
 }

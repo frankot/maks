@@ -1,43 +1,43 @@
-'use client';
+'use client'
 
-import { useCartStore } from '@/stores/cart-store';
-import { formatCartPrice } from '@/lib/cart';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { ShoppingBag } from 'lucide-react';
+import { useCartStore } from '@/stores/cart-store'
+import { formatCartPrice } from '@/lib/cart'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { ShoppingBag } from 'lucide-react'
 
-type DeliveryMethod = 'paczkomat' | 'address';
+type DeliveryMethod = 'paczkomat' | 'address'
 
 export default function CheckoutPage() {
-  const { items, totalPriceInCents } = useCartStore();
-  const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
+  const { items, totalPriceInCents } = useCartStore()
+  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isMounted, setIsMounted] = useState(false)
 
   // Form state
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('address');
+  const [email, setEmail] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('address')
 
   // Paczkomat fields
-  const [paczkomatPointId, setPaczkomatPointId] = useState('');
+  const [paczkomatPointId, setPaczkomatPointId] = useState('')
 
   // Address fields
-  const [street, setStreet] = useState('');
-  const [city, setCity] = useState('');
-  const [postalCode, setPostalCode] = useState('');
-  const [country, setCountry] = useState('Poland');
+  const [street, setStreet] = useState('')
+  const [city, setCity] = useState('')
+  const [postalCode, setPostalCode] = useState('')
+  const [country, setCountry] = useState('Poland')
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    setIsMounted(true)
+  }, [])
 
   // Show loading state while hydrating
   if (!isMounted) {
@@ -47,7 +47,7 @@ export default function CheckoutPage() {
           <div className="mx-auto h-16 w-16 animate-spin rounded-full border-4 border-gray-200 border-t-black" />
         </div>
       </div>
-    );
+    )
   }
 
   // Redirect if cart is empty after hydration
@@ -63,13 +63,13 @@ export default function CheckoutPage() {
           </Button>
         </div>
       </div>
-    );
+    )
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setIsSubmitting(true);
+    e.preventDefault()
+    setError(null)
+    setIsSubmitting(true)
 
     try {
       // Prepare checkout data for Stripe
@@ -88,37 +88,37 @@ export default function CheckoutPage() {
         ...(deliveryMethod === 'paczkomat'
           ? { paczkomatPointId, city, postalCode, country }
           : { street, city, postalCode, country }),
-      };
+      }
 
       // Create Stripe checkout session
       const response = await fetch('/api/checkout/create-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(checkoutData),
-      });
+      })
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create checkout session');
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to create checkout session')
       }
 
-      const { url } = await response.json();
+      const { url } = await response.json()
 
       // Redirect to Stripe Checkout
       if (url) {
-        window.location.href = url;
+        window.location.href = url
       } else {
-        throw new Error('No checkout URL received');
+        throw new Error('No checkout URL received')
       }
     } catch (err) {
-      console.error('Checkout error:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred during checkout');
-      setIsSubmitting(false);
+      console.error('Checkout error:', err)
+      setError(err instanceof Error ? err.message : 'An error occurred during checkout')
+      setIsSubmitting(false)
     }
-  };
+  }
 
-  const shippingCost = 0; // Free shipping for now
-  const total = totalPriceInCents() + shippingCost;
+  const shippingCost = 0 // Free shipping for now
+  const total = totalPriceInCents() + shippingCost
 
   return (
     <div className="min-h-screen bg-gray-50 pt-[var(--nav-height)]">
@@ -404,5 +404,5 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

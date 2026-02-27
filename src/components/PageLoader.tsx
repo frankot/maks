@@ -1,11 +1,25 @@
-'use client';
+'use client'
+
+import { useEffect } from 'react'
 
 interface PageLoaderProps {
-  isLoading: boolean;
+  isLoading: boolean
 }
 
 export default function PageLoader({ isLoading }: PageLoaderProps) {
-  if (!isLoading) return null;
+  useEffect(() => {
+    if (isLoading) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isLoading])
+
+  if (!isLoading) return null
 
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white">
@@ -15,5 +29,5 @@ export default function PageLoader({ isLoading }: PageLoaderProps) {
       {/* Spinning wheel animation */}
       <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-900 border-t-transparent" />
     </div>
-  );
+  )
 }

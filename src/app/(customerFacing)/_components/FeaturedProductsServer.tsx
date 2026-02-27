@@ -1,23 +1,23 @@
-import type { Category, Product, ProductStatus } from '@prisma/client';
-import FeaturedProducts from './FeaturedProducts';
+import type { Category, Product, ProductStatus } from '@prisma/client'
+import FeaturedProducts from './FeaturedProducts'
 
 interface Props {
-  category?: Category; // now optional, we ignore it for placeholders
-  title?: string;
+  category?: Category // now optional, we ignore it for placeholders
+  title?: string
 }
 
 export default async function FeaturedProductsServer({ title }: Props) {
-  const now = new Date();
-  const titleText = title ?? 'Featured';
+  const now = new Date()
+  const titleText = title ?? 'Featured'
 
   // Fixed 6 example items (images from public/)
   const items: Array<{
-    id: string;
-    name: string;
-    image: string;
-    materials: string;
-    priceInGrosz: number;
-    priceInCents: number;
+    id: string
+    name: string
+    image: string
+    materials: string
+    priceInGrosz: number
+    priceInCents: number
   }> = [
     {
       id: 'ex-1',
@@ -67,7 +67,7 @@ export default async function FeaturedProductsServer({ title }: Props) {
       priceInGrosz: 46900,
       priceInCents: 11250,
     },
-  ];
+  ]
 
   const products: Product[] = items.map(
     (it) =>
@@ -87,7 +87,7 @@ export default async function FeaturedProductsServer({ title }: Props) {
         updatedAt: now,
         category: 'RINGS' as Category,
       }) as unknown as Product
-  );
+  )
 
-  return <FeaturedProducts title={titleText} products={products} />;
+  return <FeaturedProducts title={titleText} products={products} />
 }

@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import { XCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button'
+import { useRouter } from 'next/navigation'
+import { XCircle } from 'lucide-react'
 
 export default function CheckoutCancelPage() {
-  const router = useRouter();
+  const router = useRouter()
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
@@ -41,5 +41,5 @@ export default function CheckoutCancelPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
