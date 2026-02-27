@@ -19,9 +19,9 @@ export default function CTA() {
           </div>
 
           {/* Right: text on stone-100 background */}
-          <div className="flex min-h-[70vh] w-full items-center  md:bg-stone-100">
+          <div className="flex min-h-[70vh] w-full items-center md:bg-stone-100">
             <div className="max-w-lg p-8 md:p-16 lg:p-24">
-              <h2 className="font-neubold  tracking-tight uppercase text-4xl lg:text-6xl">
+              <h2 className="font-neubold text-4xl tracking-tight uppercase lg:text-6xl">
                 Unique handcrafted jewelry
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-gray-700 md:text-base">

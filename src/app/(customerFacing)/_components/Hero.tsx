@@ -99,7 +99,7 @@ export default function Hero() {
 
   return (
     <>
-      <div className="relative h-[635px] w-full overflow-hidden">
+      <div className="relative h-[500px] md:h-[635px] w-full overflow-hidden">
         <div className="absolute top-0 left-0 z-10 h-full w-full bg-black/5" />
 
         {/* Mobile: Single image slides */}

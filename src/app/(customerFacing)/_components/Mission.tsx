@@ -6,7 +6,7 @@ export default function Mission() {
   return (
     <section className="relative mt-16 w-full">
       {/* Container keeps aspect, image fills */}
-      <div className="relative h-[720px] w-full">
+      <div className="relative h-[500px]  md:h-[720px] w-full">
         <Image
           src="/maxHor.jpg"
           alt="Our mission"

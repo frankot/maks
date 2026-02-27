@@ -39,7 +39,7 @@ export default function Marquee() {
   }, [])
 
   return (
-    <div className="mx-auto py-5  md:py-10">
+    <div className="mx-auto py-5 md:py-10">
       {/* Marquee description */}
       <div className="relative mb-4 w-full overflow-hidden">
         {/* Optional gradient edges for a subtle fade */}
@@ -50,7 +50,7 @@ export default function Marquee() {
           {Array.from({ length: 6 }).map((_, groupIndex) => (
             <span
               key={groupIndex}
-              className="font-neubold mx-8 text-3xl md:text-5xl leading-9 text-black/80 uppercase"
+              className="font-neubold mx-8 text-3xl leading-9 text-black/80 uppercase md:text-5xl"
               aria-hidden={groupIndex !== 0}
             >
               {state.description}
