@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
+import type { Category } from '@prisma/client'
 import Hero from './_components/Hero'
 import Mission from './_components/Mission'
 import Marquee from './_components/Marquee'
-import FeaturedProductsServer from './_components/FeaturedProductsServer'
-import FeaturedProductsDynamicServer from './_components/FeaturedProductsDynamicServer'
-import type { Category } from '@prisma/client'
+import FeaturedProducts from './_components/FeaturedProducts'
+import FeaturedProductsDynamic from './_components/FeaturedProductsDynamic'
 import CTA from './_components/CTA'
+import { getFeaturedSection } from '@/lib/featured-sections'
+import { getProductsByCategory, getFeaturedProducts } from '@/lib/products'
 
 export const metadata: Metadata = {
   title: 'MAMI — Handmade Jewelry from Warsaw',
@@ -14,19 +16,45 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://mami.com.pl' },
 }
 
-export default function Home() {
+export default async function Home() {
+  const [section1, section2, rings, necklaces, earrings] = await Promise.all([
+    getFeaturedSection(1),
+    getFeaturedSection(2),
+    getProductsByCategory('RINGS' as Category, 6),
+    getProductsByCategory('NECKLACES' as Category, 6),
+    getFeaturedProducts('EARRINGS' as Category),
+  ])
+
   return (
     <>
-      <main className="pt-[var(--nav-height)]">
+      <main className="">
         <Hero />
         <Marquee />
 
-        <FeaturedProductsServer category={'RINGS' as Category} title="Rings" />
+        <FeaturedProducts
+          title={section1?.title ?? 'Rings'}
+          href={section1?.href ?? '/shop/rings'}
+          products={section1 ? section1.items.map((i) => i.product) : rings}
+        />
 
-        <FeaturedProductsServer category={'NECKLACES' as Category} title="Necklaces" />
+        <FeaturedProducts
+          title={section2?.title ?? 'Necklaces'}
+          href={section2?.href ?? '/shop/necklaces'}
+          products={section2 ? section2.items.map((i) => i.product) : necklaces}
+        />
+
         <Mission />
 
-        <FeaturedProductsDynamicServer initialCategory={'EARRINGS' as Category} />
+        <FeaturedProductsDynamic
+          initialCategory={'EARRINGS' as Category}
+          categoryProducts={{
+            RINGS: rings,
+            NECKLACES: necklaces,
+            EARRINGS: earrings,
+            BRACELETS: [],
+            CHAINS: [],
+          }}
+        />
 
         <CTA />
       </main>

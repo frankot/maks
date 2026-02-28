@@ -6,7 +6,7 @@ export default function Mission() {
   return (
     <section className="relative mt-16 w-full">
       {/* Container keeps aspect, image fills */}
-      <div className="relative h-[500px]  md:h-[720px] w-full">
+      <div className="relative h-[500px] w-full md:h-[720px]">
         <Image
           src="/maxHor.jpg"
           alt="Our mission"
@@ -20,9 +20,7 @@ export default function Mission() {
 
         {/* Top-left text */}
         <div className="absolute top-6 left-4 max-w-xl text-white md:top-10">
-          <h2 className=" font-bold tracking-tight uppercase text-5xl lg:text-8xl">
-            Mission
-          </h2>
+          <h2 className="text-5xl font-bold tracking-tight uppercase lg:text-8xl">Mission</h2>
           <p className="mt-3 text-sm leading-relaxed opacity-95 md:text-base">
             mami crafts timeless jewelry with a focus on material honesty, sustainable processes,
             and everyday wearability. Designed in Warsaw, made to last.

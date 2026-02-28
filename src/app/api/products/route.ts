@@ -50,6 +50,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+    if (error instanceof Error && error.message.includes('already exists')) {
+      return NextResponse.json({ error: error.message }, { status: 409 })
+    }
     console.error('Error creating product:', error)
     return errorHandler(error)
   }

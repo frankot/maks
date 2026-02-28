@@ -217,13 +217,13 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
         <button
           onClick={openCart}
           aria-label="Open cart"
-          className={`fixed bottom-4 left-4 z-50 bg-white  border-black border  p-3 text-white shadow-lg transition-transform duration-300 md:hidden ${
+          className={`fixed bottom-4 left-4 z-50 border border-black bg-white p-3 text-white shadow-lg transition-transform duration-300 md:hidden ${
             totalItems() > 0 ? 'translate-x-0' : '-translate-x-20'
           }`}
         >
-          <div className="text-black relative">
-            <CartIcon  size={20} />
-            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full  text-[10px] font-medium text-black">
+          <div className="relative text-black">
+            <CartIcon size={20} />
+            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-medium text-black">
               {totalItems()}
             </span>
           </div>
@@ -240,7 +240,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
           />
 
           {/* Menu content box */}
-          <div className="relative mx-4 w-full max-w-sm  bg-white p-8 shadow">
+          <div className="relative mx-4 w-full max-w-sm bg-white p-8 shadow">
             <nav className="flex flex-col gap-6 border-b border-black/60 pb-6">
               {navLinks.map((l) => (
                 <Link
@@ -275,7 +275,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
 
       {/* Collections bar - fixed for product pages, sticky for shop page */}
       {showCollectionsBar && (
-        <div className="fixed top-[var(--nav-height)] right-0 left-0 z-40 border-b border-gray-200 bg-white">
+        <div className="fixed top-14 right-0 left-0 z-40 border-b border-gray-200 bg-white lg:top-24">
           <div className="py-3">
             <div className="scrollbar-hide mx-auto flex max-w-7xl items-center justify-center gap-8 overflow-x-auto px-4">
               {/* Categories */}

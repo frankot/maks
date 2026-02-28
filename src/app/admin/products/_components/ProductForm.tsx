@@ -10,6 +10,7 @@ import type { Category } from '@prisma/client'
 import { Switch } from '@/components/ui/switch'
 import { X, Upload, Loader2, Link2, RefreshCw } from 'lucide-react'
 import Image from 'next/image'
+import { toast } from 'sonner'
 
 interface ProductFormProps {
   productId?: string
@@ -160,10 +161,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
           const result = await response.json()
           setImages((prev) => [...prev, result])
         } else {
-          console.error('Upload failed')
+          toast.error('Image upload failed')
         }
-      } catch (error) {
-        console.error('Upload error:', error)
+      } catch {
+        toast.error('Image upload failed')
       } finally {
         setUploadingImages((prev) => prev.filter((id) => id !== fileId))
       }
@@ -186,10 +187,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
       if (response.ok) {
         setImages((prev) => prev.filter((img) => img.publicId !== publicId))
       } else {
-        console.error('Delete failed')
+        toast.error('Failed to delete image')
       }
-    } catch (error) {
-      console.error('Delete error:', error)
+    } catch {
+      toast.error('Failed to delete image')
     }
   }
 
@@ -198,7 +199,6 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     setLoading(true)
     try {
       const productData = {
-        id: formData.id || undefined,
         slug: formData.slug || undefined,
         name: formData.name,
         priceInGrosz: Math.round(parseFloat(formData.priceInGrosz) * 100),
@@ -240,10 +240,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         }
       } else {
         const errorData = await response.json()
-        console.error('Error saving product:', errorData.error)
+        toast.error(errorData.error ?? 'Failed to save product')
       }
-    } catch (error) {
-      console.error('Error saving product:', error)
+    } catch {
+      toast.error('Failed to save product')
     } finally {
       setLoading(false)
     }

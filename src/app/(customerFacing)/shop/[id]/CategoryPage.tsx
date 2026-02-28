@@ -57,7 +57,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
   }
 
   return (
-    <section className="animate-in fade-in mx-auto max-w-7xl px-4 py-10 duration-500">
+    <section className="animate-in fade-in mx-auto px-4 py-10 duration-500">
       <div className="mx-auto px-4">
         <div className="py-6 md:py-8">
           <h2 className="text-4xl leading-[0.9] font-extrabold whitespace-nowrap text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">

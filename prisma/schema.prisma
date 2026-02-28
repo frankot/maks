@@ -76,6 +76,7 @@ model Product {
   deletedAt      DateTime?
   imagePublicIds String[]
   orderItems     OrderItem[]
+  featuredIn     FeaturedSectionProduct[]
 
   @@index([productStatus])
   @@index([isAvailable])
@@ -239,4 +240,27 @@ model NavCarouselContent {
   texts     String[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model FeaturedSection {
+  id        String                   @id @default(uuid())
+  slot      Int                      @unique
+  title     String
+  href      String
+  items     FeaturedSectionProduct[]
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+}
+
+model FeaturedSectionProduct {
+  id        String          @id @default(uuid())
+  order     Int
+  sectionId String
+  productId String
+  section   FeaturedSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  product   Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([sectionId, productId])
+  @@unique([sectionId, order])
+  @@index([sectionId])
 }

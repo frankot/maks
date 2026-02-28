@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import GalleryCard from './GalleryCard'
+import GalleryModal from './GalleryModal'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -39,31 +40,75 @@ const fallbackItems = [
   { id: 'gal16', name: 'Anna Kowalska', imagePath: '/gallery/gal3_b.jpg' },
 ]
 
-function FallbackGallery() {
+function FallbackGallery({ openModal }: { openModal: (index: number) => void }) {
   return (
     <>
-      {/* Row 1: 5 columns */}
-      <div className="grid grid-cols-2 gap-0 md:grid-cols-3 lg:grid-cols-5">
-        {fallbackItems.slice(0, 5).map((item) => (
-          <GalleryCard key={item.id} imagePath={item.imagePath} artistName={item.name} />
+      {/* Row 1: 5 columns — 2col mobile, last item centered */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        {fallbackItems.slice(0, 4).map((item, i) => (
+          <GalleryCard
+            key={item.id}
+            imagePath={item.imagePath}
+            artistName={item.name}
+            onClick={() => openModal(i)}
+            portrait
+          />
+        ))}
+        <div className="col-span-2 flex justify-center md:col-span-1">
+          <div className="w-1/2 md:w-full">
+            <GalleryCard
+              key={fallbackItems[4].id}
+              imagePath={fallbackItems[4].imagePath}
+              artistName={fallbackItems[4].name}
+              onClick={() => openModal(4)}
+              portrait
+            />
+          </div>
+        </div>
+      </div>
+      {/* Row 2: 3 columns — 1col mobile */}
+      <div className="grid grid-cols-1 md:grid-cols-3">
+        {fallbackItems.slice(5, 8).map((item, i) => (
+          <GalleryCard
+            key={item.id}
+            imagePath={item.imagePath}
+            artistName={item.name}
+            onClick={() => openModal(5 + i)}
+          />
         ))}
       </div>
-      {/* Row 2: 3 columns */}
-      <div className="grid grid-cols-2 gap-0 md:grid-cols-3">
-        {fallbackItems.slice(5, 8).map((item) => (
-          <GalleryCard key={item.id} imagePath={item.imagePath} artistName={item.name} />
+      {/* Row 3: 5 columns — 2col mobile, last item centered */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        {fallbackItems.slice(8, 12).map((item, i) => (
+          <GalleryCard
+            key={item.id}
+            imagePath={item.imagePath}
+            artistName={item.name}
+            onClick={() => openModal(8 + i)}
+            portrait
+          />
         ))}
+        <div className="col-span-2 flex justify-center md:col-span-1">
+          <div className="w-1/2 md:w-full">
+            <GalleryCard
+              key={fallbackItems[12].id}
+              imagePath={fallbackItems[12].imagePath}
+              artistName={fallbackItems[12].name}
+              onClick={() => openModal(12)}
+              portrait
+            />
+          </div>
+        </div>
       </div>
-      {/* Row 3: 5 columns */}
-      <div className="grid grid-cols-2 gap-0 md:grid-cols-3 lg:grid-cols-5">
-        {fallbackItems.slice(8, 13).map((item) => (
-          <GalleryCard key={item.id} imagePath={item.imagePath} artistName={item.name} />
-        ))}
-      </div>
-      {/* Row 4: 3 columns */}
-      <div className="grid grid-cols-2 gap-0 md:grid-cols-3">
-        {fallbackItems.slice(13, 16).map((item) => (
-          <GalleryCard key={item.id} imagePath={item.imagePath} artistName={item.name} />
+      {/* Row 4: 3 columns — 1col mobile */}
+      <div className="grid grid-cols-1 md:grid-cols-3">
+        {fallbackItems.slice(13, 16).map((item, i) => (
+          <GalleryCard
+            key={item.id}
+            imagePath={item.imagePath}
+            artistName={item.name}
+            onClick={() => openModal(13 + i)}
+          />
         ))}
       </div>
     </>
@@ -72,6 +117,7 @@ function FallbackGallery() {
 
 export default function Gallery() {
   const [rows, setRows] = useState<GalleryRow[] | null>(null)
+  const [modalIndex, setModalIndex] = useState<number | null>(null)
 
   useEffect(() => {
     const fetchRows = async () => {
@@ -90,6 +136,29 @@ export default function Gallery() {
     void fetchRows()
   }, [])
 
+  // Flatten all images for modal navigation
+  const allImages = useMemo(() => {
+    if (rows && rows.length > 0) {
+      return rows.flatMap((row) =>
+        [...row.images]
+          .sort((a, b) => a.order - b.order)
+          .map((img) => ({
+            id: img.id,
+            imagePath: img.imagePath,
+            artistName: img.artist.name,
+          }))
+      )
+    }
+    return fallbackItems.map((item) => ({
+      id: item.id,
+      imagePath: item.imagePath,
+      artistName: item.name,
+    }))
+  }, [rows])
+
+  // Track cumulative index offset for each row to map card click → flat index
+  const openModal = (flatIndex: number) => setModalIndex(flatIndex)
+
   return (
     <div className="mx-auto">
       <div className="space-y-0">
@@ -97,39 +166,52 @@ export default function Gallery() {
           rows.map((row) => {
             const gridCols =
               row.layout === 'FIVE_COL'
-                ? 'grid grid-cols-2 gap-0 md:grid-cols-3 lg:grid-cols-5'
-                : 'grid grid-cols-2 gap-0 md:grid-cols-3'
+                ? 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5'
+                : 'grid grid-cols-1 md:grid-cols-3'
 
             const sortedImages = [...row.images].sort((a, b) => a.order - b.order)
 
             return (
               <div key={row.id} className={gridCols}>
-                {sortedImages.map((img) => (
-                  <GalleryCard
-                    key={img.id}
-                    imagePath={img.imagePath}
-                    artistName={img.artist.name}
-                  />
-                ))}
+                {sortedImages.map((img) => {
+                  const flatIdx = allImages.findIndex((ai) => ai.id === img.id)
+                  return (
+                    <GalleryCard
+                      key={img.id}
+                      imagePath={img.imagePath}
+                      artistName={img.artist.name}
+                      onClick={() => openModal(flatIdx)}
+                    />
+                  )
+                })}
               </div>
             )
           })
         ) : (
-          <FallbackGallery />
+          <FallbackGallery openModal={openModal} />
+        )}
+
+        {modalIndex !== null && (
+          <GalleryModal
+            images={allImages}
+            currentIndex={modalIndex}
+            onClose={() => setModalIndex(null)}
+            onNavigate={setModalIndex}
+          />
         )}
 
         {/* Shop CTA Section - Full width with image */}
-        <div className="relative mt-20 h-[60vh] w-full">
+        <div className="relative mt-10 h-[40vh] w-full sm:mt-16 md:mt-20 md:h-[60vh]">
           <Image src="/shop_main.jpg" alt="Shop" fill className="object-cover" sizes="100vw" />
           {/* Black tint overlay */}
           <div className="absolute inset-0 bg-black/40" />
 
           {/* Centered SHOP link */}
           <Link href="/shop" className="group absolute inset-0 flex items-center justify-center">
-            <span className="flex items-center gap-4 text-6xl font-bold tracking-wider text-white uppercase md:text-8xl">
+            <span className="flex items-center gap-2 text-4xl font-bold tracking-wider text-white uppercase sm:gap-4 sm:text-6xl md:text-8xl">
               SHOP
               <svg
-                className="h-16 w-16 transition-transform duration-300 group-hover:translate-x-4 md:h-24 md:w-24 lg:-ml-7"
+                className="h-10 w-10 transition-transform duration-300 group-hover:translate-x-4 sm:h-16 sm:w-16 md:h-24 md:w-24 lg:-ml-7"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -145,8 +227,8 @@ export default function Gallery() {
           </Link>
         </div>
         {/* Text Section */}
-        <div className="mx-auto max-w-4xl border-b border-gray-300 px-8 py-20 text-center">
-          <p className="text-lg leading-relaxed tracking-wide text-gray-800 uppercase md:text-xl">
+        <div className="mx-auto max-w-4xl border-b border-gray-300 px-5 py-12 text-center sm:px-8 sm:py-20">
+          <p className="text-sm leading-relaxed tracking-wide text-gray-800 uppercase sm:text-lg md:text-xl">
             In 06.33.11 we believe that jewelry should be one of a kind, just as our audience is.
             Jewelry should be celebrated, and wearing it should make you feel special. So in our
             studio you will not find two identical pieces.

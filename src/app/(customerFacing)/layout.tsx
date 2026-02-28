@@ -11,7 +11,9 @@ export default function CustomerFacingLayout({ children }: { children: React.Rea
       <Suspense fallback={null}>
         <Nav />
       </Suspense>
-      <ErrorBoundary>{children}</ErrorBoundary>
+      <div className="pt-24 lg:pt-32">
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </div>
       <Footer />
       <Cart />
     </PreloadProvider>

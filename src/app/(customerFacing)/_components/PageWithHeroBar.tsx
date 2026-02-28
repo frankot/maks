@@ -20,7 +20,7 @@ export default function PageWithHeroBar({
 
   return (
     <>
-      <main className="pt-20">
+      <main className="">
         {/* Hero Image */}
         <div className="relative h-[120px] w-full lg:h-[400px]">
           <div className="absolute inset-0 z-10 bg-black/10" />

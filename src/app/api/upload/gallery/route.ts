@@ -20,12 +20,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    // Check file size (5MB limit)
-    const maxSize = 5 * 1024 * 1024
+    // Check file size (15MB limit for high-quality gallery photos)
+    const maxSize = 15 * 1024 * 1024
     if (file.size > maxSize) {
       return NextResponse.json(
         {
-          error: `File size too large. Maximum size is 5MB. Your file is ${(file.size / 1024 / 1024).toFixed(1)}MB.`,
+          error: `File size too large. Maximum size is 15MB. Your file is ${(file.size / 1024 / 1024).toFixed(1)}MB.`,
         },
         { status: 400 }
       )
@@ -56,9 +56,8 @@ export async function POST(request: NextRequest) {
             resource_type: 'image',
             folder: 'maks/gallery',
             transformation: [
-              { width: 1200, height: 1200, crop: 'limit' },
+              { width: 3000, height: 3000, crop: 'limit' },
               { quality: 'auto:best' },
-              { format: 'webp' },
             ],
             secure: true,
           },

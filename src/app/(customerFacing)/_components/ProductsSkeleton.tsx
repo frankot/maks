@@ -4,10 +4,7 @@ export default function ProductsSkeleton() {
   return (
     <div className="space-y-16 py-12">
       {/* Rings Section */}
-      <section
-        id="rings"
-        className="scroll-mt-[calc(var(--nav-height)+var(--collections-bar-height))]"
-      >
+      <section id="rings" className="scroll-mt-[104px] lg:scroll-mt-[144px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
             <div className="h-10 w-32 animate-pulse rounded bg-gray-100" />
@@ -21,10 +18,7 @@ export default function ProductsSkeleton() {
       </section>
 
       {/* Necklaces Section */}
-      <section
-        id="necklaces"
-        className="scroll-mt-[calc(var(--nav-height)+var(--collections-bar-height))]"
-      >
+      <section id="necklaces" className="scroll-mt-[104px] lg:scroll-mt-[144px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
             <div className="h-10 w-40 animate-pulse rounded bg-gray-100" />
@@ -38,10 +32,7 @@ export default function ProductsSkeleton() {
       </section>
 
       {/* Earrings Section */}
-      <section
-        id="earrings"
-        className="scroll-mt-[calc(var(--nav-height)+var(--collections-bar-height))]"
-      >
+      <section id="earrings" className="scroll-mt-[104px] lg:scroll-mt-[144px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
             <div className="h-10 w-36 animate-pulse rounded bg-gray-100" />

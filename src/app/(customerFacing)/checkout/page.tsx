@@ -121,7 +121,7 @@ export default function CheckoutPage() {
   const total = totalPriceInCents() + shippingCost
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-[var(--nav-height)]">
+    <div className="min-h-screen bg-gray-50 pt-14 lg:pt-24">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Left Column - Form */}
@@ -353,7 +353,7 @@ export default function CheckoutPage() {
 
           {/* Right Column - Order Summary */}
           <div className="order-1 lg:order-2">
-            <div className="sticky top-[calc(var(--nav-height)+1rem)] rounded-sm bg-white p-6 sm:p-8">
+            <div className="sticky top-[72px] rounded-sm bg-white p-6 sm:p-8 lg:top-[112px]">
               <h2 className="mb-6 text-lg font-bold tracking-tight uppercase">Order Summary</h2>
 
               {/* Cart Items */}

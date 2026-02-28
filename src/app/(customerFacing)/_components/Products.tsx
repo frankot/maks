@@ -20,10 +20,7 @@ export default function Products({ title, category, products }: ProductsProps) {
   }
 
   return (
-    <section
-      id={sectionId}
-      className="animate-in fade-in mx-auto max-w-7xl px-4 py-10 duration-500"
-    >
+    <section id={sectionId} className="animate-in fade-in mx-auto px-4 py-10 duration-500">
       {/* Title */}
       <div className="mx-auto px-4">
         <div className="py-6 md:py-8">

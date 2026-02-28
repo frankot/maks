@@ -99,11 +99,11 @@ export default function Hero() {
 
   return (
     <>
-      <div className="relative h-[500px] md:h-[635px] w-full overflow-hidden">
+      <div className="relative mt-5 h-[500px] w-full overflow-hidden md:mt-0 md:h-[635px]">
         <div className="absolute top-0 left-0 z-10 h-full w-full bg-black/5" />
 
         {/* Mobile: Single image slides */}
-        <div className="md:hidden bg-amber-500">
+        <div className="bg-amber-500 md:hidden">
           {allImages.map((image, index) => (
             <div
               key={`mobile-${index}`}

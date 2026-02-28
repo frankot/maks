@@ -33,7 +33,7 @@ export default async function AboutPage() {
         </span>
       </PageWithHeroBar>
 
-      <div className="relative h-[80vh] w-full bg-white">
+      <div className="relative min-h-[60vh] w-full bg-white md:h-[80vh]">
         {/* Background Image with Gradient Overlay */}
         <div className="absolute inset-0 bg-white">
           <Image
@@ -53,11 +53,11 @@ export default async function AboutPage() {
         </div>
 
         {/* Content Section */}
-        <div className="relative mx-auto flex h-[656px] max-w-[1440px] flex-row items-center justify-between gap-[206px] px-20 py-20">
+        <div className="relative mx-auto flex h-full max-w-[1440px] flex-col items-center justify-center gap-8 px-5 py-12 sm:px-10 md:flex-row md:gap-16 md:px-20 md:py-20 lg:gap-[206px]">
           {/* Left Box - Black Background with Image-Clipped Text */}
-          <div className="flex h-[476px] w-[524px] flex-none flex-col items-center justify-center gap-2.5 bg-black px-[30px] py-10">
+          <div className="flex w-full flex-col items-center justify-center gap-2.5 bg-black px-5 py-8 sm:px-[30px] sm:py-10 md:h-[476px] md:w-[524px] md:flex-none">
             <p
-              className="flex-grow self-stretch font-['Inter'] text-[32px] leading-9 font-medium uppercase"
+              className="flex-grow self-stretch font-['Inter'] text-lg leading-6 font-medium uppercase sm:text-xl md:text-[32px] md:leading-9"
               style={{
                 backgroundImage: 'url(/about.png)',
                 backgroundSize: 'cover',
@@ -73,8 +73,8 @@ export default async function AboutPage() {
           </div>
 
           {/* Right Box - Transparent Background with Black Text */}
-          <div className="flex h-[476px] w-[520px] flex-none flex-col items-center justify-center gap-2.5 px-[30px] py-10">
-            <p className="flex-grow self-stretch font-['Inter'] text-[32px] leading-9 font-medium text-black uppercase">
+          <div className="flex w-full flex-col items-center justify-center gap-2.5 px-5 py-4 sm:px-[30px] md:h-[476px] md:w-[520px] md:flex-none md:py-10">
+            <p className="flex-grow self-stretch font-['Inter'] text-lg leading-6 font-medium text-black uppercase sm:text-xl md:text-[32px] md:leading-9">
               {brandText}
             </p>
           </div>
@@ -82,8 +82,8 @@ export default async function AboutPage() {
       </div>
 
       {/* Bottom Section - Belief Statement */}
-      <div className="flex flex-col items-center justify-center gap-2.5 px-[30px] py-10">
-        <p className="max-w-[1380px] py-10 text-center font-['Inter'] text-[32px] leading-9 font-medium text-black uppercase">
+      <div className="flex flex-col items-center justify-center gap-2.5 px-5 py-8 sm:px-[30px] sm:py-10">
+        <p className="max-w-[1380px] py-4 text-center font-['Inter'] text-lg leading-6 font-medium text-black uppercase sm:py-10 sm:text-xl md:text-[32px] md:leading-9">
           In mami we believe that jewelry should be one of a kind, just as our audience ought to be.
           Jewelry should be celebrated, and wearing it should make you feel special. So in our
           studio you will not find two identical pieces.
@@ -91,14 +91,14 @@ export default async function AboutPage() {
 
         <a
           href="/contact"
-          className="py- flex flex-row items-center justify-center gap-2.5 border-b border-black px-0 pt-2 font-['Inter'] text-sm font-medium tracking-tight text-black uppercase transition-opacity hover:opacity-70"
+          className="flex flex-row items-center justify-center gap-2.5 border-b border-black px-0 pt-2 pb-1 font-['Inter'] text-sm font-medium tracking-tight text-black uppercase transition-opacity hover:opacity-70"
         >
           CONTACT
         </a>
       </div>
 
-      {/* Gallery Section - Same dimensions as first content section */}
-      <div className="relative mb-10 h-[556px] w-full bg-white">
+      {/* Gallery Section */}
+      <div className="relative mb-10 h-[300px] w-full bg-white sm:h-[400px] md:h-[556px]">
         {/* Background Image */}
         <div className="absolute inset-0 bg-white">
           <Image src="/about_bg2.jpg" alt="Gallery" fill className="object-cover" />
@@ -106,7 +106,7 @@ export default async function AboutPage() {
         <div className="absolute inset-0 bg-black/30"></div>
 
         {/* Centered Gallery Text */}
-        <div className="absolute bottom-6 left-4 max-w-xl text-white md:bottom-10">
+        <div className="absolute bottom-4 left-4 max-w-xl text-white sm:bottom-6 md:bottom-10">
           <Link
             href="/gallery"
             className="group inline-flex items-center gap-2 text-2xl font-bold tracking-tight uppercase transition-opacity hover:opacity-80 md:text-4xl lg:text-8xl"
