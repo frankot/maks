@@ -28,9 +28,9 @@ By default R2 buckets are private. You need to enable public access to get the `
 
 1. Open the `maks-images` bucket you just created
 2. Click the **Settings** tab
-3. Scroll to **Public access**
-4. Under **R2.dev subdomain**, click **Allow Access**
-5. Confirm the warning — this makes all objects in the bucket publicly readable
+3. Scroll to **Public Development URL**
+4. Click **Enable**
+5. Type `allow` in the confirmation dialog to confirm — this makes all objects in the bucket publicly readable via the `r2.dev` URL
 6. Cloudflare will show you the public URL: `https://pub-XXXXXXXXXXXXXXXXXXXXXXXXXXXX.r2.dev`
 
    **Copy this URL** — it goes into `R2_PUBLIC_URL` in your `.env`

@@ -205,6 +205,22 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                 <MenuIcon size={20} />
               </button>
             </div>
+
+            {/* Desktop cart: absolute at right-6 */}
+            <div className="absolute inset-y-0 right-6 hidden items-center md:flex">
+              <button
+                onClick={openCart}
+                aria-label="Open cart"
+                className="relative text-black hover:text-gray-700"
+              >
+                <CartIcon size={32} />
+                {isMounted && totalItems() > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-medium text-white">
+                    {totalItems()}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Remove mobile nav links - they're now in burger menu */}
@@ -218,21 +234,27 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5">
-          <Link
-            href="/"
-            onClick={() => setMobileMenuOpen(false)}
-            className="text-lg font-extrabold tracking-[0.3em] text-black"
-          >
-            mami
-          </Link>
-          <button
-            onClick={() => setMobileMenuOpen(false)}
-            className="text-black transition-colors hover:text-gray-600"
-            aria-label="Close menu"
-          >
-            <XIcon size={20} />
-          </button>
+        <div className="px-4">
+          <div className="relative flex h-14 items-center">
+            <div className="flex w-full items-center justify-center gap-4">
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-lg font-extrabold tracking-[0.3em] whitespace-nowrap text-black"
+              >
+                mami
+              </Link>
+            </div>
+            <div className="absolute inset-y-0 right-4 flex items-center">
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-black transition-colors hover:text-gray-600"
+                aria-label="Close menu"
+              >
+                <XIcon size={20} />
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Navigation links */}
@@ -388,7 +410,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
       <button
         onClick={openCart}
         aria-label="Open cart"
-        className="fixed right-6 bottom-6 z-50 flex h-12 w-12 items-center justify-center border border-black bg-white text-black shadow-lg transition-all hover:bg-black hover:text-white active:scale-95"
+        className="fixed right-6 bottom-6 z-50 flex h-12 w-12 items-center justify-center border border-black bg-white text-black shadow-lg transition-all hover:bg-black hover:text-white active:scale-95 md:hidden"
       >
         <CartIcon size={18} />
         {isMounted && totalItems() > 0 && (
