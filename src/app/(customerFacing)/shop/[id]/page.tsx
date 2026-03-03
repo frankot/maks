@@ -59,7 +59,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (CATEGORY_SLUGS.includes(id.toLowerCase())) {
     return (
       <>
-        <PageWithHeroBar imagePath="/shop_main.jpg" imageAlt="Shop">
+        <PageWithHeroBar imagePath="/shop_main.webp" imageAlt="Shop">
           <Suspense fallback={<CollectionsBarSkeleton />}>
             <CollectionsBar
               highlightedCategory={id.toUpperCase() as 'RINGS' | 'NECKLACES' | 'EARRINGS'}
