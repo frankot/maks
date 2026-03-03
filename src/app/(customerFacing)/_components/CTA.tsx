@@ -11,7 +11,7 @@ export default function CTA() {
           {/* Left: image (fills) */}
           <div className="relative min-h-[70vh] w-full">
             <Image
-              src="/maxvert3.jpg"
+              src="/maxvert3.webp"
               alt="Unique handcrafted jewelry"
               fill
               className="object-cover"
