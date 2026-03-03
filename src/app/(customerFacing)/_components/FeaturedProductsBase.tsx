@@ -72,7 +72,7 @@ export default function FeaturedProductsBase({
 
   if (!products?.length) {
     return (
-      <section className="mx-auto max-w-7xl md:px-4 py-10">
+      <section className="mx-auto max-w-7xl py-10 md:px-4">
         {header}
         <div className="py-8 text-center text-gray-500">{emptyMessage}</div>
       </section>
@@ -80,7 +80,7 @@ export default function FeaturedProductsBase({
   }
 
   return (
-    <section className="mx-auto ">
+    <section className="mx-auto">
       {header}
 
       {/* Mobile: 1-col grid (hidden on md+) */}
