@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <PageWithHeroBar imagePath="/about_bg.jpg" imageAlt="Contact">
+      <PageWithHeroBar imagePath="/about_bg.webp" imageAlt="Contact">
         <span className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors">
           GET IN TOUCH
         </span>

@@ -13,7 +13,7 @@ export default function GalleryPage() {
   return (
     <>
       {/* Hero + Bar Wrapper */}
-      <PageWithHeroBar imagePath="/gall_bg.jpg" imageAlt="Gallery">
+      <PageWithHeroBar imagePath="/gall_bg.webp" imageAlt="Gallery">
         <span className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors">
           GALLERY
         </span>

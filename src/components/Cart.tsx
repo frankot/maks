@@ -4,13 +4,12 @@ import { useCartStore } from '@/stores/cart-store'
 import { formatCartPrice } from '@/lib/cart'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
-import Link from 'next/link'
-import { X, ShoppingBag } from 'lucide-react'
+import { ShoppingBag } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import CartItemList from '@/components/CartItemList'
 
 export default function Cart() {
-  const { items, isOpen, closeCart, removeItem, totalPriceInCents } = useCartStore()
+  const { items, isOpen, closeCart, totalPriceInCents } = useCartStore()
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -41,50 +40,7 @@ export default function Cart() {
               </div>
             </div>
           ) : (
-            <div className="space-y-6">
-              {items.map((item) => (
-                <div key={item.productId} className="flex gap-4 border-b pb-6 last:border-b-0">
-                  {/* Product Image */}
-                  <Link
-                    href={`/shop/${item.slug ?? item.productId}`}
-                    onClick={closeCart}
-                    className="relative h-20 w-20 flex-shrink-0 bg-gray-100"
-                  >
-                    {item.imagePath ? (
-                      <Image src={item.imagePath} alt={item.name} fill className="object-cover" />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center">
-                        <ShoppingBag className="h-6 w-6 text-gray-300" strokeWidth={1.5} />
-                      </div>
-                    )}
-                  </Link>
-
-                  {/* Product Details */}
-                  <div className="flex min-w-0 flex-1 flex-col justify-between">
-                    <div className="flex items-start justify-between gap-2">
-                      <Link
-                        href={`/shop/${item.slug ?? item.productId}`}
-                        onClick={closeCart}
-                        className="text-xs font-medium tracking-wide uppercase hover:underline"
-                      >
-                        {item.name}
-                      </Link>
-                      <button
-                        onClick={() => removeItem(item.productId)}
-                        className="flex-shrink-0 text-gray-400 transition-colors hover:text-black"
-                        aria-label="Remove item"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
-
-                    <div className="text-xs text-gray-600">
-                      {formatCartPrice(item.priceInCents)}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <CartItemList onNavigate={closeCart} />
           )}
         </div>
 

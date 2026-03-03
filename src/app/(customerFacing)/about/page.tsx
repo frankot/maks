@@ -23,7 +23,7 @@ export default async function AboutPage() {
   return (
     <>
       {/* Hero + Bar Wrapper */}
-      <PageWithHeroBar imagePath="/about_bg.jpg" imageAlt="About">
+      <PageWithHeroBar imagePath="/about_bg.webp" imageAlt="About">
         <span className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors">
           ABOUT
         </span>
@@ -37,7 +37,7 @@ export default async function AboutPage() {
         {/* Background Image with Gradient Overlay */}
         <div className="absolute inset-0 bg-white">
           <Image
-            src="/about.png"
+            src="/about.webp"
             alt="About 06.33.11 Studio"
             fill
             className="object-cover"
@@ -101,7 +101,7 @@ export default async function AboutPage() {
       <div className="relative mb-10 h-[300px] w-full bg-white sm:h-[400px] md:h-[556px]">
         {/* Background Image */}
         <div className="absolute inset-0 bg-white">
-          <Image src="/about_bg2.jpg" alt="Gallery" fill className="object-cover" />
+          <Image src="/about_bg2.webp" alt="Gallery" fill className="object-cover" />
         </div>
         <div className="absolute inset-0 bg-black/30"></div>
 

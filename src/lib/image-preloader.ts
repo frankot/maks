@@ -46,9 +46,9 @@ export async function fetchHeroImages(): Promise<string[]> {
  * List of critical local images used across subpages
  */
 export const CRITICAL_LOCAL_IMAGES = [
-  '/about_bg.jpg', // About & Contact pages
-  '/shop_main.jpg', // Shop pages
-  '/gall_bg.jpg', // Gallery page
+  '/about_bg.webp', // About & Contact pages
+  '/shop_main.webp', // Shop pages
+  '/gall_bg.webp', // Gallery page
 ]
 
 /**

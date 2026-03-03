@@ -6,6 +6,8 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import NavCarousel from './NavCarousel'
 import { useCartStore } from '@/stores/cart-store'
 import { useNavStore } from '@/stores/nav-store'
+import CartItemList from '@/components/CartItemList'
+import { formatCartPrice } from '@/lib/cart'
 
 const navLinks = [
   { href: '/shop', label: 'Shop' },
@@ -34,6 +36,9 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
   const searchParams = useSearchParams()
   const openCart = useCartStore((s) => s.openCart)
   const totalItems = useCartStore((s) => s.totalItems)
+  const [shopExpanded, setShopExpanded] = useState(false)
+  const items = useCartStore((s) => s.items)
+  const totalPriceInCents = useCartStore((s) => s.totalPriceInCents)
 
   const currentCollection = searchParams?.get('collection')
 
@@ -90,6 +95,17 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [lastScrollY, setShowNav])
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [mobileMenuOpen])
 
   // Handle scroll to section on page load if hash is present
   useEffect(() => {
@@ -157,7 +173,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
             <div className="flex w-full items-center justify-center gap-4 md:gap-8">
               <Link
                 href="/"
-                className="block text-lg font-extrabold tracking-[0.3em] whitespace-nowrap text-black   md:text-4xl"
+                className="block text-lg font-extrabold tracking-[0.3em] whitespace-nowrap text-black md:text-4xl"
               >
                 mami
               </Link>
@@ -212,66 +228,118 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
         </div>
       </nav>
 
-      {/* Mobile floating cart button */}
-      {isMounted && totalItems() > 0 && (
-        <button
-          onClick={openCart}
-          aria-label="Open cart"
-          className={`fixed bottom-4 left-4 z-50 border border-black bg-white p-3 text-white shadow-lg transition-transform duration-300 md:hidden ${
-            totalItems() > 0 ? 'translate-x-0' : '-translate-x-20'
-          }`}
-        >
-          <div className="relative text-black">
-            <CartIcon size={20} />
-            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-medium text-black">
-              {totalItems()}
-            </span>
-          </div>
-        </button>
-      )}
-
-      {/* Mobile menu overlay */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center md:hidden">
-          {/* Backdrop blur */}
-          <div
-            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+      {/* Full-screen mobile menu */}
+      <div
+        className={`fixed inset-0 z-[60] flex flex-col bg-white transition-transform duration-300 ease-in-out md:hidden ${
+          mobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-5">
+          <Link
+            href="/"
             onClick={() => setMobileMenuOpen(false)}
-          />
+            className="text-lg font-extrabold tracking-[0.3em] text-black"
+          >
+            mami
+          </Link>
+          <button
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-black transition-colors hover:text-gray-600"
+            aria-label="Close menu"
+          >
+            <XIcon size={20} />
+          </button>
+        </div>
 
-          {/* Menu content box */}
-          <div className="relative mx-4 w-full max-w-sm bg-white p-8 shadow">
-            <nav className="flex flex-col gap-6 border-b border-black/60 pb-6">
-              {navLinks.map((l) => (
+        {/* Navigation links */}
+        <div className="flex-1 overflow-y-auto border-t border-gray-200 px-6 pt-6">
+          <nav className="flex flex-col gap-1">
+            {/* Shop with accordion */}
+            <div>
+              <button
+                onClick={() => setShopExpanded(!shopExpanded)}
+                className={`flex w-full items-center justify-between py-3 text-base tracking-wider uppercase transition-colors ${
+                  pathname?.startsWith('/shop') ? 'font-medium text-black' : 'text-black/80'
+                }`}
+              >
+                Shop
+                <ChevronIcon expanded={shopExpanded} />
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-200 ${
+                  shopExpanded ? 'max-h-40' : 'max-h-0'
+                }`}
+              >
+                <div className="flex flex-col gap-1 pb-2 pl-4">
+                  <Link
+                    href="/shop"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="py-2 text-sm tracking-wider text-gray-500 uppercase transition-colors hover:text-black"
+                  >
+                    All
+                  </Link>
+                  {['rings', 'necklaces', 'earrings'].map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        setMobileMenuOpen(false)
+                        scrollToSection(cat)
+                      }}
+                      className="py-2 text-left text-sm tracking-wider text-gray-500 uppercase transition-colors hover:text-black"
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Other nav links */}
+            {navLinks
+              .filter((l) => l.href !== '/shop')
+              .map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`text-base tracking-wider uppercase transition-colors hover:text-gray-600 ${
+                  className={`py-3 text-base tracking-wider uppercase transition-colors hover:text-gray-600 ${
                     pathname === l.href ? 'font-medium text-black' : 'text-black/80'
                   }`}
                 >
                   {l.label}
                 </Link>
               ))}
-            </nav>
+          </nav>
+        </div>
 
-            {/* Logo at bottom */}
-            <div className="flex justify-center pt-8">
-              <div className="text-3xl font-light tracking-[0.3em] text-black">mami</div>
-            </div>
+        {/* Mini cart section */}
+        <div className="border-t border-gray-200 px-6 py-4">
+          <div className="mb-3 text-xs font-medium tracking-wider text-black uppercase">
+            Cart{isMounted && items.length > 0 && ` (${items.length})`}
           </div>
 
-          {/* Close button - same position as burger button */}
-          <button
-            onClick={() => setMobileMenuOpen(false)}
-            className="absolute top-10 right-8 text-black transition-colors hover:text-gray-600"
-            aria-label="Close menu"
-          >
-            <XIcon size={20} />
-          </button>
+          {isMounted && items.length > 0 ? (
+            <>
+              <div className="max-h-36 overflow-y-auto">
+                <CartItemList compact onNavigate={() => setMobileMenuOpen(false)} />
+              </div>
+              <div className="mt-3 flex items-center justify-between border-t border-gray-200 pt-3 text-sm">
+                <span className="font-medium tracking-wide uppercase">Subtotal</span>
+                <span className="font-bold">{formatCartPrice(totalPriceInCents())}</span>
+              </div>
+              <a
+                href="/checkout"
+                className="mt-3 block w-full bg-black py-3 text-center text-xs font-medium tracking-wider text-white uppercase hover:bg-gray-900"
+              >
+                Checkout
+              </a>
+            </>
+          ) : (
+            <p className="text-xs text-gray-400">Your cart is empty</p>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Collections bar - fixed for product pages, sticky for shop page */}
       {showCollectionsBar && (
@@ -371,6 +439,27 @@ function MenuIcon({ size = 24 }: { size?: number }) {
     >
       <path
         d="M3 12H21M3 6H21M3 18H21"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function ChevronIcon({ expanded, size = 16 }: { expanded: boolean; size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={`transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
+    >
+      <path
+        d="M6 9L12 15L18 9"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
