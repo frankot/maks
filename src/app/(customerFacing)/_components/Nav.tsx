@@ -206,22 +206,6 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                 <MenuIcon size={20} />
               </button>
             </div>
-
-            {/* Desktop cart: absolute at right-6 */}
-            <div className="absolute inset-y-0 right-6 hidden items-center md:flex">
-              <button
-                onClick={openCart}
-                aria-label="Open cart"
-                className="relative text-black hover:text-gray-700"
-              >
-                <CartIcon size={18} />
-                {isMounted && totalItems() > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-medium text-white">
-                    {totalItems()}
-                  </span>
-                )}
-              </button>
-            </div>
           </div>
 
           {/* Remove mobile nav links - they're now in burger menu */}
@@ -394,6 +378,20 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
           </div>
         </div>
       )}
+
+      {/* Floating cart button - bottom right corner */}
+      <button
+        onClick={openCart}
+        aria-label="Open cart"
+        className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center border border-black bg-white text-black shadow-lg transition-all hover:bg-black hover:text-white active:scale-95"
+      >
+        <CartIcon size={18} />
+        {isMounted && totalItems() > 0 && (
+          <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+            {totalItems()}
+          </span>
+        )}
+      </button>
     </>
   )
 }

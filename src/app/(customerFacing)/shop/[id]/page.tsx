@@ -86,7 +86,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   return (
     <>
       {/* Hero + Collections Bar Wrapper */}
-      <PageWithHeroBar imagePath="/shop_main.jpg" imageAlt="Shop">
+      <PageWithHeroBar imagePath="/shop_main.webp" imageAlt="Shop">
         <Suspense fallback={<CollectionsBarSkeleton />}>
           <CollectionsBar
             highlightedCollection={product.collection?.slug}
