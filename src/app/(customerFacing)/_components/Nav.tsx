@@ -383,7 +383,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
       <button
         onClick={openCart}
         aria-label="Open cart"
-        className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center border border-black bg-white text-black shadow-lg transition-all hover:bg-black hover:text-white active:scale-95"
+        className="fixed right-6 bottom-6 z-50 flex h-12 w-12 items-center justify-center border border-black bg-white text-black shadow-lg transition-all hover:bg-black hover:text-white active:scale-95"
       >
         <CartIcon size={18} />
         {isMounted && totalItems() > 0 && (
