@@ -6,7 +6,6 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import NavCarousel from './NavCarousel'
 import { useCartStore } from '@/stores/cart-store'
 import { useNavStore } from '@/stores/nav-store'
-import CartItemList from '@/components/CartItemList'
 import { formatCartPrice } from '@/lib/cart'
 
 const navLinks = [
@@ -298,29 +297,35 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
         </div>
 
         {/* Mini cart section */}
-        <div className="border-t border-gray-200 px-6 py-4">
-          <div className="mb-3 text-xs font-medium tracking-wider text-black uppercase">
-            Cart{isMounted && items.length > 0 && ` (${items.length})`}
-          </div>
-
+        <div className="border-t border-gray-200 px-6 py-3">
           {isMounted && items.length > 0 ? (
             <>
-              <div className="max-h-36 overflow-y-auto">
-                <CartItemList compact onNavigate={() => setMobileMenuOpen(false)} />
+              <div className="max-h-28 overflow-y-auto">
+                {items.map((item) => (
+                  <div
+                    key={item.productId}
+                    className="flex items-center justify-between py-1 text-xs text-black/80"
+                  >
+                    <span className="mr-3 truncate">{item.name}</span>
+                    <span className="shrink-0 font-medium">
+                      {formatCartPrice(item.priceInCents)}
+                    </span>
+                  </div>
+                ))}
               </div>
-              <div className="mt-3 flex items-center justify-between border-t border-gray-200 pt-3 text-sm">
-                <span className="font-medium tracking-wide uppercase">Subtotal</span>
+              <div className="mt-2 flex items-center justify-between border-t border-gray-200 pt-2 text-xs">
+                <span className="font-medium tracking-wide uppercase">Total ({items.length})</span>
                 <span className="font-bold">{formatCartPrice(totalPriceInCents())}</span>
               </div>
               <a
                 href="/checkout"
-                className="mt-3 block w-full bg-black py-3 text-center text-xs font-medium tracking-wider text-white uppercase hover:bg-gray-900"
+                className="mt-2 block w-full bg-black py-2.5 text-center text-[11px] font-medium tracking-wider text-white uppercase hover:bg-gray-900"
               >
                 Checkout
               </a>
             </>
           ) : (
-            <p className="text-xs text-gray-400">Your cart is empty</p>
+            <p className="py-1 text-xs text-gray-400">Your cart is empty</p>
           )}
         </div>
       </div>
