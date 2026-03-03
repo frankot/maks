@@ -72,7 +72,7 @@ export default function FeaturedProductsBase({
 
   if (!products?.length) {
     return (
-      <section className="mx-auto max-w-7xl px-4 py-10">
+      <section className="mx-auto max-w-7xl md:px-4 py-10">
         {header}
         <div className="py-8 text-center text-gray-500">{emptyMessage}</div>
       </section>
@@ -80,11 +80,11 @@ export default function FeaturedProductsBase({
   }
 
   return (
-    <section className="mx-auto px-4">
+    <section className="mx-auto ">
       {header}
 
       {/* Mobile: 1-col grid (hidden on md+) */}
-      <div className="grid grid-cols-1 gap-6 px-4 sm:grid-cols-2 md:hidden">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:hidden">
         {products.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}

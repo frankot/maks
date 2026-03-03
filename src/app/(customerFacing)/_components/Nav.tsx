@@ -157,7 +157,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
             <div className="flex w-full items-center justify-center gap-4 md:gap-8">
               <Link
                 href="/"
-                className="block text-lg font-light tracking-[0.3em] whitespace-nowrap text-black md:text-4xl"
+                className="block text-lg font-extrabold tracking-[0.3em] whitespace-nowrap text-black   md:text-4xl"
               >
                 mami
               </Link>

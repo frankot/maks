@@ -53,9 +53,9 @@ export default async function AboutPage() {
         </div>
 
         {/* Content Section */}
-        <div className="relative mx-auto flex h-full max-w-[1440px] flex-col items-center justify-center gap-8 px-5 py-12 sm:px-10 md:flex-row md:gap-16 md:px-20 md:py-20 lg:gap-[206px]">
+        <div className="relative mx-auto flex h-full max-w-[1440px] flex-col items-center justify-end gap-8 px-5 pb-0 pt-12 sm:px-10 md:flex-row md:justify-center md:gap-16 md:px-20 md:py-20 lg:gap-[206px]">
           {/* Left Box - Black Background with Image-Clipped Text */}
-          <div className="flex w-full flex-col items-center justify-center gap-2.5 bg-black px-5 py-8 sm:px-[30px] sm:py-10 md:h-[476px] md:w-[524px] md:flex-none">
+          <div className="relative z-10 flex w-full translate-y-[100%] flex-col items-center justify-center gap-2.5 bg-black px-5 py-8 sm:px-[30px] sm:py-10 md:h-[476px] md:w-[524px] md:translate-y-0 md:flex-none">
             <p
               className="flex-grow self-stretch font-['Inter'] text-lg leading-6 font-medium uppercase sm:text-xl md:text-[32px] md:leading-9"
               style={{
@@ -73,7 +73,7 @@ export default async function AboutPage() {
           </div>
 
           {/* Right Box - Transparent Background with Black Text */}
-          <div className="flex w-full flex-col items-center justify-center gap-2.5 px-5 py-4 sm:px-[30px] md:h-[476px] md:w-[520px] md:flex-none md:py-10">
+          <div className="hidden md:flex w-full flex-col items-center justify-center gap-2.5 px-5 py-4 sm:px-[30px] md:h-[476px] md:w-[520px] md:flex-none md:py-10">
             <p className="flex-grow self-stretch font-['Inter'] text-lg leading-6 font-medium text-black uppercase sm:text-xl md:text-[32px] md:leading-9">
               {brandText}
             </p>
@@ -82,7 +82,7 @@ export default async function AboutPage() {
       </div>
 
       {/* Bottom Section - Belief Statement */}
-      <div className="flex flex-col items-center justify-center gap-2.5 px-5 py-8 sm:px-[30px] sm:py-10">
+      <div className="mt-32 flex flex-col items-center justify-center gap-2.5 px-5 py-8 sm:px-[30px] sm:py-10 md:mt-0">
         <p className="max-w-[1380px] py-4 text-center font-['Inter'] text-lg leading-6 font-medium text-black uppercase sm:py-10 sm:text-xl md:text-[32px] md:leading-9">
           In mami we believe that jewelry should be one of a kind, just as our audience ought to be.
           Jewelry should be celebrated, and wearing it should make you feel special. So in our
