@@ -85,7 +85,8 @@ export default function Gallery() {
             </div>
           </>
         ) : (
-          rows.length > 0 && rows.map((row) => {
+          rows.length > 0 &&
+          rows.map((row) => {
             const gridCols =
               row.layout === 'FIVE_COL'
                 ? 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5'
