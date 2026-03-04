@@ -87,6 +87,7 @@ export default function Hero({ initialContent }: HeroProps) {
                 fill
                 className="object-cover"
                 priority={index === 0}
+                fetchPriority={index === 0 ? 'high' : undefined}
                 placeholder="blur"
                 blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgZmlsbD0iI2YzZjRmNiIvPjwvc3ZnPg=="
                 sizes="100vw"
@@ -110,6 +111,7 @@ export default function Hero({ initialContent }: HeroProps) {
                   fill
                   className="object-cover"
                   priority={index === 0}
+                  fetchPriority={index === 0 ? 'high' : undefined}
                   placeholder="blur"
                   blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgZmlsbD0iI2YzZjRmNiIvPjwvc3ZnPg=="
                   sizes="50vw"
@@ -123,6 +125,7 @@ export default function Hero({ initialContent }: HeroProps) {
                   fill
                   className="object-cover"
                   priority={index === 0}
+                  fetchPriority={index === 0 ? 'high' : undefined}
                   placeholder="blur"
                   blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgZmlsbD0iI2YzZjRmNiIvPjwvc3ZnPg=="
                   sizes="50vw"

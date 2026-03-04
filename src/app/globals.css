@@ -6,7 +6,6 @@
 :root {
   --nav-height: 56px;
   --collections-bar-height: 48px;
-  --font-inter: var(--font-inter);
 }
 
 @media (min-width: 1024px) {
@@ -20,7 +19,6 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-family-inter: var(--font-inter);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

@@ -74,7 +74,7 @@ export default async function AboutPage() {
 
           {/* Right Box - Transparent Background with Black Text */}
           <div className="hidden w-full flex-col items-center justify-center gap-2.5 px-5 py-4 sm:px-[30px] md:flex md:h-[476px] md:w-[520px] md:flex-none md:py-10">
-            <p className="flex-grow self-stretch font-['Inter'] text-lg leading-6 font-medium text-black uppercase sm:text-xl md:text-[32px] md:leading-9">
+            <p className="flex-grow self-stretch text-lg leading-6 font-medium text-black uppercase sm:text-xl md:text-[32px] md:leading-9">
               {brandText}
             </p>
           </div>
@@ -91,7 +91,7 @@ export default async function AboutPage() {
 
         <a
           href="/contact"
-          className="flex flex-row items-center justify-center gap-2.5 border-b border-black px-0 pt-2 pb-1 font-['Inter'] text-sm font-medium tracking-tight text-black uppercase transition-opacity hover:opacity-70"
+          className="flex flex-row items-center justify-center gap-2.5 border-b border-black px-0 pt-2 pb-1 text-sm font-medium tracking-tight text-black uppercase transition-opacity hover:opacity-70"
         >
           CONTACT
         </a>

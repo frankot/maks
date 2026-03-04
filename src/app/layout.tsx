@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
-import { Source_Sans_3, Inter } from 'next/font/google'
+import { Source_Sans_3 } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const sourceSans3 = Source_Sans_3({ subsets: ['latin'] })
+const sourceSans3 = Source_Sans_3({ subsets: ['latin'], display: 'swap' })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mami.com.pl'),
@@ -67,9 +66,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${sourceSans3.className} ${inter.variable} bg-white text-black antialiased`}
-      >
+      <body className={`${sourceSans3.className} bg-white text-black antialiased`}>
         {children}
         <Toaster />
       </body>
