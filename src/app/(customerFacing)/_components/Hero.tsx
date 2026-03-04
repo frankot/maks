@@ -4,15 +4,15 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import type { HeroContent } from '@prisma/client'
 
-export default function Hero() {
+interface HeroProps {
+  initialContent: HeroContent | null
+}
+
+export default function Hero({ initialContent }: HeroProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [currentMobileSlide, setCurrentMobileSlide] = useState(0)
-  const [heroContent, setHeroContent] = useState<HeroContent | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    void fetchHeroContent()
-  }, [])
+  const heroContent = initialContent
 
   // Desktop: rotate through pairs
   useEffect(() => {
@@ -45,34 +45,6 @@ export default function Hero() {
       return () => clearInterval(interval)
     }
   }, [heroContent])
-
-  const fetchHeroContent = async () => {
-    try {
-      const response = await fetch('/api/hero')
-      if (response.ok) {
-        const data = await response.json()
-        setHeroContent(data)
-      } else {
-        console.error('Failed to fetch hero content:', response.status)
-        setHeroContent(null)
-      }
-    } catch (error) {
-      console.error('Error fetching hero content:', error)
-      setHeroContent(null)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className="relative flex h-[635px] w-full overflow-hidden bg-gray-50">
-        <div className="relative w-1/2 animate-pulse bg-gradient-to-br from-gray-100 to-gray-200" />
-        <div className="relative w-1/2 animate-pulse bg-gradient-to-br from-gray-200 to-gray-100" />
-      </div>
-    )
-  }
 
   // Build image pairs for desktop: prefer CMS content; fallback to two local pairs
   const imagePairs: string[][] = (() => {

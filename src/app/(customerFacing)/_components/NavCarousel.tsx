@@ -35,7 +35,7 @@ export default function NavCarousel() {
       aria-label="Studio announcements carousel"
       className="relative h-6 w-full overflow-hidden bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: 'url("/nav-bg.webp")',
+        backgroundImage: 'url("/navbg.webp")',
       }}
     >
       <div className="absolute inset-0 bg-black/50" />

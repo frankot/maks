@@ -202,7 +202,7 @@ export default function Gallery() {
 
         {/* Shop CTA Section - Full width with image */}
         <div className="relative mt-10 h-[40vh] w-full sm:mt-16 md:mt-20 md:h-[60vh]">
-          <Image src="/shop_main.jpg" alt="Shop" fill className="object-cover" sizes="100vw" />
+          <Image src="/about_bg2.webp" alt="Shop" fill className="object-cover" sizes="100vw" />
           {/* Black tint overlay */}
           <div className="absolute inset-0 bg-black/40" />
 

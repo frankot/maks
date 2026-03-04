@@ -57,9 +57,9 @@ export default async function AboutPage() {
           {/* Left Box - Black Background with Image-Clipped Text */}
           <div className="relative z-10 flex w-full translate-y-[100%] flex-col items-center justify-center gap-2.5 bg-black px-5 py-8 sm:px-[30px] sm:py-10 md:h-[476px] md:w-[524px] md:flex-none md:translate-y-0">
             <p
-              className="flex-grow self-stretch font-['Inter'] text-lg leading-6 font-medium uppercase sm:text-xl md:text-[32px] md:leading-9"
+              className="flex-grow self-stretch text-lg leading-6 font-medium uppercase sm:text-xl md:text-[32px] md:leading-9"
               style={{
-                backgroundImage: 'url(/about.png)',
+                backgroundImage: 'url(/about.webp)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 WebkitBackgroundClip: 'text',
@@ -83,7 +83,7 @@ export default async function AboutPage() {
 
       {/* Bottom Section - Belief Statement */}
       <div className="mt-32 flex flex-col items-center justify-center gap-2.5 px-5 py-8 sm:px-[30px] sm:py-10 md:mt-0">
-        <p className="max-w-[1380px] py-4 text-center font-['Inter'] text-lg leading-6 font-medium text-black uppercase sm:py-10 sm:text-xl md:text-[32px] md:leading-9">
+        <p className="max-w-[1380px] py-4 text-center text-lg leading-6 font-medium text-black uppercase sm:py-10 sm:text-xl md:text-[32px] md:leading-9">
           In mami we believe that jewelry should be one of a kind, just as our audience ought to be.
           Jewelry should be celebrated, and wearing it should make you feel special. So in our
           studio you will not find two identical pieces.

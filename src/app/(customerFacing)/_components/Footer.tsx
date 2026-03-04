@@ -50,7 +50,7 @@ export default function Footer() {
 function LinkLogoLarge() {
   return (
     <Link href="/" className="text-black">
-      <span className="text-4xl font-light tracking-[0.3em] md:text-6xl lg:text-[9.5rem]">
+      <span className="text-4xl font-extrabold tracking-[0.3em] md:text-6xl lg:text-[9.5rem]">
         mami
       </span>
     </Link>
