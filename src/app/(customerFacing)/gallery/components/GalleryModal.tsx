@@ -168,6 +168,7 @@ export default function GalleryModal({
             src={current.imagePath}
             alt={current.artistName}
             fill
+            quality={95}
             className="object-contain"
             sizes="(max-width: 640px) 100vw, 85vw"
             priority

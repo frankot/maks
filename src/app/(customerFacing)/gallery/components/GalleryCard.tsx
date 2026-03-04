@@ -25,6 +25,8 @@ export default function GalleryCard({
           src={imagePath}
           alt={artistName}
           fill
+          quality={95}
+          priority
           className="object-cover transition-transform duration-300 hover:scale-110"
           sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
         />

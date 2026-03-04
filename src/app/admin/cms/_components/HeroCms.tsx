@@ -174,10 +174,28 @@ export default function HeroCms() {
                 Upload image pairs for your hero carousel
               </p>
             </div>
-            <Button onClick={addNewPair} type="button" size="sm" className="gap-2">
-              <Plus className="h-4 w-4" />
-              Add Pair
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={saveHeroContent}
+                disabled={saving}
+                variant="outline"
+                size="sm"
+                className="gap-2 border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  'Save'
+                )}
+              </Button>
+              <Button onClick={addNewPair} type="button" size="sm" className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add Pair
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -242,20 +260,6 @@ export default function HeroCms() {
               ))}
             </div>
           )}
-
-          {/* Save Button */}
-          <div className="flex justify-end border-t pt-6">
-            <Button onClick={saveHeroContent} disabled={saving} size="lg">
-              {saving ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                'Save Hero Content'
-              )}
-            </Button>
-          </div>
         </CardContent>
       </Card>
     </div>

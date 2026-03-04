@@ -20,101 +20,6 @@ interface GalleryRow {
   images: GalleryImage[]
 }
 
-// Hardcoded fallback items
-const fallbackItems = [
-  { id: 'gal1', name: 'Anna Kowalska', imagePath: '/gallery/gal1_s.jpg' },
-  { id: 'gal2', name: 'Anna Kowalska', imagePath: '/gallery/gal2_s.jpg' },
-  { id: 'gal3', name: 'Anna Kowalska', imagePath: '/gallery/gal3_s.jpg' },
-  { id: 'gal4', name: 'Anna Kowalska', imagePath: '/gallery/gal4_s.jpg' },
-  { id: 'gal5', name: 'Anna Kowalska', imagePath: '/gallery/gal5_s.jpg' },
-  { id: 'gal6', name: 'Maria Nowak', imagePath: '/gallery/gal1_b.jpg' },
-  { id: 'gal7', name: 'Maria Nowak', imagePath: '/gallery/gal2_b.jpg' },
-  { id: 'gal8', name: 'Maria Nowak', imagePath: '/gallery/gal3_b.jpg' },
-  { id: 'gal9', name: 'Ewa Wiśniewska', imagePath: '/gallery/gal1_s.jpg' },
-  { id: 'gal10', name: 'Ewa Wiśniewska', imagePath: '/gallery/gal2_s.jpg' },
-  { id: 'gal11', name: 'Ewa Wiśniewska', imagePath: '/gallery/gal3_s.jpg' },
-  { id: 'gal12', name: 'Ewa Wiśniewska', imagePath: '/gallery/gal4_s.jpg' },
-  { id: 'gal13', name: 'Ewa Wiśniewska', imagePath: '/gallery/gal5_s.jpg' },
-  { id: 'gal14', name: 'Anna Kowalska', imagePath: '/gallery/gal1_b.jpg' },
-  { id: 'gal15', name: 'Anna Kowalska', imagePath: '/gallery/gal2_b.jpg' },
-  { id: 'gal16', name: 'Anna Kowalska', imagePath: '/gallery/gal3_b.jpg' },
-]
-
-function FallbackGallery({ openModal }: { openModal: (index: number) => void }) {
-  return (
-    <>
-      {/* Row 1: 5 columns — 2col mobile, last item centered */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-        {fallbackItems.slice(0, 4).map((item, i) => (
-          <GalleryCard
-            key={item.id}
-            imagePath={item.imagePath}
-            artistName={item.name}
-            onClick={() => openModal(i)}
-            portrait
-          />
-        ))}
-        <div className="col-span-2 flex justify-center md:col-span-1">
-          <div className="w-1/2 md:w-full">
-            <GalleryCard
-              key={fallbackItems[4].id}
-              imagePath={fallbackItems[4].imagePath}
-              artistName={fallbackItems[4].name}
-              onClick={() => openModal(4)}
-              portrait
-            />
-          </div>
-        </div>
-      </div>
-      {/* Row 2: 3 columns — 1col mobile */}
-      <div className="grid grid-cols-1 md:grid-cols-3">
-        {fallbackItems.slice(5, 8).map((item, i) => (
-          <GalleryCard
-            key={item.id}
-            imagePath={item.imagePath}
-            artistName={item.name}
-            onClick={() => openModal(5 + i)}
-          />
-        ))}
-      </div>
-      {/* Row 3: 5 columns — 2col mobile, last item centered */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-        {fallbackItems.slice(8, 12).map((item, i) => (
-          <GalleryCard
-            key={item.id}
-            imagePath={item.imagePath}
-            artistName={item.name}
-            onClick={() => openModal(8 + i)}
-            portrait
-          />
-        ))}
-        <div className="col-span-2 flex justify-center md:col-span-1">
-          <div className="w-1/2 md:w-full">
-            <GalleryCard
-              key={fallbackItems[12].id}
-              imagePath={fallbackItems[12].imagePath}
-              artistName={fallbackItems[12].name}
-              onClick={() => openModal(12)}
-              portrait
-            />
-          </div>
-        </div>
-      </div>
-      {/* Row 4: 3 columns — 1col mobile */}
-      <div className="grid grid-cols-1 md:grid-cols-3">
-        {fallbackItems.slice(13, 16).map((item, i) => (
-          <GalleryCard
-            key={item.id}
-            imagePath={item.imagePath}
-            artistName={item.name}
-            onClick={() => openModal(13 + i)}
-          />
-        ))}
-      </div>
-    </>
-  )
-}
-
 export default function Gallery() {
   const [rows, setRows] = useState<GalleryRow[] | null>(null)
   const [modalIndex, setModalIndex] = useState<number | null>(null)
@@ -149,11 +54,7 @@ export default function Gallery() {
           }))
       )
     }
-    return fallbackItems.map((item) => ({
-      id: item.id,
-      imagePath: item.imagePath,
-      artistName: item.name,
-    }))
+    return []
   }, [rows])
 
   // Track cumulative index offset for each row to map card click → flat index
@@ -162,8 +63,29 @@ export default function Gallery() {
   return (
     <div className="mx-auto">
       <div className="space-y-0">
-        {rows && rows.length > 0 ? (
-          rows.map((row) => {
+        {rows === null ? (
+          <>
+            {/* Skeleton row 1: 5-col */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-[420px] animate-pulse bg-gray-100 sm:h-[480px] md:h-[520px] lg:h-[556px]"
+                />
+              ))}
+            </div>
+            {/* Skeleton row 2: 3-col */}
+            <div className="grid grid-cols-1 md:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-[280px] animate-pulse bg-gray-50 sm:h-[380px] md:h-[480px] lg:h-[556px]"
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          rows.length > 0 && rows.map((row) => {
             const gridCols =
               row.layout === 'FIVE_COL'
                 ? 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5'
@@ -187,11 +109,9 @@ export default function Gallery() {
               </div>
             )
           })
-        ) : (
-          <FallbackGallery openModal={openModal} />
         )}
 
-        {modalIndex !== null && (
+        {modalIndex !== null && allImages.length > 0 && (
           <GalleryModal
             images={allImages}
             currentIndex={modalIndex}
