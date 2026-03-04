@@ -21,11 +21,11 @@ export default function CTA() {
           {/* Right: text on stone-100 background */}
           <div className="relative flex min-h-[70vh] w-full items-center bg-stone-100">
             {/* Top gradient blend */}
-            <div className="pointer-events-none absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-white to-transparent" />
-            
+            <div className="pointer-events-none absolute top-0 right-0 left-0 h-16 bg-gradient-to-b from-white to-transparent" />
+
             {/* Bottom gradient blend */}
-            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent" />
-            
+            <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-16 bg-gradient-to-t from-white to-transparent" />
+
             <div className="max-w-lg p-8 md:p-16 lg:p-24">
               <h2 className="text-4xl font-extrabold tracking-tight uppercase lg:text-6xl">
                 Unique handcrafted jewelry
