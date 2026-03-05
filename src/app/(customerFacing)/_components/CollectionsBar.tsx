@@ -1,14 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import type { Category } from '@prisma/client'
-
-interface Collection {
-  id: string
-  name: string
-  slug: string
-}
 
 const CATEGORIES: { label: string; value: Category }[] = [
   { label: 'Rings', value: 'RINGS' },
@@ -19,31 +12,16 @@ const CATEGORIES: { label: string; value: Category }[] = [
 ]
 
 interface CollectionsBarProps {
+  collections: { id: string; name: string; slug: string }[]
   highlightedCollection?: string | null
   highlightedCategory?: string | null
 }
 
 export default function CollectionsBar({
+  collections,
   highlightedCollection,
   highlightedCategory,
-}: CollectionsBarProps = {}) {
-  const [collections, setCollections] = useState<Collection[]>([])
-
-  useEffect(() => {
-    const fetchCollections = async () => {
-      try {
-        const response = await fetch('/api/collections')
-        if (response.ok) {
-          const data = await response.json()
-          setCollections(data)
-        }
-      } catch (error) {
-        console.error('Error fetching collections:', error)
-      }
-    }
-    fetchCollections()
-  }, [])
-
+}: CollectionsBarProps) {
   return (
     <>
       {/* Categories */}

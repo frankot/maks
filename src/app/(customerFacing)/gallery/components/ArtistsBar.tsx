@@ -1,36 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { artistNameToSlug } from '@/lib/utils/slugify'
 
-interface PhotoArtist {
-  id: string
-  name: string
-}
-
 interface ArtistsBarProps {
+  artists: { id: string; name: string }[]
   highlightedArtist?: string
 }
 
-export default function ArtistsBar({ highlightedArtist }: ArtistsBarProps) {
-  const [artists, setArtists] = useState<PhotoArtist[]>([])
-
-  useEffect(() => {
-    const fetchArtists = async () => {
-      try {
-        const res = await fetch('/api/photo-artists')
-        if (res.ok) {
-          const data: PhotoArtist[] = await res.json()
-          setArtists(data)
-        }
-      } catch {
-        // silently fail — bar just won't show artist links
-      }
-    }
-    void fetchArtists()
-  }, [])
-
+export default function ArtistsBar({ artists, highlightedArtist }: ArtistsBarProps) {
   return (
     <>
       <Link

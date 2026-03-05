@@ -2,13 +2,11 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getProductById, getProductBySlug } from '@/lib/products'
-import { getCollectionBySlug } from '@/lib/collections'
+import { getCollectionBySlug, getCollections } from '@/lib/collections'
 import ProductDetailsTabs from '@/app/(customerFacing)/shop/[id]/ProductDetailsTabs'
 import { formatPriceInPLN } from '@/lib/utils'
 import AddToCartButton from '@/components/AddToCartButton'
 import CollectionsBar from '@/app/(customerFacing)/_components/CollectionsBar'
-import { Suspense } from 'react'
-import CollectionsBarSkeleton from '@/app/(customerFacing)/_components/CollectionsBarSkeleton'
 import MobileProductView from './MobileProductView'
 import PageWithHeroBar from '@/app/(customerFacing)/_components/PageWithHeroBar'
 import CategoryPage from './CategoryPage'
@@ -66,16 +64,16 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params
+  const collections = await getCollections()
 
   if (CATEGORY_SLUGS.includes(id.toLowerCase())) {
     return (
       <>
         <PageWithHeroBar imagePath="/shop_main.webp" imageAlt="Shop">
-          <Suspense fallback={<CollectionsBarSkeleton />}>
-            <CollectionsBar
-              highlightedCategory={id.toUpperCase() as 'RINGS' | 'NECKLACES' | 'EARRINGS'}
-            />
-          </Suspense>
+          <CollectionsBar
+            collections={collections}
+            highlightedCategory={id.toUpperCase() as 'RINGS' | 'NECKLACES' | 'EARRINGS'}
+          />
         </PageWithHeroBar>
         <CategoryPage category={id.toLowerCase()} />
       </>
@@ -87,9 +85,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     return (
       <>
         <PageWithHeroBar imagePath="/shop_main.webp" imageAlt="Shop">
-          <Suspense fallback={<CollectionsBarSkeleton />}>
-            <CollectionsBar highlightedCollection={collection.slug} />
-          </Suspense>
+          <CollectionsBar collections={collections} highlightedCollection={collection.slug} />
         </PageWithHeroBar>
         <CollectionPage collectionSlug={collection.slug} collectionName={collection.name} />
       </>
@@ -112,12 +108,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
     <>
       {/* Hero + Collections Bar Wrapper */}
       <PageWithHeroBar imagePath="/shop_main.webp" imageAlt="Shop">
-        <Suspense fallback={<CollectionsBarSkeleton />}>
-          <CollectionsBar
-            highlightedCollection={product.collection?.slug}
-            highlightedCategory={product.category}
-          />
-        </Suspense>
+        <CollectionsBar
+          collections={collections}
+          highlightedCollection={product.collection?.slug}
+          highlightedCategory={product.category}
+        />
       </PageWithHeroBar>
 
       {/* Mobile Layout */}

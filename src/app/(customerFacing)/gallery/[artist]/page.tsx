@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { Suspense } from 'react'
 import { getPhotoArtists, artistNameToSlug, getGalleryRowsByArtistName } from '@/lib/gallery'
 import PageWithHeroBar from '../../_components/PageWithHeroBar'
 import ArtistsBar from '../components/ArtistsBar'
-import ArtistsBarSkeleton from '../components/ArtistsBarSkeleton'
 import ArtistGallery from '../components/ArtistGallery'
 
 interface ArtistPageProps {
@@ -33,7 +31,8 @@ export async function generateMetadata({ params }: ArtistPageProps): Promise<Met
 
 export default async function ArtistPage({ params }: ArtistPageProps) {
   const { artist: slug } = await params
-  const artist = await findArtistBySlug(slug)
+  const artists = await getPhotoArtists()
+  const artist = artists.find((a) => artistNameToSlug(a.name) === slug) ?? null
 
   if (!artist) {
     notFound()
@@ -44,9 +43,7 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
   return (
     <>
       <PageWithHeroBar imagePath="/gall_bg.webp" imageAlt="Gallery">
-        <Suspense fallback={<ArtistsBarSkeleton />}>
-          <ArtistsBar highlightedArtist={slug} />
-        </Suspense>
+        <ArtistsBar artists={artists} highlightedArtist={slug} />
       </PageWithHeroBar>
 
       <ArtistGallery rows={rows} />
