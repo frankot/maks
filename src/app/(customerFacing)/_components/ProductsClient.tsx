@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import type { Product, Category, Collection } from '@prisma/client'
-import { useSearchParams } from 'next/navigation'
 import Products from './Products'
 import ProductsSkeleton from './ProductsSkeleton'
 
@@ -13,8 +12,6 @@ type ProductWithCollection = Product & { collection: Collection | null }
 export default function ProductsClient() {
   const [allProducts, setAllProducts] = useState<ProductWithCollection[]>([])
   const [loading, setLoading] = useState(true)
-  const searchParams = useSearchParams()
-  const collectionSlug = searchParams?.get('collection')
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -40,7 +37,6 @@ export default function ProductsClient() {
 
     for (const p of allProducts) {
       if (!p.isAvailable || p.productStatus !== 'SHOP') continue
-      if (collectionSlug && p.collection?.slug !== collectionSlug) continue
 
       const existing = grouped.get(p.category) || []
       existing.push(p)
@@ -54,7 +50,7 @@ export default function ProductsClient() {
         title: category.charAt(0) + category.slice(1).toLowerCase(),
         products: products.slice(0, MAX_PRODUCTS_PER_CATEGORY),
       }))
-  }, [allProducts, collectionSlug])
+  }, [allProducts])
 
   if (loading) {
     return <ProductsSkeleton />
@@ -64,7 +60,7 @@ export default function ProductsClient() {
     <>
       {categoryGroups.map(({ category, title, products }) => (
         <Products
-          key={`${category}-${collectionSlug || 'all'}`}
+          key={category}
           title={title}
           category={category}
           products={products}

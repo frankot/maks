@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import PageWithHeroBar from '../_components/PageWithHeroBar'
 import Gallery from './components/Gallery'
+import ArtistsBar from './components/ArtistsBar'
+import ArtistsBarSkeleton from './components/ArtistsBarSkeleton'
 
 export const metadata: Metadata = {
   title: 'Gallery',
@@ -14,13 +17,9 @@ export default function GalleryPage() {
     <>
       {/* Hero + Bar Wrapper */}
       <PageWithHeroBar imagePath="/gall_bg.webp" imageAlt="Gallery">
-        <span className="text-xs tracking-widest whitespace-nowrap text-gray-500 uppercase transition-colors">
-          GALLERY
-        </span>
-        <div className="mx-2 h-4 w-px bg-gray-300" />
-        <span className="text-xs font-light tracking-[0.3em] whitespace-nowrap text-black">
-          mami
-        </span>
+        <Suspense fallback={<ArtistsBarSkeleton />}>
+          <ArtistsBar />
+        </Suspense>
       </PageWithHeroBar>
 
       {/* Gallery content */}

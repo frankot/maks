@@ -112,6 +112,38 @@ export async function deletePhotoArtist(id: string): Promise<void> {
   }
 }
 
+// --- Slug Helpers ---
+
+export { artistNameToSlug } from './utils/slugify'
+
+export async function getGalleryRowsByArtistName(
+  artistName: string
+): Promise<GalleryRowWithImages[]> {
+  try {
+    const rows = await prisma.galleryRow.findMany({
+      where: {
+        images: {
+          some: {
+            artist: { name: artistName },
+          },
+        },
+      },
+      orderBy: { order: 'desc' },
+      include: {
+        images: {
+          where: { artist: { name: artistName } },
+          orderBy: { order: 'asc' },
+          include: { artist: true },
+        },
+      },
+    })
+    return rows
+  } catch (error) {
+    console.error('Error fetching gallery rows by artist:', error)
+    throw error
+  }
+}
+
 export async function getGalleryImagesByRowId(rowId: string): Promise<GalleryImage[]> {
   try {
     const images = await prisma.galleryImage.findMany({

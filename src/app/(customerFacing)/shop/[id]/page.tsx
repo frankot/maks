@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getProductById, getProductBySlug } from '@/lib/products'
+import { getCollectionBySlug } from '@/lib/collections'
 import ProductDetailsTabs from '@/app/(customerFacing)/shop/[id]/ProductDetailsTabs'
 import { formatPriceInPLN } from '@/lib/utils'
 import AddToCartButton from '@/components/AddToCartButton'
@@ -11,6 +12,7 @@ import CollectionsBarSkeleton from '@/app/(customerFacing)/_components/Collectio
 import MobileProductView from './MobileProductView'
 import PageWithHeroBar from '@/app/(customerFacing)/_components/PageWithHeroBar'
 import CategoryPage from './CategoryPage'
+import CollectionPage from './CollectionPage'
 
 const CATEGORY_SLUGS = ['necklaces', 'rings', 'earrings', 'bracelets', 'chains']
 
@@ -27,6 +29,15 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       title: `${label}`,
       description: `Shop handmade ${id.toLowerCase()} by MAMI. Each piece is one-of-a-kind, crafted in our Warsaw studio with natural forms and raw stones.`,
       alternates: { canonical: `https://mami.com.pl/shop/${id.toLowerCase()}` },
+    }
+  }
+
+  const collection = await getCollectionBySlug(id)
+  if (collection) {
+    return {
+      title: collection.name,
+      description: `Shop the ${collection.name} collection by MAMI. Handmade, one-of-a-kind jewelry crafted in our Warsaw studio.`,
+      alternates: { canonical: `https://mami.com.pl/shop/${collection.slug}` },
     }
   }
 
@@ -67,6 +78,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </Suspense>
         </PageWithHeroBar>
         <CategoryPage category={id.toLowerCase()} />
+      </>
+    )
+  }
+
+  const collection = await getCollectionBySlug(id)
+  if (collection) {
+    return (
+      <>
+        <PageWithHeroBar imagePath="/shop_main.webp" imageAlt="Shop">
+          <Suspense fallback={<CollectionsBarSkeleton />}>
+            <CollectionsBar highlightedCollection={collection.slug} />
+          </Suspense>
+        </PageWithHeroBar>
+        <CollectionPage collectionSlug={collection.slug} collectionName={collection.name} />
       </>
     )
   }

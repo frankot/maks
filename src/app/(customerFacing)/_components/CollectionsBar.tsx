@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { Category } from '@prisma/client'
 
@@ -29,10 +28,6 @@ export default function CollectionsBar({
   highlightedCategory,
 }: CollectionsBarProps = {}) {
   const [collections, setCollections] = useState<Collection[]>([])
-  const searchParams = useSearchParams()
-  const router = useRouter()
-
-  const currentCollection = highlightedCollection ?? searchParams?.get('collection')
 
   useEffect(() => {
     const fetchCollections = async () => {
@@ -68,25 +63,29 @@ export default function CollectionsBar({
 
       <div className="mx-2 h-4 w-px bg-gray-300" />
 
-      <button
-        onClick={() => router.push('/shop', { scroll: false })}
+      <Link
+        href="/shop"
         className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
-          !currentCollection ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
+          !highlightedCollection && !highlightedCategory
+            ? 'font-bold text-black'
+            : 'text-gray-500 hover:text-black'
         }`}
       >
         All
-      </button>
+      </Link>
 
       {collections.map((c) => (
-        <button
+        <Link
           key={c.id}
-          onClick={() => router.push(`/shop?collection=${c.slug}`, { scroll: false })}
+          href={`/shop/${c.slug}`}
           className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
-            currentCollection === c.slug ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
+            highlightedCollection === c.slug
+              ? 'font-bold text-black'
+              : 'text-gray-500 hover:text-black'
           }`}
         >
           {c.name}
-        </button>
+        </Link>
       ))}
     </>
   )

@@ -391,7 +391,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
               {collections.map((c) => (
                 <Link
                   key={c.id}
-                  href={`/shop?collection=${c.slug}`}
+                  href={`/shop/${c.slug}`}
                   className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
                     currentCollection === c.slug
                       ? 'font-bold text-black'
