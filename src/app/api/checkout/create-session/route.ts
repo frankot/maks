@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
 import { STRIPE_CURRENCY } from '@/lib/constants'
 import { checkoutSchema } from '@/lib/validators/order'
+import { getDiscountCodeByCode, calculateDiscountAmount } from '@/lib/discounts'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-12-15.clover',
@@ -23,6 +24,7 @@ export async function POST(request: NextRequest) {
       postalCode,
       country,
       paczkomatPointId,
+      discountCode: discountCodeInput,
     } = checkoutSchema.parse(body)
 
     // Extract product IDs from cart items
@@ -89,8 +91,50 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Validate and apply discount code (server-side — never trust client calculation)
+    let discountCodeId: string | undefined
+    let discountAmountInGrosz = 0
+
+    if (discountCodeInput) {
+      const discountCode = await getDiscountCodeByCode(discountCodeInput)
+
+      if (!discountCode) {
+        return NextResponse.json({ error: 'Invalid discount code' }, { status: 400 })
+      }
+
+      if (!discountCode.isActive) {
+        return NextResponse.json({ error: 'Discount code is no longer active' }, { status: 400 })
+      }
+
+      if (discountCode.isOneTime && discountCode.usedCount > 0) {
+        return NextResponse.json({ error: 'Discount code has already been used' }, { status: 400 })
+      }
+
+      const subtotal = products.reduce((sum, p) => sum + p.priceInGrosz, 0)
+      discountAmountInGrosz = calculateDiscountAmount(
+        discountCode.discountType,
+        discountCode.discountValue,
+        subtotal
+      )
+      discountCodeId = discountCode.id
+
+      // Add discount as a negative line item (Stripe shows it clearly on the receipt)
+      if (discountAmountInGrosz > 0) {
+        lineItems.push({
+          price_data: {
+            currency: STRIPE_CURRENCY,
+            unit_amount: -discountAmountInGrosz,
+            product_data: {
+              name: `Discount (${discountCode.code})`,
+            },
+          },
+          quantity: 1,
+        })
+      }
+    }
+
     // Store order data in metadata using DB prices
-    const metadata = {
+    const metadata: Record<string, string> = {
       email,
       phoneNumber,
       firstName,
@@ -106,6 +150,12 @@ export async function POST(request: NextRequest) {
           priceInGrosz: productMap.get(productId)!.priceInGrosz,
         }))
       ),
+      ...(discountCodeId
+        ? {
+            discountCodeId,
+            discountAmount: discountAmountInGrosz.toString(),
+          }
+        : {}),
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'

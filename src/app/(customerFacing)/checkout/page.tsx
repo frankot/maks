@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { ShoppingBag } from 'lucide-react'
+import { ShoppingBag, X, Tag } from 'lucide-react'
 
 type DeliveryMethod = 'paczkomat' | 'address'
 
@@ -33,6 +33,17 @@ export default function CheckoutPage() {
   const [city, setCity] = useState('')
   const [postalCode, setPostalCode] = useState('')
   const [country, setCountry] = useState('Poland')
+
+  // Discount code
+  const [discountCodeInput, setDiscountCodeInput] = useState('')
+  const [appliedDiscount, setAppliedDiscount] = useState<{
+    code: string
+    discountAmountInGrosz: number
+    discountType: string
+    discountValue: number
+  } | null>(null)
+  const [discountError, setDiscountError] = useState<string | null>(null)
+  const [isApplyingDiscount, setIsApplyingDiscount] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
@@ -68,6 +79,49 @@ export default function CheckoutPage() {
     )
   }
 
+  const handleApplyDiscount = async () => {
+    if (!discountCodeInput.trim()) return
+    setDiscountError(null)
+    setIsApplyingDiscount(true)
+
+    try {
+      // totalPriceInCents is actually in grosz (PLN) in this codebase
+      const subtotalInGrosz = totalPriceInCents()
+      const response = await fetch('/api/discounts/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: discountCodeInput.trim(),
+          subtotalInGrosz,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!data.valid) {
+        setDiscountError(data.error || 'Invalid discount code')
+        return
+      }
+
+      setAppliedDiscount({
+        code: discountCodeInput.trim().toUpperCase(),
+        discountAmountInGrosz: data.discountAmountInGrosz,
+        discountType: data.discountType,
+        discountValue: data.discountValue,
+      })
+      setDiscountCodeInput('')
+    } catch {
+      setDiscountError('Failed to validate discount code')
+    } finally {
+      setIsApplyingDiscount(false)
+    }
+  }
+
+  const handleRemoveDiscount = () => {
+    setAppliedDiscount(null)
+    setDiscountError(null)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -89,6 +143,7 @@ export default function CheckoutPage() {
         ...(deliveryMethod === 'paczkomat'
           ? { paczkomatPointId, city, postalCode, country }
           : { street, city, postalCode, country }),
+        ...(appliedDiscount ? { discountCode: appliedDiscount.code } : {}),
       }
 
       const response = await fetch('/api/checkout/create-session', {
@@ -117,7 +172,9 @@ export default function CheckoutPage() {
   }
 
   const shippingCost = 0
-  const total = totalPriceInCents() + shippingCost
+  const subtotal = totalPriceInCents()
+  const discountAmount = appliedDiscount?.discountAmountInGrosz ?? 0
+  const total = subtotal + shippingCost - discountAmount
 
   return (
     <>
@@ -398,13 +455,66 @@ export default function CheckoutPage() {
                   ))}
                 </div>
 
-                {/* Pricing */}
+                {/* Discount Code */}
                 <div className="mt-8 h-px w-full bg-black/10" />
+                <div className="mt-4">
+                  {appliedDiscount ? (
+                    <div className="flex items-center justify-between rounded border border-black/10 px-3 py-2">
+                      <div className="flex items-center gap-2">
+                        <Tag className="h-3.5 w-3.5 text-black/40" />
+                        <span className="font-mono text-xs font-medium uppercase">
+                          {appliedDiscount.code}
+                        </span>
+                        <span className="text-xs text-black/40">
+                          (-{formatCartPrice(appliedDiscount.discountAmountInGrosz)})
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleRemoveDiscount}
+                        className="text-black/30 transition-colors hover:text-black"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Input
+                        value={discountCodeInput}
+                        onChange={(e) => {
+                          setDiscountCodeInput(e.target.value.toUpperCase())
+                          setDiscountError(null)
+                        }}
+                        placeholder="Discount code"
+                        className="h-9 flex-1 rounded-none border-black/15 bg-transparent text-xs uppercase focus-visible:ring-black/20"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleApplyDiscount}
+                        disabled={isApplyingDiscount || !discountCodeInput.trim()}
+                        className="h-9 border border-black px-4 text-xs font-medium tracking-wider uppercase transition-colors hover:bg-black hover:text-white disabled:pointer-events-none disabled:opacity-30"
+                      >
+                        {isApplyingDiscount ? '...' : 'Apply'}
+                      </button>
+                    </div>
+                  )}
+                  {discountError && (
+                    <p className="mt-1.5 text-xs text-red-500">{discountError}</p>
+                  )}
+                </div>
+
+                {/* Pricing */}
                 <div className="mt-4 space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-black/40">Subtotal</span>
-                    <span className="text-black/70">{formatCartPrice(totalPriceInCents())}</span>
+                    <span className="text-black/70">{formatCartPrice(subtotal)}</span>
                   </div>
+                  {appliedDiscount && (
+                    <div className="flex justify-between">
+                      <span className="text-black/40">Discount</span>
+                      <span className="text-green-600">-{formatCartPrice(discountAmount)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-black/40">Shipping</span>
                     <span className="text-black/70">

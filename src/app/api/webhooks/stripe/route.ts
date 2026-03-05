@@ -95,6 +95,8 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
       postalCode,
       country,
       items: itemsJson,
+      discountCodeId,
+      discountAmount,
     } = metadata
 
     const items = JSON.parse(itemsJson)
@@ -147,6 +149,8 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
       const subtotal = pricePaid - shippingCost
 
       // 4. Create order
+      const discountAmountInGrosz = discountAmount ? parseInt(discountAmount, 10) : 0
+
       const newOrder = await tx.order.create({
         data: {
           userId: user.id,
@@ -155,6 +159,8 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
           pricePaid,
           subtotal,
           shippingCost,
+          discountCodeId: discountCodeId || null,
+          discountAmount: discountAmountInGrosz,
           billingAddressId: billingAddress.id,
           shippingAddressId: shippingAddress.id,
         },
@@ -181,7 +187,15 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
         })
       }
 
-      // 6. Create completed payment record
+      // 6. Increment discount code usage
+      if (discountCodeId) {
+        await tx.discountCode.update({
+          where: { id: discountCodeId },
+          data: { usedCount: { increment: 1 } },
+        })
+      }
+
+      // 7. Create completed payment record
       await tx.payment.create({
         data: {
           orderId: newOrder.id,
