@@ -51,6 +51,7 @@ export default function GalleryCms() {
   const [addingArtist, setAddingArtist] = useState(false)
   const [deletingRows, setDeletingRows] = useState<Record<string, boolean>>({})
   const [addingRow, setAddingRow] = useState(false)
+  const [rowArtistIds, setRowArtistIds] = useState<Record<string, string>>({})
 
   // Deferred state
   const [pendingSlots, setPendingSlots] = useState<Map<string, Map<number, PendingSlot>>>(
@@ -78,6 +79,14 @@ export default function GalleryCms() {
       if (rowsRes.ok) {
         const rowsData: GalleryRow[] = await rowsRes.json()
         setRows(rowsData)
+        // Initialize row artist selections from existing images
+        const initialArtists: Record<string, string> = {}
+        for (const row of rowsData) {
+          if (row.images.length > 0) {
+            initialArtists[row.id] = row.images[0].artistId
+          }
+        }
+        setRowArtistIds((prev) => ({ ...initialArtists, ...prev }))
       }
       if (artistsRes.ok) {
         const artistsData: PhotoArtist[] = await artistsRes.json()
@@ -153,7 +162,7 @@ export default function GalleryCms() {
       if (!res.ok) throw new Error('Failed to create row')
 
       const row: GalleryRow = await res.json()
-      setRows((prev) => [...prev, { ...row, images: [] }])
+      setRows((prev) => [{ ...row, images: [] }, ...prev])
       toast.success(`Added ${layout === 'THREE_COL' ? '3-column' : '5-column'} row`)
     } catch {
       toast.error('Failed to add row')
@@ -426,6 +435,8 @@ export default function GalleryCms() {
           {rows.map((row) => {
             const maxImages = row.layout === 'THREE_COL' ? 3 : 5
             const rowPending = pendingSlots.get(row.id)
+            const rowArtistId = rowArtistIds[row.id] ?? ''
+            const rowArtistName = artists.find((a) => a.id === rowArtistId)?.name ?? null
             const slots = Array.from({ length: maxImages }, (_, i) => {
               // Check if this existing image is marked for deletion
               const existingImage = row.images.find((img) => img.order === i)
@@ -447,10 +458,29 @@ export default function GalleryCms() {
               <Card key={row.id} className="border-2">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-base">
-                      {row.layout === 'THREE_COL' ? '3-Column' : '5-Column'} Row (Order: {row.order}
-                      )
-                    </CardTitle>
+                    <div className="flex items-center gap-3">
+                      <CardTitle className="text-base">
+                        {row.layout === 'THREE_COL' ? '3-Column' : '5-Column'} Row (Order:{' '}
+                        {row.order})
+                      </CardTitle>
+                      <Select
+                        value={rowArtistId}
+                        onValueChange={(value) =>
+                          setRowArtistIds((prev) => ({ ...prev, [row.id]: value }))
+                        }
+                      >
+                        <SelectTrigger className="h-8 w-[180px] text-xs">
+                          <SelectValue placeholder="Select artist" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {artists.map((a) => (
+                            <SelectItem key={a.id} value={a.id}>
+                              {a.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <Button
                       variant="destructive"
                       size="sm"
@@ -475,7 +505,8 @@ export default function GalleryCms() {
                         slot={slot}
                         rowId={row.id}
                         slotIndex={slotIndex}
-                        artists={artists}
+                        rowArtistId={rowArtistId}
+                        rowArtistName={rowArtistName}
                         onFileSelect={handleFileSelect}
                         onRemoveExisting={handleRemoveImage}
                         onRemovePending={handleRemovePending}
@@ -502,7 +533,8 @@ function ImageSlotComponent({
   slot,
   rowId,
   slotIndex,
-  artists,
+  rowArtistId,
+  rowArtistName,
   onFileSelect,
   onRemoveExisting,
   onRemovePending,
@@ -510,7 +542,8 @@ function ImageSlotComponent({
   slot: SlotState
   rowId: string
   slotIndex: number
-  artists: PhotoArtist[]
+  rowArtistId: string
+  rowArtistName: string | null
   onFileSelect: (
     file: File,
     previewUrl: string,
@@ -521,8 +554,6 @@ function ImageSlotComponent({
   onRemoveExisting: (imageId: string) => void
   onRemovePending: (rowId: string, slotIndex: number) => void
 }) {
-  const [selectedArtistId, setSelectedArtistId] = useState(artists[0]?.id ?? '')
-
   if (slot.type === 'deleted') {
     return (
       <div className="space-y-2">
@@ -541,30 +572,18 @@ function ImageSlotComponent({
         : null
   const isPending = slot.type === 'pending'
   const hasImage = slot.type === 'existing' || slot.type === 'pending'
-  const artistName =
-    slot.type === 'existing'
-      ? slot.existing.artist.name
-      : slot.type === 'pending' && slot.existing
-        ? slot.existing.artist.name
-        : null
 
   return (
     <div className="space-y-2">
       <ImageUploadSlot
         imageUrl={imageUrl}
         onFileSelect={(file, previewUrl) => {
-          const artistId =
-            slot.type === 'existing'
-              ? slot.existing.artistId
-              : slot.type === 'pending' && slot.existing
-                ? slot.existing.artistId
-                : selectedArtistId
-          if (!artistId) {
-            toast.error('Please select an artist first')
+          if (!rowArtistId) {
+            toast.error('Please select an artist for this row first')
             URL.revokeObjectURL(previewUrl)
             return
           }
-          onFileSelect(file, previewUrl, rowId, slotIndex, artistId)
+          onFileSelect(file, previewUrl, rowId, slotIndex, rowArtistId)
         }}
         onRemove={
           hasImage
@@ -579,35 +598,12 @@ function ImageSlotComponent({
         }
         slotId={`${rowId}-${slotIndex}`}
         label={`Slot ${slotIndex + 1}`}
-        altText={artistName || 'Gallery image'}
+        altText={rowArtistName || 'Gallery image'}
         aspectRatio="aspect-square"
         showRemoveButton={hasImage}
-        disabled={!hasImage && (!selectedArtistId || artists.length === 0)}
+        disabled={!hasImage && !rowArtistId}
         isPending={isPending}
       />
-
-      {!hasImage && artists.length > 0 && (
-        <Select value={selectedArtistId} onValueChange={setSelectedArtistId}>
-          <SelectTrigger className="h-8 text-xs">
-            <SelectValue placeholder="Select artist" />
-          </SelectTrigger>
-          <SelectContent>
-            {artists.map((a) => (
-              <SelectItem key={a.id} value={a.id}>
-                {a.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
-
-      {artistName && (
-        <p className="text-muted-foreground truncate text-center text-xs">{artistName}</p>
-      )}
-
-      {!hasImage && artists.length === 0 && (
-        <p className="text-center text-xs text-red-500">Add an artist first</p>
-      )}
     </div>
   )
 }

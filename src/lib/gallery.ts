@@ -10,7 +10,7 @@ export type GalleryRowWithImages = GalleryRow & {
 export async function getGalleryRows(): Promise<GalleryRowWithImages[]> {
   try {
     const rows = await prisma.galleryRow.findMany({
-      orderBy: { order: 'asc' },
+      orderBy: { order: 'desc' },
       include: {
         images: {
           orderBy: { order: 'asc' },
