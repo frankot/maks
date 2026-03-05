@@ -29,6 +29,7 @@ export default function CollectionsBar({
         <Link
           key={value}
           href={`/shop/${value.toLowerCase()}`}
+          scroll={false}
           className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
             highlightedCategory === value
               ? 'font-bold text-black'
@@ -43,6 +44,7 @@ export default function CollectionsBar({
 
       <Link
         href="/shop"
+        scroll={false}
         className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
           !highlightedCollection && !highlightedCategory
             ? 'font-bold text-black'
@@ -56,6 +58,7 @@ export default function CollectionsBar({
         <Link
           key={c.id}
           href={`/shop/${c.slug}`}
+          scroll={false}
           className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
             highlightedCollection === c.slug
               ? 'font-bold text-black'

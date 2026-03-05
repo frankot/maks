@@ -13,6 +13,7 @@ export default function ArtistsBar({ artists, highlightedArtist }: ArtistsBarPro
     <>
       <Link
         href="/gallery"
+        scroll={false}
         className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
           !highlightedArtist ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
         }`}
@@ -26,6 +27,7 @@ export default function ArtistsBar({ artists, highlightedArtist }: ArtistsBarPro
           <Link
             key={a.id}
             href={`/gallery/${slug}`}
+            scroll={false}
             className={`text-xs tracking-widest whitespace-nowrap uppercase transition-colors ${
               highlightedArtist === slug ? 'font-bold text-black' : 'text-gray-500 hover:text-black'
             }`}
