@@ -8,21 +8,15 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import type { Category } from '@prisma/client'
 import { Switch } from '@/components/ui/switch'
-import { X, Upload, Loader2, Link2, RefreshCw } from 'lucide-react'
-import Image from 'next/image'
+import { Upload, Link2, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
+import ImageUploadSlot from '@/components/admin/ImageUploadSlot'
+import type { SlotImage } from '@/lib/types/image'
+import { uploadFile, deleteCloudinaryImage } from '@/lib/upload'
 
 interface ProductFormProps {
   productId?: string
   onSuccess?: () => void
-}
-
-interface UploadedImage {
-  publicId: string
-  url: string
-  width: number
-  height: number
-  format: string
 }
 
 interface Collection {
@@ -31,22 +25,22 @@ interface Collection {
   slug: string
 }
 
-// Function to generate URL-friendly ID from product name
 function generateProductId(name: string): string {
   return name
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
 }
 
 export function ProductForm({ productId, onSuccess }: ProductFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [uploadingImages, setUploadingImages] = useState<string[]>([])
-  const [images, setImages] = useState<UploadedImage[]>([])
+  const [saveProgress, setSaveProgress] = useState('')
+  const [slotImages, setSlotImages] = useState<SlotImage[]>([])
+  const [deletedPublicIds, setDeletedPublicIds] = useState<string[]>([])
   const [collections, setCollections] = useState<Collection[]>([])
   const [formData, setFormData] = useState({
     id: '',
@@ -85,20 +79,22 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
               collectionId: product.collectionId || '',
               productStatus: product.productStatus || 'SHOP',
             })
-            setIsIdManuallyEdited(true) // Existing product ID should not auto-update
+            setIsIdManuallyEdited(true)
 
-            // Load existing images
             if (product.imagePublicIds && product.imagePaths) {
-              const existingImages = product.imagePublicIds.map(
+              const existingImages: SlotImage[] = product.imagePublicIds.map(
                 (publicId: string, index: number) => ({
-                  publicId,
-                  url: product.imagePaths[index],
-                  width: 800,
-                  height: 800,
-                  format: 'webp',
+                  type: 'existing' as const,
+                  data: {
+                    publicId,
+                    url: product.imagePaths[index],
+                    width: 800,
+                    height: 800,
+                    format: 'webp',
+                  },
                 })
               )
-              setImages(existingImages)
+              setSlotImages(existingImages)
             }
           }
         } catch (error) {
@@ -109,7 +105,6 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     }
   }, [productId])
 
-  // Fetch collections
   useEffect(() => {
     const fetchCollections = async () => {
       try {
@@ -125,11 +120,9 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     fetchCollections()
   }, [])
 
-  // Auto-generate ID from name when name changes (only for new products or when not manually edited)
   useEffect(() => {
     if (!isIdManuallyEdited && formData.name) {
       const generatedSlug = generateProductId(formData.name)
-      // For new products set slug, for editing do not overwrite unless manually allowed
       if (!isEditing) {
         setFormData((prev) => ({ ...prev, slug: generatedSlug, id: prev.id || generatedSlug }))
       } else if (!formData.slug) {
@@ -138,66 +131,88 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     }
   }, [formData.name, formData.slug, isEditing, isIdManuallyEdited])
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (file: File, previewUrl: string) => {
+    setSlotImages((prev) => [
+      ...prev,
+      { type: 'pending', data: { file, previewUrl } },
+    ])
+  }
+
+  const handleBulkFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
     if (!files) return
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      const fileId = `${Date.now()}-${i}`
+    const newImages: SlotImage[] = Array.from(files).map((file) => ({
+      type: 'pending' as const,
+      data: { file, previewUrl: URL.createObjectURL(file) },
+    }))
+    setSlotImages((prev) => [...prev, ...newImages])
 
-      setUploadingImages((prev) => [...prev, fileId])
-
-      try {
-        const formData = new FormData()
-        formData.append('file', file)
-
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        })
-
-        if (response.ok) {
-          const result = await response.json()
-          setImages((prev) => [...prev, result])
-        } else {
-          toast.error('Image upload failed')
-        }
-      } catch {
-        toast.error('Image upload failed')
-      } finally {
-        setUploadingImages((prev) => prev.filter((id) => id !== fileId))
-      }
-    }
-
-    // Reset file input
     event.target.value = ''
   }
 
-  const handleImageDelete = async (publicId: string) => {
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ publicId }),
-      })
-
-      if (response.ok) {
-        setImages((prev) => prev.filter((img) => img.publicId !== publicId))
-      } else {
-        toast.error('Failed to delete image')
+  const handleRemoveImage = (index: number) => {
+    setSlotImages((prev) => {
+      const image = prev[index]
+      if (image.type === 'existing' && image.data.publicId) {
+        setDeletedPublicIds((d) => [...d, image.data.publicId])
       }
-    } catch {
-      toast.error('Failed to delete image')
-    }
+      if (image.type === 'pending') {
+        URL.revokeObjectURL(image.data.previewUrl)
+      }
+      return prev.filter((_, i) => i !== index)
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     try {
+      // 1. Upload pending images
+      const pendingImages = slotImages.filter((img) => img.type === 'pending')
+      const uploadedResults = new Map<number, { url: string; publicId: string }>()
+
+      if (pendingImages.length > 0) {
+        setSaveProgress(`Uploading 0/${pendingImages.length}...`)
+        let uploadCount = 0
+        for (let i = 0; i < slotImages.length; i++) {
+          const img = slotImages[i]
+          if (img.type === 'pending') {
+            uploadCount++
+            setSaveProgress(`Uploading ${uploadCount}/${pendingImages.length}...`)
+            const result = await uploadFile(img.data.file, '/api/upload')
+            uploadedResults.set(i, result)
+          }
+        }
+      }
+
+      // 2. Delete removed images
+      for (const publicId of deletedPublicIds) {
+        try {
+          await deleteCloudinaryImage(publicId, '/api/upload')
+        } catch {
+          console.warn(`Failed to delete image ${publicId}`)
+        }
+      }
+
+      // 3. Build final arrays
+      setSaveProgress('Saving...')
+      const imagePaths: string[] = []
+      const imagePublicIds: string[] = []
+
+      slotImages.forEach((img, i) => {
+        if (img.type === 'existing') {
+          imagePaths.push(img.data.url)
+          imagePublicIds.push(img.data.publicId)
+        } else {
+          const uploaded = uploadedResults.get(i)
+          if (uploaded) {
+            imagePaths.push(uploaded.url)
+            imagePublicIds.push(uploaded.publicId)
+          }
+        }
+      })
+
       const productData = {
         slug: formData.slug || undefined,
         name: formData.name,
@@ -208,8 +223,8 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         isAvailable: formData.isAvailable,
         category: formData.category,
         collectionId: formData.collectionId || null,
-        imagePaths: images.map((img) => img.url),
-        imagePublicIds: images.map((img) => img.publicId),
+        imagePaths,
+        imagePublicIds,
         productStatus: formData.productStatus,
       }
 
@@ -217,22 +232,22 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
       if (isEditing && productId) {
         response = await fetch(`/api/products/${productId}`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(productData),
         })
       } else {
         response = await fetch('/api/products', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(productData),
         })
       }
 
       if (response.ok) {
+        // Revoke all pending previews
+        slotImages.forEach((img) => {
+          if (img.type === 'pending') URL.revokeObjectURL(img.data.previewUrl)
+        })
         if (onSuccess) {
           onSuccess()
         } else {
@@ -246,6 +261,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
       toast.error('Failed to save product')
     } finally {
       setLoading(false)
+      setSaveProgress('')
     }
   }
 
@@ -388,7 +404,6 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             </Button>
           </div>
 
-          {/* URL Preview */}
           {previewUrl && (
             <div className="flex items-center space-x-2 rounded-md bg-gray-50 p-3">
               <Link2 className="h-4 w-4 text-gray-500" />
@@ -447,64 +462,71 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
 
       {/* Image Upload Section */}
       <div className="space-y-4">
-        <Label>Product Images</Label>
-
-        {/* File Input */}
-        <div className="flex items-center space-x-4">
-          <Input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageUpload}
-            className="hidden"
-            id="image-upload"
-          />
-          <Label
-            htmlFor="image-upload"
-            className="inline-flex cursor-pointer items-center space-x-2 rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50"
-          >
-            <Upload className="h-4 w-4" />
-            <span>Upload Images</span>
-          </Label>
-          <span className="text-sm text-gray-500">Select multiple images (JPG, PNG, WebP)</span>
+        <div className="flex items-center justify-between">
+          <Label>Product Images</Label>
+          <div className="flex items-center gap-2">
+            <Input
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              multiple
+              onChange={handleBulkFileSelect}
+              className="hidden"
+              id="bulk-image-upload"
+            />
+            <Label
+              htmlFor="bulk-image-upload"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
+            >
+              <Upload className="h-4 w-4" />
+              Upload Multiple
+            </Label>
+          </div>
         </div>
 
-        {/* Image Preview Grid */}
-        {(images.length > 0 || uploadingImages.length > 0) && (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {images.map((image, index) => (
-              <div key={image.publicId} className="group relative">
-                <div className="relative aspect-square overflow-hidden rounded-lg border">
-                  <Image
-                    src={image.url}
-                    alt={`Product image ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleImageDelete(image.publicId)}
-                  className="absolute -top-2 -right-2 rounded-full bg-red-500 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {slotImages.map((img, index) => {
+            const imageUrl =
+              img.type === 'existing' ? img.data.url : img.data.previewUrl
+            return (
+              <ImageUploadSlot
+                key={`${img.type}-${index}`}
+                imageUrl={imageUrl}
+                onFileSelect={(file, previewUrl) => {
+                  // Replace image at this index
+                  setSlotImages((prev) => {
+                    const old = prev[index]
+                    if (old.type === 'existing' && old.data.publicId) {
+                      setDeletedPublicIds((d) => [...d, old.data.publicId])
+                    }
+                    if (old.type === 'pending') {
+                      URL.revokeObjectURL(old.data.previewUrl)
+                    }
+                    const newImages = [...prev]
+                    newImages[index] = { type: 'pending', data: { file, previewUrl } }
+                    return newImages
+                  })
+                }}
+                onRemove={() => handleRemoveImage(index)}
+                slotId={`product-image-${index}`}
+                label={`Image ${index + 1}`}
+                altText={`Product image ${index + 1}`}
+                aspectRatio="aspect-square"
+                isPending={img.type === 'pending'}
+              />
+            )
+          })}
 
-            {/* Loading placeholders */}
-            {uploadingImages.map((fileId) => (
-              <div
-                key={fileId}
-                className="relative aspect-square overflow-hidden rounded-lg border bg-gray-100"
-              >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+          {/* Empty slot for adding new image */}
+          <ImageUploadSlot
+            imageUrl={null}
+            onFileSelect={handleFileSelect}
+            slotId="product-image-new"
+            label="new"
+            altText="Add product image"
+            aspectRatio="aspect-square"
+            showRemoveButton={false}
+          />
+        </div>
       </div>
 
       <div className="flex justify-end space-x-4">
@@ -516,8 +538,12 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         >
           Cancel
         </Button>
-        <Button type="submit" disabled={loading || uploadingImages.length > 0}>
-          {loading ? 'Saving...' : isEditing ? 'Update Product' : 'Add Product'}
+        <Button type="submit" disabled={loading}>
+          {loading
+            ? saveProgress || 'Saving...'
+            : isEditing
+              ? 'Update Product'
+              : 'Add Product'}
         </Button>
       </div>
     </form>

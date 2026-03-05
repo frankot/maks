@@ -13,7 +13,8 @@ import {
 } from '@/components/ui/select'
 import { Loader2, Plus, Trash2, X } from 'lucide-react'
 import { toast } from 'sonner'
-import ImageUploadSlot from './ImageUploadSlot'
+import ImageUploadSlot from '@/components/admin/ImageUploadSlot'
+import { uploadFile } from '@/lib/upload'
 
 interface PhotoArtist {
   id: string
@@ -36,6 +37,12 @@ interface GalleryRow {
   images: GalleryImage[]
 }
 
+interface PendingSlot {
+  file: File
+  previewUrl: string
+  artistId: string
+}
+
 export default function GalleryCms() {
   const [rows, setRows] = useState<GalleryRow[]>([])
   const [artists, setArtists] = useState<PhotoArtist[]>([])
@@ -43,8 +50,19 @@ export default function GalleryCms() {
   const [isLoading, setIsLoading] = useState(true)
   const [addingArtist, setAddingArtist] = useState(false)
   const [deletingRows, setDeletingRows] = useState<Record<string, boolean>>({})
-  const [deletingImages, setDeletingImages] = useState<Record<string, boolean>>({})
   const [addingRow, setAddingRow] = useState(false)
+
+  // Deferred state
+  const [pendingSlots, setPendingSlots] = useState<Map<string, Map<number, PendingSlot>>>(
+    new Map()
+  )
+  const [deletedImageIds, setDeletedImageIds] = useState<string[]>([])
+  const [saving, setSaving] = useState(false)
+  const [saveProgress, setSaveProgress] = useState('')
+
+  const hasUnsavedChanges =
+    pendingSlots.size > 0 ||
+    deletedImageIds.length > 0
 
   useEffect(() => {
     void loadData()
@@ -121,7 +139,7 @@ export default function GalleryCms() {
     }
   }
 
-  // --- Row Management ---
+  // --- Row Management (immediate) ---
   const handleAddRow = async (layout: 'THREE_COL' | 'FIVE_COL') => {
     setAddingRow(true)
     try {
@@ -155,6 +173,13 @@ export default function GalleryCms() {
 
       if (!res.ok) throw new Error('Failed to delete row')
 
+      // Clean up any pending slots for this row
+      setPendingSlots((prev) => {
+        const next = new Map(prev)
+        next.delete(rowId)
+        return next
+      })
+
       setRows((prev) => prev.filter((r) => r.id !== rowId))
       toast.success('Row deleted')
     } catch {
@@ -168,74 +193,121 @@ export default function GalleryCms() {
     }
   }
 
-  // --- Image Management ---
-  const handleImageUploaded = async (
-    uploadData: { url: string; publicId: string },
+  // --- Image Management (deferred) ---
+  const handleFileSelect = (
+    file: File,
+    previewUrl: string,
     rowId: string,
     slotIndex: number,
     artistId: string
   ) => {
-    try {
-      // Create gallery image record
-      const imageRes = await fetch('/api/gallery/images', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imagePath: uploadData.url,
-          publicId: uploadData.publicId,
-          order: slotIndex,
-          artistId,
-          rowId,
-        }),
-      })
-
-      if (!imageRes.ok) {
-        const err = await imageRes.json()
-        throw new Error(err.error || 'Failed to save image record')
-      }
-
-      // Refresh rows
-      const rowsRes = await fetch('/api/gallery/rows')
-      if (rowsRes.ok) {
-        const rowsData: GalleryRow[] = await rowsRes.json()
-        setRows(rowsData)
-      }
-
-      toast.success('Image added to gallery')
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to save image'
-      toast.error(message)
-      throw error // Re-throw so ImageUploadSlot can handle rollback
-    }
+    setPendingSlots((prev) => {
+      const next = new Map(prev)
+      const rowSlots = new Map(next.get(rowId) || new Map())
+      // Revoke old preview if replacing
+      const old = rowSlots.get(slotIndex)
+      if (old) URL.revokeObjectURL(old.previewUrl)
+      rowSlots.set(slotIndex, { file, previewUrl, artistId })
+      next.set(rowId, rowSlots)
+      return next
+    })
   }
 
-  const handleDeleteImage = async (imageId: string) => {
-    setDeletingImages((prev) => ({ ...prev, [imageId]: true }))
+  const handleRemoveImage = (imageId: string) => {
+    setDeletedImageIds((prev) => [...prev, imageId])
+  }
+
+  const handleRemovePending = (rowId: string, slotIndex: number) => {
+    setPendingSlots((prev) => {
+      const next = new Map(prev)
+      const rowSlots = next.get(rowId)
+      if (rowSlots) {
+        const pending = rowSlots.get(slotIndex)
+        if (pending) URL.revokeObjectURL(pending.previewUrl)
+        rowSlots.delete(slotIndex)
+        if (rowSlots.size === 0) next.delete(rowId)
+        else next.set(rowId, new Map(rowSlots))
+      }
+      return next
+    })
+  }
+
+  const handleSave = async () => {
+    setSaving(true)
     try {
-      const res = await fetch('/api/gallery/images', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: imageId }),
+      // 1. Collect all pending files
+      const allPending: { rowId: string; slotIndex: number; pending: PendingSlot }[] = []
+      pendingSlots.forEach((rowSlots, rowId) => {
+        rowSlots.forEach((pending, slotIndex) => {
+          allPending.push({ rowId, slotIndex, pending })
+        })
       })
 
-      if (!res.ok) throw new Error('Failed to delete image')
+      // 2. Upload pending files
+      if (allPending.length > 0) {
+        setSaveProgress(`Uploading 0/${allPending.length}...`)
+      }
 
-      // Refresh rows
+      for (let i = 0; i < allPending.length; i++) {
+        const { rowId, slotIndex, pending } = allPending[i]
+        setSaveProgress(`Uploading ${i + 1}/${allPending.length}...`)
+
+        const result = await uploadFile(pending.file, '/api/upload/gallery')
+
+        // Create DB record
+        const imageRes = await fetch('/api/gallery/images', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imagePath: result.url,
+            publicId: result.publicId,
+            order: slotIndex,
+            artistId: pending.artistId,
+            rowId,
+          }),
+        })
+
+        if (!imageRes.ok) {
+          const err = await imageRes.json()
+          throw new Error(err.error || 'Failed to save image record')
+        }
+
+        URL.revokeObjectURL(pending.previewUrl)
+      }
+
+      // 3. Delete removed images
+      if (deletedImageIds.length > 0) {
+        setSaveProgress('Removing deleted images...')
+      }
+      for (const imageId of deletedImageIds) {
+        try {
+          await fetch('/api/gallery/images', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: imageId }),
+          })
+        } catch {
+          console.warn(`Failed to delete image ${imageId}`)
+        }
+      }
+
+      // 4. Refresh rows and clear pending state
       const rowsRes = await fetch('/api/gallery/rows')
       if (rowsRes.ok) {
         const rowsData: GalleryRow[] = await rowsRes.json()
         setRows(rowsData)
       }
+      setPendingSlots(new Map())
+      setDeletedImageIds([])
 
-      toast.success('Image deleted')
-    } catch {
-      toast.error('Failed to delete image')
+      toast.success('Gallery saved successfully!')
+    } catch (error) {
+      console.error('Save error:', error)
+      const message = error instanceof Error ? error.message : 'Failed to save gallery'
+      toast.error(message)
     } finally {
-      setDeletingImages((prev) => {
-        const newState = { ...prev }
-        delete newState[imageId]
-        return newState
-      })
+      setSaving(false)
+      setSaveProgress('')
     }
   }
 
@@ -303,6 +375,27 @@ export default function GalleryCms() {
               <Button
                 variant="outline"
                 size="sm"
+                onClick={handleSave}
+                disabled={saving || !hasUnsavedChanges}
+                className="gap-2 border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {saveProgress || 'Saving...'}
+                  </>
+                ) : (
+                  <>
+                    Save
+                    {hasUnsavedChanges && (
+                      <span className="ml-1 h-2 w-2 rounded-full bg-amber-500" />
+                    )}
+                  </>
+                )}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => void handleAddRow('THREE_COL')}
                 disabled={addingRow}
               >
@@ -332,8 +425,22 @@ export default function GalleryCms() {
 
           {rows.map((row) => {
             const maxImages = row.layout === 'THREE_COL' ? 3 : 5
+            const rowPending = pendingSlots.get(row.id)
             const slots = Array.from({ length: maxImages }, (_, i) => {
-              return row.images.find((img) => img.order === i) ?? null
+              // Check if this existing image is marked for deletion
+              const existingImage = row.images.find((img) => img.order === i)
+              if (existingImage && deletedImageIds.includes(existingImage.id)) {
+                return { type: 'deleted' as const, existing: existingImage }
+              }
+              // Check if there's a pending image for this slot
+              const pending = rowPending?.get(i)
+              if (pending) {
+                return { type: 'pending' as const, pending, existing: existingImage ?? null }
+              }
+              if (existingImage) {
+                return { type: 'existing' as const, existing: existingImage }
+              }
+              return { type: 'empty' as const }
             })
 
             return (
@@ -362,16 +469,16 @@ export default function GalleryCms() {
                   <div
                     className={`grid gap-3 ${row.layout === 'THREE_COL' ? 'grid-cols-3' : 'grid-cols-5'}`}
                   >
-                    {slots.map((image, slotIndex) => (
-                      <ImageSlot
+                    {slots.map((slot, slotIndex) => (
+                      <ImageSlotComponent
                         key={`${row.id}-${slotIndex}`}
-                        image={image}
+                        slot={slot}
                         rowId={row.id}
                         slotIndex={slotIndex}
                         artists={artists}
-                        deleting={image ? !!deletingImages[image.id] : false}
-                        onImageUploaded={handleImageUploaded}
-                        onDelete={handleDeleteImage}
+                        onFileSelect={handleFileSelect}
+                        onRemoveExisting={handleRemoveImage}
+                        onRemovePending={handleRemovePending}
                       />
                     ))}
                   </div>
@@ -385,53 +492,101 @@ export default function GalleryCms() {
   )
 }
 
-function ImageSlot({
-  image,
+type SlotState =
+  | { type: 'empty' }
+  | { type: 'existing'; existing: GalleryImage }
+  | { type: 'pending'; pending: PendingSlot; existing: GalleryImage | null }
+  | { type: 'deleted'; existing: GalleryImage }
+
+function ImageSlotComponent({
+  slot,
   rowId,
   slotIndex,
   artists,
-  deleting,
-  onImageUploaded,
-  onDelete,
+  onFileSelect,
+  onRemoveExisting,
+  onRemovePending,
 }: {
-  image: GalleryImage | null
+  slot: SlotState
   rowId: string
   slotIndex: number
   artists: PhotoArtist[]
-  deleting: boolean
-  onImageUploaded: (
-    uploadData: { url: string; publicId: string },
+  onFileSelect: (
+    file: File,
+    previewUrl: string,
     rowId: string,
     slotIndex: number,
     artistId: string
-  ) => Promise<void>
-  onDelete: (imageId: string) => Promise<void>
+  ) => void
+  onRemoveExisting: (imageId: string) => void
+  onRemovePending: (rowId: string, slotIndex: number) => void
 }) {
   const [selectedArtistId, setSelectedArtistId] = useState(artists[0]?.id ?? '')
+
+  if (slot.type === 'deleted') {
+    return (
+      <div className="space-y-2">
+        <div className="flex aspect-square items-center justify-center rounded-lg border-2 border-dashed border-red-300 bg-red-50">
+          <span className="text-xs text-red-400">Will be removed</span>
+        </div>
+      </div>
+    )
+  }
+
+  const imageUrl =
+    slot.type === 'existing'
+      ? slot.existing.imagePath
+      : slot.type === 'pending'
+        ? slot.pending.previewUrl
+        : null
+  const isPending = slot.type === 'pending'
+  const hasImage = slot.type === 'existing' || slot.type === 'pending'
+  const artistName =
+    slot.type === 'existing'
+      ? slot.existing.artist.name
+      : slot.type === 'pending' && slot.existing
+        ? slot.existing.artist.name
+        : null
 
   return (
     <div className="space-y-2">
       <ImageUploadSlot
-        imageUrl={image?.imagePath}
-        onUpload={async (data) => {
-          if (!selectedArtistId && !image) {
+        imageUrl={imageUrl}
+        onFileSelect={(file, previewUrl) => {
+          const artistId =
+            slot.type === 'existing'
+              ? slot.existing.artistId
+              : slot.type === 'pending' && slot.existing
+                ? slot.existing.artistId
+                : selectedArtistId
+          if (!artistId) {
             toast.error('Please select an artist first')
-            throw new Error('No artist selected')
+            URL.revokeObjectURL(previewUrl)
+            return
           }
-          await onImageUploaded(data, rowId, slotIndex, image?.artistId || selectedArtistId)
-          return data
+          onFileSelect(file, previewUrl, rowId, slotIndex, artistId)
         }}
-        onRemove={image ? () => void onDelete(image.id) : undefined}
-        uploadEndpoint="/api/upload/gallery"
+        onRemove={
+          hasImage
+            ? () => {
+                if (slot.type === 'existing') {
+                  onRemoveExisting(slot.existing.id)
+                } else if (slot.type === 'pending') {
+                  onRemovePending(rowId, slotIndex)
+                }
+              }
+            : undefined
+        }
         slotId={`${rowId}-${slotIndex}`}
         label={`Slot ${slotIndex + 1}`}
-        altText={image ? image.artist.name : 'Gallery image'}
+        altText={artistName || 'Gallery image'}
         aspectRatio="aspect-square"
-        showRemoveButton={!!image}
-        disabled={deleting || (!image && (!selectedArtistId || artists.length === 0))}
+        showRemoveButton={hasImage}
+        disabled={!hasImage && (!selectedArtistId || artists.length === 0)}
+        isPending={isPending}
       />
 
-      {!image && artists.length > 0 && (
+      {!hasImage && artists.length > 0 && (
         <Select value={selectedArtistId} onValueChange={setSelectedArtistId}>
           <SelectTrigger className="h-8 text-xs">
             <SelectValue placeholder="Select artist" />
@@ -446,11 +601,11 @@ function ImageSlot({
         </Select>
       )}
 
-      {image && (
-        <p className="text-muted-foreground truncate text-center text-xs">{image.artist.name}</p>
+      {artistName && (
+        <p className="text-muted-foreground truncate text-center text-xs">{artistName}</p>
       )}
 
-      {!image && artists.length === 0 && (
+      {!hasImage && artists.length === 0 && (
         <p className="text-center text-xs text-red-500">Add an artist first</p>
       )}
     </div>

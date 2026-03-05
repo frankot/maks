@@ -2,141 +2,67 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { Loader2, Upload, Trash2 } from 'lucide-react'
+import { Upload, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-// Image validation config
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp']
 
-interface ValidationError {
-  message: string
-  field?: string
-}
-
 interface ImageUploadSlotProps {
-  /** Current image URL (if exists) */
   imageUrl?: string | null
-  /** Callback when new image is uploaded - receives the uploaded image data */
-  onUpload: (data: {
-    url: string
-    publicId: string
-  }) => Promise<{ url: string; publicId: string }> | void
-  /** Callback when image is removed */
+  onFileSelect: (file: File, previewUrl: string) => void
   onRemove?: () => void
-  /** Upload endpoint URL */
-  uploadEndpoint: string
-  /** Unique identifier for this slot (for accessibility and drag state) */
   slotId: string
-  /** Label for the slot (e.g., "Left", "Right", "Gallery Image") */
   label?: string
-  /** Alt text for the image */
   altText?: string
-  /** Aspect ratio class (default: aspect-[4/3]) */
   aspectRatio?: string
-  /** Show remove button */
   showRemoveButton?: boolean
-  /** Disabled state */
   disabled?: boolean
+  isPending?: boolean
+  maxFileSize?: number
 }
 
 export default function ImageUploadSlot({
   imageUrl,
-  onUpload,
+  onFileSelect,
   onRemove,
-  uploadEndpoint,
   slotId,
   label,
   altText = 'Uploaded image',
   aspectRatio = 'aspect-[4/3]',
   showRemoveButton = true,
   disabled = false,
+  isPending = false,
+  maxFileSize = MAX_FILE_SIZE,
 }: ImageUploadSlotProps) {
-  const [isUploading, setIsUploading] = useState(false)
-  const [optimisticPreview, setOptimisticPreview] = useState<string | null>(null)
   const [isDraggingOver, setIsDraggingOver] = useState(false)
 
-  const validateImage = (file: File): ValidationError | null => {
-    // Check file size
-    if (file.size > MAX_FILE_SIZE) {
-      return {
-        message: `File size must be less than ${MAX_FILE_SIZE / (1024 * 1024)}MB. Current size: ${(file.size / (1024 * 1024)).toFixed(2)}MB`,
-        field: 'size',
-      }
+  const validateImage = (file: File): string | null => {
+    if (file.size > maxFileSize) {
+      return `File size must be less than ${maxFileSize / (1024 * 1024)}MB. Current size: ${(file.size / (1024 * 1024)).toFixed(2)}MB`
     }
-
-    // Check file type
     if (!ALLOWED_TYPES.includes(file.type)) {
-      return {
-        message: `File type not supported. Allowed types: ${ALLOWED_EXTENSIONS.join(', ')}`,
-        field: 'type',
-      }
+      return `File type not supported. Allowed types: ${ALLOWED_EXTENSIONS.join(', ')}`
     }
-
-    // Check file extension as backup
     const extension = file.name.toLowerCase().slice(file.name.lastIndexOf('.'))
     if (!ALLOWED_EXTENSIONS.includes(extension)) {
-      return {
-        message: `File extension not supported. Allowed: ${ALLOWED_EXTENSIONS.join(', ')}`,
-        field: 'extension',
-      }
+      return `File extension not supported. Allowed: ${ALLOWED_EXTENSIONS.join(', ')}`
     }
-
     return null
   }
 
-  const handleFileUpload = async (file: File) => {
+  const handleFile = (file: File) => {
     if (disabled) return
 
-    // Validate image before upload
-    const validationError = validateImage(file)
-    if (validationError) {
-      toast.error(validationError.message)
+    const error = validateImage(file)
+    if (error) {
+      toast.error(error)
       return
     }
 
-    // Create optimistic preview
     const previewUrl = URL.createObjectURL(file)
-    setOptimisticPreview(previewUrl)
-    setIsUploading(true)
-
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-
-      const response = await fetch(uploadEndpoint, {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        let errorMessage = 'Upload failed'
-        try {
-          const error = await response.json()
-          errorMessage = error.error || error.message || errorMessage
-        } catch {
-          errorMessage = `Upload failed with status ${response.status}`
-        }
-        throw new Error(errorMessage)
-      }
-
-      const data = await response.json()
-      await onUpload(data)
-
-      toast.success('Image uploaded successfully')
-    } catch (error) {
-      console.error('Upload error:', error)
-      const message = error instanceof Error ? error.message : 'Failed to upload image'
-      toast.error(message)
-    } finally {
-      // Cleanup optimistic preview
-      if (optimisticPreview) {
-        URL.revokeObjectURL(optimisticPreview)
-        setOptimisticPreview(null)
-      }
-      setIsUploading(false)
-    }
+    onFileSelect(file, previewUrl)
   }
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -152,7 +78,7 @@ export default function ImageUploadSlot({
     setIsDraggingOver(false)
   }
 
-  const handleDrop = async (e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent) => {
     if (disabled) return
     e.preventDefault()
     e.stopPropagation()
@@ -162,38 +88,34 @@ export default function ImageUploadSlot({
     if (files.length > 0) {
       const file = files[0]
       if (file && file.type.startsWith('image/')) {
-        await handleFileUpload(file)
+        handleFile(file)
       } else {
         toast.error('Please drop an image file')
       }
     }
   }
 
-  const displayImage = optimisticPreview || imageUrl
-
   return (
     <div className="space-y-2">
-      {displayImage ? (
+      {imageUrl ? (
         <div
           className={`group relative ${aspectRatio} bg-muted overflow-hidden rounded-lg border transition-all ${
-            isDraggingOver ? 'border-primary ring-primary/20 border-2 ring-2' : ''
-          } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
+            isPending ? 'border-dashed border-amber-400' : ''
+          } ${isDraggingOver ? 'border-primary ring-primary/20 border-2 ring-2' : ''} ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
           <Image
-            src={displayImage}
+            src={imageUrl}
             alt={altText}
             fill
-            className={`object-cover transition-opacity ${
-              isUploading ? 'opacity-50' : 'opacity-100'
-            }`}
+            className="object-cover"
             unoptimized
           />
-          {isUploading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-              <Loader2 className="h-8 w-8 animate-spin text-white" />
+          {isPending && (
+            <div className="absolute top-2 left-2 rounded bg-amber-500 px-1.5 py-0.5 text-[10px] font-medium text-white">
+              Unsaved
             </div>
           )}
           {isDraggingOver && !disabled && (
@@ -215,9 +137,10 @@ export default function ImageUploadSlot({
                   accept={ALLOWED_EXTENSIONS.join(',')}
                   onChange={(e) => {
                     const file = e.target.files?.[0]
-                    if (file) void handleFileUpload(file)
+                    if (file) handleFile(file)
+                    e.target.value = ''
                   }}
-                  disabled={isUploading || disabled}
+                  disabled={disabled}
                   className="hidden"
                   aria-label={`Replace ${label || 'image'}`}
                 />
@@ -227,9 +150,9 @@ export default function ImageUploadSlot({
           {showRemoveButton && onRemove && !disabled && (
             <button
               onClick={onRemove}
-              disabled={isUploading}
+              type="button"
               aria-label={`Remove ${label || 'image'}`}
-              className="bg-destructive hover:bg-destructive/90 absolute top-2 right-2 rounded p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-destructive hover:bg-destructive/90 absolute top-2 right-2 rounded p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -247,12 +170,7 @@ export default function ImageUploadSlot({
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
-          {isUploading ? (
-            <div className="text-center">
-              <Loader2 className="text-muted-foreground mx-auto mb-2 h-6 w-6 animate-spin" />
-              <span className="text-muted-foreground text-sm">Uploading...</span>
-            </div>
-          ) : isDraggingOver && !disabled ? (
+          {isDraggingOver && !disabled ? (
             <div className="text-center">
               <Upload className="text-primary mx-auto mb-2 h-8 w-8" />
               <span className="text-primary text-sm font-medium">Drop image here</span>
@@ -264,7 +182,7 @@ export default function ImageUploadSlot({
                 Click or drag to upload {label ? `${label.toLowerCase()} image` : 'image'}
               </span>
               <span className="text-muted-foreground mt-1 block text-xs">
-                JPG, PNG, WebP (max 5MB)
+                JPG, PNG, WebP (max {maxFileSize / (1024 * 1024)}MB)
               </span>
             </div>
           )}
@@ -274,9 +192,10 @@ export default function ImageUploadSlot({
             accept={ALLOWED_EXTENSIONS.join(',')}
             onChange={(e) => {
               const file = e.target.files?.[0]
-              if (file) void handleFileUpload(file)
+              if (file) handleFile(file)
+              e.target.value = ''
             }}
-            disabled={isUploading || disabled}
+            disabled={disabled}
             className="hidden"
             aria-label={`Upload ${label || 'image'}`}
           />
