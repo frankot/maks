@@ -4,8 +4,8 @@ import { notFound } from 'next/navigation'
 import { getProductById, getProductBySlug } from '@/lib/products'
 import { getCollectionBySlug, getCollections } from '@/lib/collections'
 import ProductDetailsTabs from '@/app/(customerFacing)/shop/[id]/ProductDetailsTabs'
-import { formatPriceInPLN } from '@/lib/utils'
 import AddToCartButton from '@/components/AddToCartButton'
+import DesktopProductPrice from './DesktopProductPrice'
 import CollectionsBar from '@/app/(customerFacing)/_components/CollectionsBar'
 import MobileProductView from './MobileProductView'
 import PageWithHeroBar from '@/app/(customerFacing)/_components/PageWithHeroBar'
@@ -101,7 +101,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound()
   }
 
-  const priceInPLN = formatPriceInPLN(product.priceInGrosz)
   const isSold = product.productStatus === 'ORDERED' || product.productStatus === 'SOLD'
 
   return (
@@ -122,12 +121,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
           name: product.name,
           description: product.description,
           priceInGrosz: product.priceInGrosz,
+          priceInCents: product.priceInCents,
           imagePaths: product.imagePaths,
           slug: product.slug,
           productStatus: product.productStatus,
           materials: product.materials,
         }}
-        priceInPLN={priceInPLN}
         isSold={isSold}
       />
 
@@ -219,7 +218,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   <p className="mt-1 text-xs text-gray-600">{product.materials}</p>
                 )}
                 <div className="mt-3">
-                  <p className="text-sm">{priceInPLN} zł</p>
+                  <DesktopProductPrice priceInGrosz={product.priceInGrosz} priceInCents={product.priceInCents} />
                 </div>
                 <hr className="mx-auto mt-5 w-20 border-black" />
               </div>
@@ -239,6 +238,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                       id: product.id,
                       name: product.name,
                       priceInGrosz: product.priceInGrosz,
+                      priceInCents: product.priceInCents,
                       imagePath: product.imagePaths[0],
                       slug: product.slug ?? product.id,
                     }}

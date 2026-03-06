@@ -14,6 +14,7 @@ interface CartStore {
   clearCart: () => void
   isInCart: (productId: string) => boolean
   totalItems: () => number
+  totalPriceInGrosz: () => number
   totalPriceInCents: () => number
 }
 
@@ -34,11 +35,25 @@ export const useCartStore = create<CartStore>()(
       clearCart: () => set({ items: [] }),
       isInCart: (productId) => get().items.some((i) => i.productId === productId),
       totalItems: () => get().items.length,
+      totalPriceInGrosz: () => calculateCartTotals(get().items).totalPriceInGrosz,
       totalPriceInCents: () => calculateCartTotals(get().items).totalPriceInCents,
     }),
     {
       name: CART_STORAGE_KEY,
+      version: 1,
       partialize: (state) => ({ items: state.items }),
+      migrate: (persisted: unknown, version: number) => {
+        if (version === 0) {
+          const state = persisted as { items?: CartItem[] }
+          const items = (state.items || []).map((item) => ({
+            ...item,
+            priceInGrosz: item.priceInGrosz || 0,
+            priceInCents: item.priceInCents || 0,
+          }))
+          return { items }
+        }
+        return persisted as { items: CartItem[] }
+      },
     }
   )
 )

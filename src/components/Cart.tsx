@@ -1,6 +1,7 @@
 'use client'
 
 import { useCartStore } from '@/stores/cart-store'
+import { useCurrencyStore } from '@/stores/currency-store'
 import { formatCartPrice } from '@/lib/cart'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
@@ -9,7 +10,8 @@ import { useEffect, useState } from 'react'
 import CartItemList from '@/components/CartItemList'
 
 export default function Cart() {
-  const { items, isOpen, closeCart, totalPriceInCents } = useCartStore()
+  const { items, isOpen, closeCart, totalPriceInGrosz, totalPriceInCents } = useCartStore()
+  const currency = useCurrencyStore((s) => s.currency)
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -49,7 +51,7 @@ export default function Cart() {
           <div className="mx-2 space-y-4 border-t px-6 pt-6 pb-6">
             <div className="flex items-center justify-between text-sm">
               <span className="font-medium tracking-wide uppercase">Subtotal</span>
-              <span className="font-bold">{formatCartPrice(totalPriceInCents())}</span>
+              <span className="font-bold">{formatCartPrice(currency === 'EUR' ? totalPriceInCents() : totalPriceInGrosz(), currency)}</span>
             </div>
             <Button
               className="h-12 w-full bg-black text-xs font-medium tracking-wider text-white uppercase hover:bg-gray-900"

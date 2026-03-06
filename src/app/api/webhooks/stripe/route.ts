@@ -95,10 +95,12 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
       postalCode,
       country,
       items: itemsJson,
+      currency: metaCurrency,
       discountCodeId,
       discountAmount,
     } = metadata
 
+    const orderCurrency = metaCurrency || session.currency?.toUpperCase() || 'PLN'
     const items = JSON.parse(itemsJson)
 
     // Create order in a transaction
@@ -168,12 +170,13 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
       // 5. Create order items and mark products as ORDERED
       for (const item of items) {
+        const itemPrice = orderCurrency === 'EUR' ? item.priceInCents : item.priceInGrosz
         await tx.orderItem.create({
           data: {
             orderId: newOrder.id,
             productId: item.productId,
-            priceInGrosz: item.priceInGrosz,
-            currency: 'PLN',
+            priceInGrosz: itemPrice,
+            currency: orderCurrency,
           },
         })
 

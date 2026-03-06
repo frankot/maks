@@ -7,6 +7,7 @@ import NavCarousel from './NavCarousel'
 import { useCartStore } from '@/stores/cart-store'
 import { useNavStore } from '@/stores/nav-store'
 import { formatCartPrice } from '@/lib/cart'
+import CurrencySwitcher from './CurrencySwitcher'
 
 const navLinks = [
   { href: '/shop', label: 'Shop' },
@@ -168,11 +169,15 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
         <NavCarousel />
         <div className="mx-auto px-4">
           <div className="relative flex h-14 items-center md:pr-16 lg:h-24">
+            <div className="absolute inset-y-0 left-6 hidden items-center md:flex">
+              <CurrencySwitcher />
+            </div>
+
             {/* Center group: brand + nav (desktop centered) */}
             <div className="flex w-full items-center justify-center gap-4 md:gap-8">
               <Link
                 href="/"
-                className="block text-lg font-extrabold tracking-[0.3em] whitespace-nowrap text-black md:text-4xl"
+                className="block text-3xl font-extrabold tracking-[0.3em] whitespace-nowrap text-black md:text-4xl"
               >
                 mami
               </Link>
@@ -202,7 +207,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                 aria-label="Open menu"
                 className="text-black hover:text-gray-700"
               >
-                <MenuIcon size={20} />
+                <MenuIcon size={28} />
               </button>
             </div>
 
@@ -229,8 +234,8 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
 
       {/* Full-screen mobile menu */}
       <div
-        className={`fixed inset-0 z-[60] flex flex-col bg-white transition-transform duration-300 ease-in-out md:hidden ${
-          mobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
+        className={`fixed top-6 right-0 bottom-0 left-0 z-[60] flex flex-col bg-white transition-transform duration-300 ease-in-out md:hidden ${
+          mobileMenuOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
         {/* Header */}
@@ -240,7 +245,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
               <Link
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block text-lg font-extrabold tracking-[0.3em] whitespace-nowrap text-black"
+                className="block text-2xl font-extrabold tracking-[0.3em] whitespace-nowrap text-black"
               >
                 mami
               </Link>
@@ -251,7 +256,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                 className="text-black transition-colors hover:text-gray-600"
                 aria-label="Close menu"
               >
-                <XIcon size={20} />
+                <XIcon size={28} />
               </button>
             </div>
           </div>
@@ -318,11 +323,15 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
           </nav>
         </div>
 
+        <div className="flex justify-center  px-6 py-3">
+          <CurrencySwitcher />
+        </div>
+
         {/* Mini cart section */}
-        <div className="border-t border-gray-200 px-6 py-3">
+        <div className="border-t border-gray-200 px-6 py-3 pb-6">
           {isMounted && items.length > 0 ? (
             <>
-              <div className="max-h-28 overflow-y-auto">
+              <div className="max-h-28 overflow-y-auto ">
                 {items.map((item) => (
                   <div
                     key={item.productId}
@@ -335,7 +344,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
                   </div>
                 ))}
               </div>
-              <div className="mt-2 flex items-center justify-between border-t border-gray-200 pt-2 text-xs">
+              <div className="mt-2 mb-4 flex items-center justify-between border-t border-gray-200 pt-2 text-xs">
                 <span className="font-medium tracking-wide uppercase">Total ({items.length})</span>
                 <span className="font-bold">{formatCartPrice(totalPriceInCents())}</span>
               </div>

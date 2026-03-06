@@ -22,7 +22,7 @@ export default function FeaturedProducts({ title, href, products }: FeaturedProd
     <div className="mx-auto px-4">
       <div className="py-6 md:py-8">
         {href ? (
-          <Link href={href} className="transition-colors hover:text-black/60">
+          <Link href={href} className="inline-block transition-transform duration-200 hover:translate-x-[1px]">
             {heading}
           </Link>
         ) : (
@@ -37,6 +37,7 @@ export default function FeaturedProducts({ title, href, products }: FeaturedProd
       products={products}
       header={header}
       ariaLabel={title ? `${title} product list` : 'product list'}
+      href={href}
     />
   )
 }

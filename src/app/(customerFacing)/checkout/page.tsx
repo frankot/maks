@@ -1,7 +1,8 @@
 'use client'
 
 import { useCartStore } from '@/stores/cart-store'
-import { formatCartPrice } from '@/lib/cart'
+import { useCurrencyStore } from '@/stores/currency-store'
+import { formatCartPrice, getItemPrice } from '@/lib/cart'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Image from 'next/image'
@@ -12,7 +13,8 @@ import { ShoppingBag, X, Tag } from 'lucide-react'
 type DeliveryMethod = 'paczkomat' | 'address'
 
 export default function CheckoutPage() {
-  const { items, totalPriceInCents } = useCartStore()
+  const { items, totalPriceInGrosz, totalPriceInCents } = useCartStore()
+  const currency = useCurrencyStore((s) => s.currency)
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -38,7 +40,7 @@ export default function CheckoutPage() {
   const [discountCodeInput, setDiscountCodeInput] = useState('')
   const [appliedDiscount, setAppliedDiscount] = useState<{
     code: string
-    discountAmountInGrosz: number
+    discountAmount: number
     discountType: string
     discountValue: number
   } | null>(null)
@@ -85,14 +87,14 @@ export default function CheckoutPage() {
     setIsApplyingDiscount(true)
 
     try {
-      // totalPriceInCents is actually in grosz (PLN) in this codebase
-      const subtotalInGrosz = totalPriceInCents()
+      const subtotal = currency === 'EUR' ? totalPriceInCents() : totalPriceInGrosz()
       const response = await fetch('/api/discounts/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           code: discountCodeInput.trim(),
-          subtotalInGrosz,
+          subtotalInGrosz: subtotal,
+          currency,
         }),
       })
 
@@ -105,7 +107,7 @@ export default function CheckoutPage() {
 
       setAppliedDiscount({
         code: discountCodeInput.trim().toUpperCase(),
-        discountAmountInGrosz: data.discountAmountInGrosz,
+        discountAmount: data.discountAmount,
         discountType: data.discountType,
         discountValue: data.discountValue,
       })
@@ -134,9 +136,10 @@ export default function CheckoutPage() {
         firstName,
         lastName,
         deliveryMethod,
+        currency,
         items: items.map((item) => ({
           productId: item.productId,
-          priceInCents: item.priceInCents,
+          priceInCents: currency === 'EUR' ? item.priceInCents : item.priceInGrosz,
           name: item.name,
           imagePath: item.imagePath || '',
         })),
@@ -172,8 +175,8 @@ export default function CheckoutPage() {
   }
 
   const shippingCost = 0
-  const subtotal = totalPriceInCents()
-  const discountAmount = appliedDiscount?.discountAmountInGrosz ?? 0
+  const subtotal = currency === 'EUR' ? totalPriceInCents() : totalPriceInGrosz()
+  const discountAmount = appliedDiscount?.discountAmount ?? 0
   const total = subtotal + shippingCost - discountAmount
 
   return (
@@ -448,7 +451,7 @@ export default function CheckoutPage() {
                           <p className="text-sm font-medium uppercase">{item.name}</p>
                         </div>
                         <p className="text-sm text-black/70">
-                          {formatCartPrice(item.priceInCents)}
+                          {formatCartPrice(getItemPrice(item, currency), currency)}
                         </p>
                       </div>
                     </div>
@@ -466,7 +469,7 @@ export default function CheckoutPage() {
                           {appliedDiscount.code}
                         </span>
                         <span className="text-xs text-black/40">
-                          (-{formatCartPrice(appliedDiscount.discountAmountInGrosz)})
+                          (-{formatCartPrice(appliedDiscount.discountAmount, currency)})
                         </span>
                       </div>
                       <button
@@ -507,25 +510,25 @@ export default function CheckoutPage() {
                 <div className="mt-4 space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-black/40">Subtotal</span>
-                    <span className="text-black/70">{formatCartPrice(subtotal)}</span>
+                    <span className="text-black/70">{formatCartPrice(subtotal, currency)}</span>
                   </div>
                   {appliedDiscount && (
                     <div className="flex justify-between">
                       <span className="text-black/40">Discount</span>
-                      <span className="text-green-600">-{formatCartPrice(discountAmount)}</span>
+                      <span className="text-green-600">-{formatCartPrice(discountAmount, currency)}</span>
                     </div>
                   )}
                   <div className="flex justify-between">
                     <span className="text-black/40">Shipping</span>
                     <span className="text-black/70">
-                      {shippingCost === 0 ? 'Free' : formatCartPrice(shippingCost)}
+                      {shippingCost === 0 ? 'Free' : formatCartPrice(shippingCost, currency)}
                     </span>
                   </div>
                 </div>
                 <div className="mt-4 h-px w-full bg-black/10" />
                 <div className="mt-4 flex justify-between">
                   <span className="text-sm font-semibold tracking-wider uppercase">Total</span>
-                  <span className="text-sm font-semibold">{formatCartPrice(total)}</span>
+                  <span className="text-sm font-semibold">{formatCartPrice(total, currency)}</span>
                 </div>
               </div>
             </div>

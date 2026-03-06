@@ -8,6 +8,7 @@ interface QuickAddButtonProps {
     id: string
     name: string
     priceInGrosz: number
+    priceInCents: number
     imagePath?: string
     slug: string
   }
@@ -33,7 +34,8 @@ export default function QuickAddButton({ product, className = '' }: QuickAddButt
     addItem({
       productId: product.id,
       name: product.name,
-      priceInCents: product.priceInGrosz,
+      priceInGrosz: product.priceInGrosz,
+      priceInCents: product.priceInCents,
       imagePath: product.imagePath,
       slug: product.slug,
     })

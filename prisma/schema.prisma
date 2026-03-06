@@ -273,16 +273,17 @@ model FeaturedSectionProduct {
 }
 
 model DiscountCode {
-  id            String       @id @default(uuid())
-  code          String       @unique
-  discountType  DiscountType
-  discountValue Int // Percentage (1-100) or fixed amount in grosz
-  isOneTime     Boolean      @default(false)
-  isActive      Boolean      @default(true)
-  usedCount     Int          @default(0)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  orders        Order[]
+  id               String       @id @default(uuid())
+  code             String       @unique
+  discountType     DiscountType
+  discountValue    Int // Percentage (1-100) or fixed amount in grosz
+  discountValueEur Int? // Fixed amount in cents (EUR) — only for FIXED_PLN type
+  isOneTime        Boolean      @default(false)
+  isActive         Boolean      @default(true)
+  usedCount        Int          @default(0)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  orders           Order[]
 
   @@index([code])
   @@index([isActive])

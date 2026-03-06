@@ -44,6 +44,11 @@ export function DiscountCodeForm({ editingCode, trigger }: DiscountCodeFormProps
         : editingCode.discountValue.toString()
       : ''
   )
+  const [discountValueEur, setDiscountValueEur] = useState(
+    editingCode?.discountValueEur
+      ? (editingCode.discountValueEur / 100).toString()
+      : ''
+  )
   const [isOneTime, setIsOneTime] = useState<'one-time' | 'reusable'>(
     editingCode?.isOneTime ? 'one-time' : 'reusable'
   )
@@ -53,6 +58,7 @@ export function DiscountCodeForm({ editingCode, trigger }: DiscountCodeFormProps
       setCode('')
       setDiscountType('PERCENTAGE')
       setDiscountValue('')
+      setDiscountValueEur('')
       setIsOneTime('reusable')
     }
     setError(null)
@@ -77,10 +83,21 @@ export function DiscountCodeForm({ editingCode, trigger }: DiscountCodeFormProps
       const valueInGrosz =
         discountType === 'FIXED_PLN' ? Math.round(numericValue * 100) : numericValue
 
+      // Convert EUR to cents for FIXED_PLN
+      let valueInCents: number | undefined
+      if (discountType === 'FIXED_PLN' && discountValueEur.trim()) {
+        const eurValue = parseFloat(discountValueEur)
+        if (isNaN(eurValue) || eurValue < 0) {
+          throw new Error('EUR value must be a non-negative number')
+        }
+        valueInCents = Math.round(eurValue * 100)
+      }
+
       const body = {
         code: code.toUpperCase(),
         discountType,
         discountValue: valueInGrosz,
+        ...(valueInCents !== undefined ? { discountValueEur: valueInCents } : {}),
         isOneTime: isOneTime === 'one-time',
         ...(editingCode ? { id: editingCode.id } : {}),
       }
@@ -151,28 +168,58 @@ export function DiscountCodeForm({ editingCode, trigger }: DiscountCodeFormProps
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="PERCENTAGE">Percentage (%)</SelectItem>
-                <SelectItem value="FIXED_PLN">Fixed Amount (PLN)</SelectItem>
+                <SelectItem value="FIXED_PLN">Fixed Amount</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div>
-            <Label htmlFor="discountValue">
-              Value {discountType === 'PERCENTAGE' ? '(%)' : '(zł)'}
-            </Label>
-            <Input
-              id="discountValue"
-              type="number"
-              min={discountType === 'PERCENTAGE' ? '1' : '0.01'}
-              step={discountType === 'PERCENTAGE' ? '1' : '0.01'}
-              max={discountType === 'PERCENTAGE' ? '100' : undefined}
-              value={discountValue}
-              onChange={(e) => setDiscountValue(e.target.value)}
-              placeholder={discountType === 'PERCENTAGE' ? 'e.g., 20' : 'e.g., 50.00'}
-              required
-              className="mt-1.5"
-            />
-          </div>
+          {discountType === 'FIXED_PLN' ? (
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="discountValue">Value (zł)</Label>
+                <Input
+                  id="discountValue"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value={discountValue}
+                  onChange={(e) => setDiscountValue(e.target.value)}
+                  placeholder="e.g., 50.00"
+                  required
+                  className="mt-1.5"
+                />
+              </div>
+              <div>
+                <Label htmlFor="discountValueEur">Value (€)</Label>
+                <Input
+                  id="discountValueEur"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={discountValueEur}
+                  onChange={(e) => setDiscountValueEur(e.target.value)}
+                  placeholder="e.g., 12.00"
+                  className="mt-1.5"
+                />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <Label htmlFor="discountValue">Value (%)</Label>
+              <Input
+                id="discountValue"
+                type="number"
+                min="1"
+                step="1"
+                max="100"
+                value={discountValue}
+                onChange={(e) => setDiscountValue(e.target.value)}
+                placeholder="e.g., 20"
+                required
+                className="mt-1.5"
+              />
+            </div>
+          )}
 
           <div>
             <Label htmlFor="usageType">Usage Type</Label>

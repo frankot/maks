@@ -1,7 +1,10 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
-// ShoppingCart removed — not used anymore
-import { Product } from '@prisma/client'
+import type { Product } from '@prisma/client'
+import { useCurrencyStore } from '@/stores/currency-store'
+import { formatCartPrice } from '@/lib/cart'
 
 type ProductWithMaterials = Omit<Product, 'materials'> & {
   materials?: string | null
@@ -18,8 +21,8 @@ export default function ProductCard({
   simplified = false,
   className = '',
 }: ProductCardProps) {
-  // Convert price from grosz to PLN
-  const priceInPLN = (product.priceInGrosz / 100).toFixed(2)
+  const currency = useCurrencyStore((s) => s.currency)
+  const amount = currency === 'EUR' ? product.priceInCents : product.priceInGrosz
 
   // Get a very short materials description — prefer `materials` field
   const materials =
@@ -69,7 +72,7 @@ export default function ProductCard({
             </p>
           </div>
           <div className="mt-1 mr-6 flex items-center justify-between whitespace-nowrap">
-            <p className="text-xs text-gray-600">{priceInPLN} zł </p>
+            <p className="text-xs text-gray-600">{formatCartPrice(amount, currency)}</p>
           </div>
         </div>
       )}

@@ -1,6 +1,7 @@
 import { prisma } from './prisma'
 import type { DiscountCode, DiscountType } from '@prisma/client'
 import { DEFAULT_PAGE_SIZE } from './constants'
+import type { Currency } from '@/stores/currency-store'
 
 export type { DiscountCode }
 
@@ -31,13 +32,14 @@ export async function getDiscountCodeByCode(code: string): Promise<DiscountCode 
 
 export async function validateDiscountCode(
   code: string,
-  subtotalInGrosz: number
+  subtotal: number,
+  currency: Currency = 'PLN'
 ): Promise<{
   valid: boolean
   error?: string
   discountType?: DiscountType
   discountValue?: number
-  discountAmountInGrosz?: number
+  discountAmount?: number
 }> {
   const discountCode = await getDiscountCodeByCode(code)
 
@@ -53,42 +55,56 @@ export async function validateDiscountCode(
     return { valid: false, error: 'Discount code has already been used' }
   }
 
-  const discountAmountInGrosz = calculateDiscountAmount(
+  const discountAmount = calculateDiscountAmount(
     discountCode.discountType,
     discountCode.discountValue,
-    subtotalInGrosz
+    subtotal,
+    currency,
+    discountCode.discountValueEur ?? undefined
   )
+
+  if (currency === 'EUR' && discountCode.discountType === 'FIXED_PLN' && !discountCode.discountValueEur) {
+    return { valid: false, error: 'This discount code is not available for EUR purchases' }
+  }
 
   return {
     valid: true,
     discountType: discountCode.discountType,
     discountValue: discountCode.discountValue,
-    discountAmountInGrosz,
+    discountAmount,
   }
 }
 
 export function calculateDiscountAmount(
   discountType: DiscountType,
   discountValue: number,
-  subtotalInGrosz: number
+  subtotal: number,
+  currency: Currency = 'PLN',
+  discountValueEur?: number
 ): number {
   let amount: number
 
   if (discountType === 'PERCENTAGE') {
-    amount = Math.round((subtotalInGrosz * discountValue) / 100)
+    amount = Math.round((subtotal * discountValue) / 100)
   } else {
-    // FIXED_PLN — discountValue is already in grosz
-    amount = discountValue
+    // FIXED_PLN
+    if (currency === 'EUR') {
+      // Use EUR-specific value if available, otherwise return 0
+      amount = discountValueEur ?? 0
+    } else {
+      amount = discountValue
+    }
   }
 
-  // Cap discount at the subtotal (can't go negative, minimum 1 grosz order)
-  return Math.min(amount, subtotalInGrosz - 1)
+  // Cap discount at the subtotal (can't go negative, minimum 1 subunit order)
+  return Math.min(amount, subtotal - 1)
 }
 
 export async function createDiscountCode(data: {
   code: string
   discountType: DiscountType
   discountValue: number
+  discountValueEur?: number
   isOneTime: boolean
 }): Promise<DiscountCode> {
   return prisma.discountCode.create({
@@ -96,6 +112,7 @@ export async function createDiscountCode(data: {
       code: data.code.toUpperCase(),
       discountType: data.discountType,
       discountValue: data.discountValue,
+      discountValueEur: data.discountValueEur ?? null,
       isOneTime: data.isOneTime,
     },
   })
@@ -107,6 +124,7 @@ export async function updateDiscountCode(
     code?: string
     discountType?: DiscountType
     discountValue?: number
+    discountValueEur?: number | null
     isOneTime?: boolean
     isActive?: boolean
   }

@@ -9,6 +9,7 @@ import CTA from './_components/CTA'
 import { getFeaturedSection } from '@/lib/featured-sections'
 import { getProductsByCategory, getFeaturedProducts } from '@/lib/products'
 import { getHeroContent } from '@/lib/hero'
+import { shuffle } from '@/lib/utils/shuffle'
 
 export const metadata: Metadata = {
   title: 'MAMI — Handmade Jewelry from Warsaw',
@@ -33,32 +34,28 @@ export default async function Home() {
         <Hero initialContent={heroContent} />
         <Marquee />
 
-     <FeaturedProductsDynamic
+        <FeaturedProductsDynamic
           initialCategory={'EARRINGS' as Category}
           categoryProducts={{
-            RINGS: rings,
-            NECKLACES: necklaces,
-            EARRINGS: earrings,
+            RINGS: shuffle(rings),
+            NECKLACES: shuffle(necklaces),
+            EARRINGS: shuffle(earrings),
             BRACELETS: [],
             CHAINS: [],
           }}
         />
 
-   
-    
-
         <Mission />
 
-   
-     <FeaturedProducts
+        <FeaturedProducts
           title={section1?.title ?? 'Rings'}
           href={section1?.href ?? '/shop/rings'}
-          products={section1 ? section1.items.map((i) => i.product) : rings}
+          products={shuffle(section1 ? section1.items.map((i) => i.product) : rings)}
         />
-    <FeaturedProducts
+        <FeaturedProducts
           title={section2?.title ?? 'Necklaces'}
           href={section2?.href ?? '/shop/necklaces'}
-          products={section2 ? section2.items.map((i) => i.product) : necklaces}
+          products={shuffle(section2 ? section2.items.map((i) => i.product) : necklaces)}
         />
         <CTA />
       </main>

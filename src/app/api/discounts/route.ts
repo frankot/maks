@@ -6,6 +6,7 @@ const createSchema = z.object({
   code: z.string().min(1).max(50),
   discountType: z.enum(['PERCENTAGE', 'FIXED_PLN']),
   discountValue: z.number().int().positive(),
+  discountValueEur: z.number().int().min(0).optional(),
   isOneTime: z.boolean(),
 })
 

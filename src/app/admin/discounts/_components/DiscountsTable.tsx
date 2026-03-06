@@ -28,7 +28,11 @@ function formatDiscountValue(code: DiscountCode): string {
   if (code.discountType === 'PERCENTAGE') {
     return `${code.discountValue}%`
   }
-  return `${(code.discountValue / 100).toFixed(2)} zł`
+  const plnStr = `${(code.discountValue / 100).toFixed(2)} zł`
+  if (code.discountValueEur) {
+    return `${plnStr} / ${(code.discountValueEur / 100).toFixed(2)} €`
+  }
+  return plnStr
 }
 
 export function DiscountsTable({ discountCodes }: DiscountsTableProps) {

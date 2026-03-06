@@ -5,6 +5,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import AddToCartButton from '@/components/AddToCartButton'
 import ProductDetailsTabs from './ProductDetailsTabs'
+import { useCurrencyStore } from '@/stores/currency-store'
+import { formatCartPrice } from '@/lib/cart'
 
 interface MobileProductViewProps {
   product: {
@@ -12,17 +14,19 @@ interface MobileProductViewProps {
     name: string
     description: string
     priceInGrosz: number
+    priceInCents: number
     imagePaths: string[]
     slug: string | null
     productStatus: string
     materials: string | null
   }
-  priceInPLN: string
   isSold: boolean
 }
 
-export default function MobileProductView({ product, priceInPLN, isSold }: MobileProductViewProps) {
+export default function MobileProductView({ product, isSold }: MobileProductViewProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  const currency = useCurrencyStore((s) => s.currency)
+  const amount = currency === 'EUR' ? product.priceInCents : product.priceInGrosz
 
   return (
     <div className="lg:hidden">
@@ -104,7 +108,7 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
           {product.materials && (
             <p className="-mt-1 mb-1 text-xs text-gray-600">{product.materials}</p>
           )}
-          <p className="text-base font-light text-gray-900">{priceInPLN} zł</p>
+          <p className="text-base font-light text-gray-900">{formatCartPrice(amount, currency)}</p>
         </div>
 
         {/* Size Selector */}
@@ -158,6 +162,7 @@ export default function MobileProductView({ product, priceInPLN, isSold }: Mobil
                 id: product.id,
                 name: product.name,
                 priceInGrosz: product.priceInGrosz,
+                priceInCents: product.priceInCents,
                 imagePath: product.imagePaths[0],
                 slug: product.slug ?? product.id,
               }}

@@ -5,14 +5,15 @@ import { z } from 'zod'
 const validateSchema = z.object({
   code: z.string().min(1),
   subtotalInGrosz: z.number().int().positive(),
+  currency: z.enum(['PLN', 'EUR']).default('PLN'),
 })
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { code, subtotalInGrosz } = validateSchema.parse(body)
+    const { code, subtotalInGrosz, currency } = validateSchema.parse(body)
 
-    const result = await validateDiscountCode(code, subtotalInGrosz)
+    const result = await validateDiscountCode(code, subtotalInGrosz, currency)
     return NextResponse.json(result)
   } catch (error) {
     if (error instanceof z.ZodError) {

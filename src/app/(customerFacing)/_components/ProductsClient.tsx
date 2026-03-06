@@ -4,8 +4,9 @@ import React, { useEffect, useMemo, useState } from 'react'
 import type { Product, Category, Collection } from '@prisma/client'
 import Products from './Products'
 import ProductsSkeleton from './ProductsSkeleton'
+import { shuffle } from '@/lib/utils/shuffle'
 
-const MAX_PRODUCTS_PER_CATEGORY = 10
+const MAX_PRODUCTS_PER_CATEGORY = 8
 
 type ProductWithCollection = Product & { collection: Collection | null }
 
@@ -48,7 +49,7 @@ export default function ProductsClient() {
       .map(([category, products]) => ({
         category,
         title: category.charAt(0) + category.slice(1).toLowerCase(),
-        products: products.slice(0, MAX_PRODUCTS_PER_CATEGORY),
+        products: shuffle(products).slice(0, MAX_PRODUCTS_PER_CATEGORY),
       }))
   }, [allProducts])
 

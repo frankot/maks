@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import type { Category, Product } from '@prisma/client'
 import FeaturedProductsBase from './FeaturedProductsBase'
 
@@ -15,6 +16,12 @@ const categoryOrder: Category[] = [
   'NECKLACES' as Category,
   'EARRINGS' as Category,
 ]
+
+const categoryHrefs: Record<string, string> = {
+  RINGS: '/shop/rings',
+  NECKLACES: '/shop/necklaces',
+  EARRINGS: '/shop/earrings',
+}
 
 function RefreshCategoryIcon() {
   return (
@@ -48,6 +55,7 @@ export default function FeaturedProductsDynamic({
   const currentCategory = categoryOrder[currentIndex] as Category
   const products = categoryProducts[currentCategory] || []
   const titleText = categoryTitles?.[currentCategory] ?? currentCategory
+  const href = categoryHrefs[currentCategory] ?? '/shop'
 
   const handleCategoryNext = () => {
     setCurrentIndex((i) => (i + 1) % categoryOrder.length)
@@ -66,9 +74,11 @@ export default function FeaturedProductsDynamic({
           >
             <RefreshCategoryIcon />
           </button>
-          <h2 className="text-4xl leading-[0.9] font-extrabold text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">
-            {titleText}
-          </h2>
+          <Link href={href} className="inline-block transition-transform duration-200 hover:translate-x-[1px]">
+            <h2 className="text-4xl leading-[0.9] font-extrabold text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">
+              {titleText}
+            </h2>
+          </Link>
         </div>
       </div>
     </div>
@@ -79,6 +89,7 @@ export default function FeaturedProductsDynamic({
       products={products}
       header={header}
       ariaLabel={`${titleText} product list`}
+      href={href}
     />
   )
 }

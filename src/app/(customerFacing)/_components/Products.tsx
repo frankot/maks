@@ -25,7 +25,7 @@ export default function Products({ title, category, products }: ProductsProps) {
       <div className="mx-auto">
         <div className="py-6 md:py-8">
           <Link href={`/shop/${categorySlug}`}>
-            <h2 className="text-4xl leading-[0.9] font-extrabold whitespace-nowrap text-black/90 uppercase transition-colors hover:text-black/60 sm:text-5xl md:text-6xl lg:text-7xl">
+            <h2 className="text-4xl leading-[0.9] font-extrabold whitespace-nowrap text-black/90 uppercase transition-all duration-200 hover:translate-x-[1px] sm:text-5xl md:text-6xl lg:text-7xl">
               {title}
             </h2>
           </Link>

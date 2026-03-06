@@ -93,18 +93,32 @@ export default function Gallery() {
                 : 'grid grid-cols-1 md:grid-cols-3'
 
             const sortedImages = [...row.images].sort((a, b) => a.order - b.order)
+            const isOddFiveCol =
+              row.layout === 'FIVE_COL' && sortedImages.length % 2 !== 0
 
             return (
               <div key={row.id} className={gridCols}>
-                {sortedImages.map((img) => {
+                {sortedImages.map((img, idx) => {
                   const flatIdx = allImages.findIndex((ai) => ai.id === img.id)
+                  const isLastOdd =
+                    isOddFiveCol && idx === sortedImages.length - 1
                   return (
-                    <GalleryCard
+                    <div
                       key={img.id}
-                      imagePath={img.imagePath}
-                      artistName={img.artist.name}
-                      onClick={() => openModal(flatIdx)}
-                    />
+                      className={
+                        isLastOdd
+                          ? 'col-span-2 md:col-span-1'
+                          : ''
+                      }
+                    >
+                      <div className={isLastOdd ? 'mx-auto w-1/2 md:w-full' : ''}>
+                        <GalleryCard
+                          imagePath={img.imagePath}
+                          artistName={img.artist.name}
+                          onClick={() => openModal(flatIdx)}
+                        />
+                      </div>
+                    </div>
                   )
                 })}
               </div>

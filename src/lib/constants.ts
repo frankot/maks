@@ -11,7 +11,7 @@ export const CART_STORAGE_KEY = 'maks-cart'
 
 // Pagination defaults
 export const DEFAULT_PAGE_SIZE = 20
-export const FEATURED_PRODUCTS_LIMIT = 4
+export const FEATURED_PRODUCTS_LIMIT = 6
 export const CATEGORY_PRODUCTS_LIMIT = 24
 
 // Stripe

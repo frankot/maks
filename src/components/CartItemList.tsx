@@ -1,7 +1,8 @@
 'use client'
 
-import { formatCartPrice } from '@/lib/cart'
+import { formatCartPrice, getItemPrice } from '@/lib/cart'
 import { useCartStore } from '@/stores/cart-store'
+import { useCurrencyStore } from '@/stores/currency-store'
 import Image from 'next/image'
 import Link from 'next/link'
 import { X, ShoppingBag } from 'lucide-react'
@@ -14,6 +15,7 @@ interface CartItemListProps {
 export default function CartItemList({ compact = false, onNavigate }: CartItemListProps) {
   const items = useCartStore((s) => s.items)
   const removeItem = useCartStore((s) => s.removeItem)
+  const currency = useCurrencyStore((s) => s.currency)
 
   if (items.length === 0) return null
 
@@ -60,7 +62,7 @@ export default function CartItemList({ compact = false, onNavigate }: CartItemLi
             </div>
 
             <div className={`text-gray-600 ${compact ? 'text-[11px]' : 'text-xs'}`}>
-              {formatCartPrice(item.priceInCents)}
+              {formatCartPrice(getItemPrice(item, currency), currency)}
             </div>
           </div>
         </div>

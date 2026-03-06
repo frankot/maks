@@ -22,6 +22,7 @@ export const checkoutSchema = z.object({
   country: z.string().min(1),
   paczkomatPointId: z.string().optional(),
   discountCode: z.string().optional(),
+  currency: z.enum(['PLN', 'EUR']).default('PLN'),
 })
 
 export const orderIdSchema = z.object({

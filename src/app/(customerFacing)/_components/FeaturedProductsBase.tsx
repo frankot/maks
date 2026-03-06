@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useMemo, useRef } from 'react'
+import Link from 'next/link'
 import type { Product } from '@prisma/client'
 import ProductCard from './ProductCard'
 
@@ -9,6 +10,7 @@ interface FeaturedProductsBaseProps {
   header: React.ReactNode
   emptyMessage?: string
   ariaLabel: string
+  href?: string
 }
 
 function ChevronLeftIcon() {
@@ -46,6 +48,7 @@ export default function FeaturedProductsBase({
   header,
   emptyMessage = 'No products found.',
   ariaLabel,
+  href,
 }: FeaturedProductsBaseProps) {
   const scrollerRef = useRef<HTMLDivElement>(null)
 
@@ -79,15 +82,27 @@ export default function FeaturedProductsBase({
     )
   }
 
+  const mobileProducts = products.slice(0, 3)
+
   return (
     <section className="mx-auto">
       {header}
 
-      {/* Mobile: 1-col grid (hidden on md+) */}
+      {/* Mobile: grid limited to 3 items (hidden on md+) */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:hidden">
-        {products.map((p) => (
+        {mobileProducts.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
+        {href && (
+          <div className="flex items-center justify-center py-4 sm:col-span-2">
+            <Link
+              href={href}
+              className="inline-block text-2xl font-extrabold uppercase tracking-wide text-black/80 transition-transform duration-200 hover:translate-x-[1px]"
+            >
+              More
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* md+: horizontal scroll carousel (hidden below md) */}
@@ -103,10 +118,20 @@ export default function FeaturedProductsBase({
                 <ProductCard product={p} />
               </div>
             ))}
+            {href && (
+              <div className="flex min-w-[200px] snap-start items-center justify-center self-stretch">
+                <Link
+                  href={href}
+                  className="inline-block text-4xl font-extrabold uppercase tracking-wide text-black/80 transition-transform duration-200 hover:translate-x-[1px] lg:text-5xl"
+                >
+                  More
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Bottom right controls — only when scrolling is needed */}
+        {/* Bottom right controls */}
         {products.length > 4 && (
           <div className="flex items-center justify-end gap-3 px-4 pt-6 md:gap-4">
             <button
