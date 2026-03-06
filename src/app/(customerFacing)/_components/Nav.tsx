@@ -323,7 +323,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
           </nav>
         </div>
 
-        <div className="flex justify-center  px-6 py-3">
+        <div className="flex justify-center px-6 py-3">
           <CurrencySwitcher />
         </div>
 
@@ -331,7 +331,7 @@ export default function Nav({ showCollectionsBar = false }: NavProps) {
         <div className="border-t border-gray-200 px-6 py-3 pb-6">
           {isMounted && items.length > 0 ? (
             <>
-              <div className="max-h-28 overflow-y-auto ">
+              <div className="max-h-28 overflow-y-auto">
                 {items.map((item) => (
                   <div
                     key={item.productId}
