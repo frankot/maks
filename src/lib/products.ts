@@ -62,8 +62,9 @@ export async function getProductsPaginated(params: {
   pageSize?: number
   status?: ProductStatus
   category?: Category
+  searchQuery?: string
 }) {
-  const { cursor, pageSize = DEFAULT_PAGE_SIZE, status, category } = params
+  const { cursor, pageSize = DEFAULT_PAGE_SIZE, status, category, searchQuery } = params
 
   const products = await prisma.product.findMany({
     take: pageSize + 1,
@@ -72,6 +73,14 @@ export async function getProductsPaginated(params: {
       deletedAt: null,
       ...(status ? { productStatus: status } : {}),
       ...(category ? { category } : {}),
+      ...(searchQuery
+        ? {
+            name: {
+              contains: searchQuery,
+              mode: 'insensitive' as const,
+            },
+          }
+        : {}),
     },
     include: { orderItems: true, collection: true },
     orderBy: { createdAt: 'desc' },

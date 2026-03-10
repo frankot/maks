@@ -10,6 +10,7 @@ interface PaginationControlsProps {
   prevCursor?: string
   hasMore: boolean
   hasPrev: boolean
+  queryParams?: Record<string, string>
 }
 
 export function PaginationControls({
@@ -18,14 +19,34 @@ export function PaginationControls({
   prevCursor,
   hasMore,
   hasPrev,
+  queryParams,
 }: PaginationControlsProps) {
   if (!hasMore && !hasPrev) return null
+
+  const buildHref = (pageParams?: Record<string, string>) => {
+    const params = new URLSearchParams()
+
+    if (queryParams) {
+      for (const [key, value] of Object.entries(queryParams)) {
+        if (value) params.set(key, value)
+      }
+    }
+
+    if (pageParams) {
+      for (const [key, value] of Object.entries(pageParams)) {
+        if (value) params.set(key, value)
+      }
+    }
+
+    const query = params.toString()
+    return query ? `${basePath}?${query}` : basePath
+  }
 
   return (
     <div className="flex items-center justify-center gap-4 pt-4">
       {hasPrev ? (
         <Button variant="outline" size="sm" asChild>
-          <Link href={prevCursor ? `${basePath}?cursor=${prevCursor}&dir=prev` : basePath}>
+          <Link href={buildHref(prevCursor ? { cursor: prevCursor, dir: 'prev' } : undefined)}>
             <ChevronLeft className="mr-1 h-4 w-4" />
             Previous
           </Link>
@@ -39,7 +60,7 @@ export function PaginationControls({
 
       {hasMore ? (
         <Button variant="outline" size="sm" asChild>
-          <Link href={`${basePath}?cursor=${nextCursor}`}>
+          <Link href={buildHref(nextCursor ? { cursor: nextCursor } : undefined)}>
             Next
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
