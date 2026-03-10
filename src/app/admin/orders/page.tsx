@@ -16,7 +16,9 @@ export default async function OrdersPage({
   const searchQuery = q?.trim() || undefined
   const page = Math.max(1, Number(pageParam) || 1)
   const rawSize = Number(pageSizeParam) || ADMIN_PAGE_SIZE_OPTIONS[0]
-  const pageSize = ADMIN_PAGE_SIZE_OPTIONS.includes(rawSize as (typeof ADMIN_PAGE_SIZE_OPTIONS)[number])
+  const pageSize = ADMIN_PAGE_SIZE_OPTIONS.includes(
+    rawSize as (typeof ADMIN_PAGE_SIZE_OPTIONS)[number]
+  )
     ? rawSize
     : ADMIN_PAGE_SIZE_OPTIONS[0]
 

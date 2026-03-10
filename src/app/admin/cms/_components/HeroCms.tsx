@@ -26,7 +26,10 @@ interface ImagePair {
   image2: SlotImage | null
 }
 
-function createImagePair(image1: SlotImage | null = null, image2: SlotImage | null = null): ImagePair {
+function createImagePair(
+  image1: SlotImage | null = null,
+  image2: SlotImage | null = null
+): ImagePair {
   return {
     id: crypto.randomUUID(),
     image1,
@@ -110,20 +113,25 @@ export default function HeroCms() {
     imageSlot: 'image1' | 'image2'
   ) => {
     setImagePairs((prev) => {
-      const newPairs = [...prev]
-      const pairIndex = newPairs.findIndex((pair) => pair.id === pairId)
+      const pair = prev.find((item) => item.id === pairId)
 
-      if (pairIndex === -1) {
+      if (!pair) {
         return prev
       }
 
-      // Revoke old pending preview if replacing
-      const old = newPairs[pairIndex]![imageSlot]
+      const old = pair[imageSlot]
       if (old?.type === 'pending') {
         URL.revokeObjectURL(old.data.previewUrl)
       }
-      newPairs[pairIndex]![imageSlot] = { type: 'pending', data: { file, previewUrl } }
-      return newPairs
+
+      return prev.map((item) =>
+        item.id === pairId
+          ? {
+              ...item,
+              [imageSlot]: { type: 'pending' as const, data: { file, previewUrl } },
+            }
+          : item
+      )
     })
   }
 
@@ -225,22 +233,21 @@ export default function HeroCms() {
 
   const removeImage = (pairId: string, slot: 'image1' | 'image2') => {
     setImagePairs((prev) => {
-      const newPairs = [...prev]
-      const pairIndex = newPairs.findIndex((pair) => pair.id === pairId)
+      const pair = prev.find((item) => item.id === pairId)
 
-      if (pairIndex === -1) {
+      if (!pair) {
         return prev
       }
 
-      const image = newPairs[pairIndex]![slot]
+      const image = pair[slot]
       if (image?.type === 'existing' && image.data.publicId) {
         setDeletedPublicIds((prev) => [...prev, image.data.publicId])
       }
       if (image?.type === 'pending') {
         URL.revokeObjectURL(image.data.previewUrl)
       }
-      newPairs[pairIndex]![slot] = null
-      return newPairs
+
+      return prev.map((item) => (item.id === pairId ? { ...item, [slot]: null } : item))
     })
   }
 
@@ -367,7 +374,9 @@ export default function HeroCms() {
       setDeletedPublicIds(failedDeleteIds)
 
       if (failedDeleteIds.length > 0) {
-        toast.error('Hero content saved, but some removed images could not be deleted from Cloudinary')
+        toast.error(
+          'Hero content saved, but some removed images could not be deleted from Cloudinary'
+        )
       } else {
         toast.success('Hero content saved successfully!')
       }
@@ -472,6 +481,7 @@ export default function HeroCms() {
                       const image = pair[slot]
                       const slotKey = `${pair.id}-${slot}`
                       const slotLabel = slot === 'image1' ? 'Left' : 'Right'
+                      const slotState = image ? image.type : 'empty'
                       const imageUrl = image
                         ? image.type === 'existing'
                           ? image.data.url
@@ -480,7 +490,7 @@ export default function HeroCms() {
 
                       return (
                         <ImageUploadSlot
-                          key={slot}
+                          key={`${slotKey}-${slotState}`}
                           imageUrl={imageUrl}
                           onFileSelect={(file, previewUrl) =>
                             handleFileSelect(file, previewUrl, pair.id, slot)
@@ -501,12 +511,16 @@ export default function HeroCms() {
         </CardContent>
       </Card>
 
-      <AlertDialog open={pairPendingDelete !== null} onOpenChange={(open) => !open && setPairPendingDelete(null)}>
+      <AlertDialog
+        open={pairPendingDelete !== null}
+        onOpenChange={(open) => !open && setPairPendingDelete(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this image pair?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will remove both images from the hero section permanently. <br />This action cannot be undone.
+              This will remove both images from the hero section permanently. <br />
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

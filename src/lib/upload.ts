@@ -47,10 +47,7 @@ export async function uploadFiles(
   return results
 }
 
-export async function deleteCloudinaryImage(
-  publicId: string,
-  endpoint: string
-): Promise<void> {
+export async function deleteCloudinaryImage(publicId: string, endpoint: string): Promise<void> {
   const response = await fetch(endpoint, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },

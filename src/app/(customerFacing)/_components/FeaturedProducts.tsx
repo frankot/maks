@@ -22,7 +22,10 @@ export default function FeaturedProducts({ title, href, products }: FeaturedProd
     <div className="mx-auto px-4">
       <div className="py-6 md:py-8">
         {href ? (
-          <Link href={href} className="inline-block transition-transform duration-200 hover:translate-x-[1px]">
+          <Link
+            href={href}
+            className="inline-block transition-transform duration-200 hover:translate-x-[1px]"
+          >
             {heading}
           </Link>
         ) : (

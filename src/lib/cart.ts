@@ -45,5 +45,5 @@ export function formatCartPrice(amount: number, currency: Currency = 'PLN'): str
 
 // Get the correct price from a cart item based on currency
 export function getItemPrice(item: CartItem, currency: Currency): number {
-  return currency === 'EUR' ? (item.priceInCents || 0) : (item.priceInGrosz || 0)
+  return currency === 'EUR' ? item.priceInCents || 0 : item.priceInGrosz || 0
 }

@@ -5,7 +5,6 @@ import { Toaster } from '@/components/ui/sonner'
 
 const sourceSans3 = Source_Sans_3({ subsets: ['latin'], display: 'swap' })
 
-
 export const metadata: Metadata = {
   metadataBase: new URL('https://mami.com.pl'),
   title: {

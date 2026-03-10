@@ -5,10 +5,7 @@ import type { Currency } from '@/stores/currency-store'
 
 export type { DiscountCode }
 
-export async function getDiscountCodesPaginated(params: {
-  page?: number
-  pageSize?: number
-}) {
+export async function getDiscountCodesPaginated(params: { page?: number; pageSize?: number }) {
   const { page = 1, pageSize = DEFAULT_PAGE_SIZE } = params
   const skip = (page - 1) * pageSize
 
@@ -65,7 +62,11 @@ export async function validateDiscountCode(
     discountCode.discountValueEur ?? undefined
   )
 
-  if (currency === 'EUR' && discountCode.discountType === 'FIXED_PLN' && !discountCode.discountValueEur) {
+  if (
+    currency === 'EUR' &&
+    discountCode.discountType === 'FIXED_PLN' &&
+    !discountCode.discountValueEur
+  ) {
     return { valid: false, error: 'This discount code is not available for EUR purchases' }
   }
 

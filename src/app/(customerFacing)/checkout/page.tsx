@@ -65,12 +65,8 @@ export default function CheckoutPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-4">
         <ShoppingBag className="h-12 w-12 text-black/20" strokeWidth={1} />
-        <h1 className="mt-6 text-lg font-semibold tracking-wider uppercase">
-          Your cart is empty
-        </h1>
-        <p className="mt-2 text-sm text-black/50">
-          Add some items to your cart to checkout
-        </p>
+        <h1 className="mt-6 text-lg font-semibold tracking-wider uppercase">Your cart is empty</h1>
+        <p className="mt-2 text-sm text-black/50">Add some items to your cart to checkout</p>
         <button
           onClick={() => router.push('/shop')}
           className="mt-8 border border-black px-8 py-3 text-xs font-medium tracking-widest uppercase transition-colors hover:bg-black hover:text-white"
@@ -208,7 +204,10 @@ export default function CheckoutPage() {
 
                   <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-5">
                     <div>
-                      <Label htmlFor="firstName" className="text-[11px] tracking-wider text-black/50 uppercase">
+                      <Label
+                        htmlFor="firstName"
+                        className="text-[11px] tracking-wider text-black/50 uppercase"
+                      >
                         First Name
                       </Label>
                       <Input
@@ -221,7 +220,10 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="lastName" className="text-[11px] tracking-wider text-black/50 uppercase">
+                      <Label
+                        htmlFor="lastName"
+                        className="text-[11px] tracking-wider text-black/50 uppercase"
+                      >
                         Last Name
                       </Label>
                       <Input
@@ -234,7 +236,10 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div className="col-span-2">
-                      <Label htmlFor="email" className="text-[11px] tracking-wider text-black/50 uppercase">
+                      <Label
+                        htmlFor="email"
+                        className="text-[11px] tracking-wider text-black/50 uppercase"
+                      >
                         Email
                       </Label>
                       <Input
@@ -248,7 +253,10 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div className="col-span-2">
-                      <Label htmlFor="phone" className="text-[11px] tracking-wider text-black/50 uppercase">
+                      <Label
+                        htmlFor="phone"
+                        className="text-[11px] tracking-wider text-black/50 uppercase"
+                      >
                         Phone Number
                       </Label>
                       <Input
@@ -281,9 +289,7 @@ export default function CheckoutPage() {
                           : 'border-black/10 hover:border-black/30'
                       }`}
                     >
-                      <div className="text-xs font-medium tracking-wider uppercase">
-                        Address
-                      </div>
+                      <div className="text-xs font-medium tracking-wider uppercase">Address</div>
                       <div className="mt-1 text-[11px] text-black/40">Standard shipping</div>
                     </button>
 
@@ -307,7 +313,10 @@ export default function CheckoutPage() {
                   {deliveryMethod === 'paczkomat' && (
                     <div className="mt-6 space-y-5">
                       <div>
-                        <Label htmlFor="paczkomatPointId" className="text-[11px] tracking-wider text-black/50 uppercase">
+                        <Label
+                          htmlFor="paczkomatPointId"
+                          className="text-[11px] tracking-wider text-black/50 uppercase"
+                        >
                           Paczkomat Point ID
                         </Label>
                         <Input
@@ -330,7 +339,10 @@ export default function CheckoutPage() {
                   {deliveryMethod === 'address' && (
                     <div className="mt-6">
                       <div>
-                        <Label htmlFor="street" className="text-[11px] tracking-wider text-black/50 uppercase">
+                        <Label
+                          htmlFor="street"
+                          className="text-[11px] tracking-wider text-black/50 uppercase"
+                        >
                           Street Address
                         </Label>
                         <Input
@@ -349,7 +361,10 @@ export default function CheckoutPage() {
                   {/* Common Address Fields */}
                   <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-5">
                     <div>
-                      <Label htmlFor="city" className="text-[11px] tracking-wider text-black/50 uppercase">
+                      <Label
+                        htmlFor="city"
+                        className="text-[11px] tracking-wider text-black/50 uppercase"
+                      >
                         City
                       </Label>
                       <Input
@@ -362,7 +377,10 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="postalCode" className="text-[11px] tracking-wider text-black/50 uppercase">
+                      <Label
+                        htmlFor="postalCode"
+                        className="text-[11px] tracking-wider text-black/50 uppercase"
+                      >
                         Postal Code
                       </Label>
                       <Input
@@ -376,7 +394,10 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div className="col-span-2">
-                      <Label htmlFor="country" className="text-[11px] tracking-wider text-black/50 uppercase">
+                      <Label
+                        htmlFor="country"
+                        className="text-[11px] tracking-wider text-black/50 uppercase"
+                      >
                         Country
                       </Label>
                       <Input
@@ -430,7 +451,7 @@ export default function CheckoutPage() {
                 <div className="mt-6 space-y-5">
                   {items.map((item) => (
                     <div key={item.productId} className="flex gap-4">
-                      <div className="relative h-20 w-16 flex-shrink-0 overflow-hidden ">
+                      <div className="relative h-20 w-16 flex-shrink-0 overflow-hidden">
                         {item.imagePath ? (
                           <Image
                             src={item.imagePath}
@@ -501,9 +522,7 @@ export default function CheckoutPage() {
                       </button>
                     </div>
                   )}
-                  {discountError && (
-                    <p className="mt-1.5 text-xs text-red-500">{discountError}</p>
-                  )}
+                  {discountError && <p className="mt-1.5 text-xs text-red-500">{discountError}</p>}
                 </div>
 
                 {/* Pricing */}
@@ -515,7 +534,9 @@ export default function CheckoutPage() {
                   {appliedDiscount && (
                     <div className="flex justify-between">
                       <span className="text-black/40">Discount</span>
-                      <span className="text-green-600">-{formatCartPrice(discountAmount, currency)}</span>
+                      <span className="text-green-600">
+                        -{formatCartPrice(discountAmount, currency)}
+                      </span>
                     </div>
                   )}
                   <div className="flex justify-between">

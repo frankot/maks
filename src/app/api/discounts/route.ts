@@ -30,11 +30,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.issues[0].message }, { status: 400 })
     }
     // Prisma unique constraint violation
-    if (
-      error instanceof Error &&
-      error.message.includes('Unique constraint')
-    ) {
-      return NextResponse.json({ error: 'A discount code with this name already exists' }, { status: 409 })
+    if (error instanceof Error && error.message.includes('Unique constraint')) {
+      return NextResponse.json(
+        { error: 'A discount code with this name already exists' },
+        { status: 409 }
+      )
     }
     console.error('Error creating discount code:', error)
     return NextResponse.json({ error: 'Failed to create discount code' }, { status: 500 })
@@ -56,11 +56,11 @@ export async function PUT(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.issues[0].message }, { status: 400 })
     }
-    if (
-      error instanceof Error &&
-      error.message.includes('Unique constraint')
-    ) {
-      return NextResponse.json({ error: 'A discount code with this name already exists' }, { status: 409 })
+    if (error instanceof Error && error.message.includes('Unique constraint')) {
+      return NextResponse.json(
+        { error: 'A discount code with this name already exists' },
+        { status: 409 }
+      )
     }
     console.error('Error updating discount code:', error)
     return NextResponse.json({ error: 'Failed to update discount code' }, { status: 500 })

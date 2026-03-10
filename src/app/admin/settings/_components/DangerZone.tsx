@@ -15,12 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import {
-  deleteAllCustomers,
-  deleteAllOrders,
-  deleteAllProducts,
-  deleteAllData,
-} from '../_actions'
+import { deleteAllCustomers, deleteAllOrders, deleteAllProducts, deleteAllData } from '../_actions'
 
 const CONFIRM_PHRASE = 'DELETE'
 
@@ -97,7 +92,13 @@ function DangerActionRow({ label, description, action }: DangerAction) {
       <div>
         <p className="font-medium text-red-700">{label}</p>
       </div>
-      <AlertDialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setConfirmValue('') }}>
+      <AlertDialog
+        open={open}
+        onOpenChange={(v) => {
+          setOpen(v)
+          if (!v) setConfirmValue('')
+        }}
+      >
         <AlertDialogTrigger asChild>
           <Button variant="destructive" size="sm">
             {label}
@@ -109,7 +110,11 @@ function DangerActionRow({ label, description, action }: DangerAction) {
             <AlertDialogDescription className="space-y-3">
               <span className="block">{description}</span>
               <span className="block font-semibold text-red-600">
-                Type <code className="rounded bg-red-100 px-1.5 py-0.5 text-red-700">{CONFIRM_PHRASE}</code> to confirm.
+                Type{' '}
+                <code className="rounded bg-red-100 px-1.5 py-0.5 text-red-700">
+                  {CONFIRM_PHRASE}
+                </code>{' '}
+                to confirm.
               </span>
             </AlertDialogDescription>
           </AlertDialogHeader>

@@ -60,12 +60,7 @@ export default function ProductsClient() {
   return (
     <>
       {categoryGroups.map(({ category, title, products }) => (
-        <Products
-          key={category}
-          title={title}
-          category={category}
-          products={products}
-        />
+        <Products key={category} title={title} category={category} products={products} />
       ))}
     </>
   )

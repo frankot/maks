@@ -109,9 +109,7 @@ export function DiscountsTable({ discountCodes }: DiscountsTableProps) {
       label: 'Discount',
       sortValue: (code) => code.discountValue,
       render: (code) => (
-        <span className="rounded-md border px-2 py-0.5 text-xs">
-          {formatDiscountValue(code)}
-        </span>
+        <span className="rounded-md border px-2 py-0.5 text-xs">{formatDiscountValue(code)}</span>
       ),
     },
     {

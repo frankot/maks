@@ -18,9 +18,9 @@ const navItems = [
   { name: 'Orders', href: '/admin/orders' },
   { name: 'Customers', href: '/admin/customers' },
   { name: 'Products', href: '/admin/products' },
+  { name: 'CMS', href: '/admin/cms' },
   { name: 'Discounts', href: '/admin/discounts' },
   { name: 'Settings', href: '/admin/settings' },
-  { name: 'CMS', href: '/admin/cms' },
 ]
 
 export default function NavAdmin() {

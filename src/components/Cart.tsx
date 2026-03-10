@@ -51,7 +51,12 @@ export default function Cart() {
           <div className="mx-2 space-y-4 border-t px-6 pt-6 pb-6">
             <div className="flex items-center justify-between text-sm">
               <span className="font-medium tracking-wide uppercase">Subtotal</span>
-              <span className="font-bold">{formatCartPrice(currency === 'EUR' ? totalPriceInCents() : totalPriceInGrosz(), currency)}</span>
+              <span className="font-bold">
+                {formatCartPrice(
+                  currency === 'EUR' ? totalPriceInCents() : totalPriceInGrosz(),
+                  currency
+                )}
+              </span>
             </div>
             <Button
               className="h-12 w-full bg-black text-xs font-medium tracking-wider text-white uppercase hover:bg-gray-900"

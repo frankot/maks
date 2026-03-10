@@ -8,7 +8,11 @@ interface AdminSearchBarProps {
   placeholder?: string
 }
 
-export function AdminSearchBar({ basePath, searchQuery, placeholder = 'Search…' }: AdminSearchBarProps) {
+export function AdminSearchBar({
+  basePath,
+  searchQuery,
+  placeholder = 'Search…',
+}: AdminSearchBarProps) {
   return (
     <form action={basePath} method="get" className="flex flex-1 gap-2">
       <Input

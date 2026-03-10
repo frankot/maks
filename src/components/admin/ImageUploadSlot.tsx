@@ -152,13 +152,7 @@ export default function ImageUploadSlot({
           onDrop={handleDrop}
           {...triggerProps}
         >
-          <Image
-            src={imageUrl}
-            alt={altText}
-            fill
-            className="object-cover"
-            unoptimized
-          />
+          <Image src={imageUrl} alt={altText} fill className="object-cover" unoptimized />
           {isPending && (
             <div className="absolute top-2 left-2 rounded bg-amber-500 px-1.5 py-0.5 text-[10px] font-medium text-white">
               Unsaved

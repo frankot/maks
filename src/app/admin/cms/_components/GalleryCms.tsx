@@ -54,16 +54,12 @@ export default function GalleryCms() {
   const [rowArtistIds, setRowArtistIds] = useState<Record<string, string>>({})
 
   // Deferred state
-  const [pendingSlots, setPendingSlots] = useState<Map<string, Map<number, PendingSlot>>>(
-    new Map()
-  )
+  const [pendingSlots, setPendingSlots] = useState<Map<string, Map<number, PendingSlot>>>(new Map())
   const [deletedImageIds, setDeletedImageIds] = useState<string[]>([])
   const [saving, setSaving] = useState(false)
   const [saveProgress, setSaveProgress] = useState('')
 
-  const hasUnsavedChanges =
-    pendingSlots.size > 0 ||
-    deletedImageIds.length > 0
+  const hasUnsavedChanges = pendingSlots.size > 0 || deletedImageIds.length > 0
 
   useEffect(() => {
     void loadData()

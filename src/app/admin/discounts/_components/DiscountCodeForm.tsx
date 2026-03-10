@@ -45,9 +45,7 @@ export function DiscountCodeForm({ editingCode, trigger }: DiscountCodeFormProps
       : ''
   )
   const [discountValueEur, setDiscountValueEur] = useState(
-    editingCode?.discountValueEur
-      ? (editingCode.discountValueEur / 100).toString()
-      : ''
+    editingCode?.discountValueEur ? (editingCode.discountValueEur / 100).toString() : ''
   )
   const [isOneTime, setIsOneTime] = useState<'one-time' | 'reusable'>(
     editingCode?.isOneTime ? 'one-time' : 'reusable'

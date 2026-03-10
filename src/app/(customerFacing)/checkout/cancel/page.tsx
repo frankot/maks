@@ -40,8 +40,8 @@ export default function CheckoutCancelPage() {
               return to checkout whenever you&rsquo;re ready.
             </p>
             <p className="text-sm leading-relaxed text-gray-600">
-              If something went wrong during payment and you need help, reach out and we&rsquo;ll help
-              you finish the order.
+              If something went wrong during payment and you need help, reach out and we&rsquo;ll
+              help you finish the order.
             </p>
           </div>
         </div>
@@ -63,7 +63,10 @@ export default function CheckoutCancelPage() {
 
         <p className="mt-8 text-center text-xs leading-relaxed text-gray-500">
           Need assistance?{' '}
-          <Link href="/contact" className="underline underline-offset-4 transition-colors hover:text-black">
+          <Link
+            href="/contact"
+            className="underline underline-offset-4 transition-colors hover:text-black"
+          >
             Contact us
           </Link>
           .

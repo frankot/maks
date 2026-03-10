@@ -36,7 +36,9 @@ function ProductFormRow({ label, description, children }: ProductFormRowProps) {
     <div className="grid gap-4 border-b py-5 md:grid-cols-[220px_minmax(0,1fr)] md:gap-8">
       <div className="space-y-1">
         <p className="text-sm font-medium text-black">{label}</p>
-        {description ? <p className="text-xs leading-relaxed text-gray-500">{description}</p> : null}
+        {description ? (
+          <p className="text-xs leading-relaxed text-gray-500">{description}</p>
+        ) : null}
       </div>
       <div className="min-w-0">{children}</div>
     </div>
@@ -150,10 +152,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
   }, [formData.name, formData.slug, isEditing, isIdManuallyEdited])
 
   const handleFileSelect = (file: File, previewUrl: string) => {
-    setSlotImages((prev) => [
-      ...prev,
-      { type: 'pending', data: { file, previewUrl } },
-    ])
+    setSlotImages((prev) => [...prev, { type: 'pending', data: { file, previewUrl } }])
   }
 
   const handleBulkFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -334,7 +333,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         </div>
       </ProductFormRow>
 
-      <ProductFormRow label="Availability" description="Control whether the product is visible and its lifecycle status.">
+      <ProductFormRow
+        label="Availability"
+        description="Control whether the product is visible and its lifecycle status."
+      >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="space-y-2">
             <Label htmlFor="isAvailable">Available</Label>
@@ -354,7 +356,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             <Label htmlFor="category">Category</Label>
             <select
               id="category"
-              className="block h-9 w-full border bg-transparent px-3 text-sm outline-none transition-colors focus:border-black"
+              className="block h-9 w-full border bg-transparent px-3 text-sm transition-colors outline-none focus:border-black"
               value={formData.category}
               onChange={(e) => handleInputChange('category', e.target.value as Category)}
             >
@@ -368,7 +370,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             <Label htmlFor="collection">Collection</Label>
             <select
               id="collection"
-              className="block h-9 w-full border bg-transparent px-3 text-sm outline-none transition-colors focus:border-black"
+              className="block h-9 w-full border bg-transparent px-3 text-sm transition-colors outline-none focus:border-black"
               value={formData.collectionId}
               onChange={(e) => handleInputChange('collectionId', e.target.value)}
             >
@@ -385,7 +387,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             <Label htmlFor="productStatus">Product Status</Label>
             <select
               id="productStatus"
-              className="block h-9 w-full border bg-transparent px-3 text-sm outline-none transition-colors focus:border-black"
+              className="block h-9 w-full border bg-transparent px-3 text-sm transition-colors outline-none focus:border-black"
               value={formData.productStatus}
               onChange={(e) =>
                 handleInputChange('productStatus', e.target.value as 'SHOP' | 'ORDERED' | 'SOLD')
@@ -399,7 +401,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         </div>
       </ProductFormRow>
 
-      <ProductFormRow label="URL" description="Used for the storefront route. Auto-generated from the product name.">
+      <ProductFormRow
+        label="URL"
+        description="Used for the storefront route. Auto-generated from the product name."
+      >
         <div className="space-y-3">
           <div className="flex gap-2">
             <Input
@@ -433,7 +438,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         </div>
       </ProductFormRow>
 
-      <ProductFormRow label="Pricing" description="Store both PLN and EUR values used in checkout and admin views.">
+      <ProductFormRow
+        label="Pricing"
+        description="Store both PLN and EUR values used in checkout and admin views."
+      >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="priceInGrosz">Price (PLN)</Label>
@@ -465,7 +473,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         </div>
       </ProductFormRow>
 
-      <ProductFormRow label="Description" description="Long-form copy displayed on the product page.">
+      <ProductFormRow
+        label="Description"
+        description="Long-form copy displayed on the product page."
+      >
         <Textarea
           id="description"
           value={formData.description}
@@ -476,7 +487,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         />
       </ProductFormRow>
 
-      <ProductFormRow label="Images" description="Upload and reorder the images used for the gallery and product cards.">
+      <ProductFormRow
+        label="Images"
+        description="Upload and reorder the images used for the gallery and product cards."
+      >
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm text-gray-500">Square images work best across the storefront.</p>
@@ -553,11 +567,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
           Cancel
         </Button>
         <Button type="submit" disabled={loading}>
-          {loading
-            ? saveProgress || 'Saving...'
-            : isEditing
-              ? 'Update Product'
-              : 'Add Product'}
+          {loading ? saveProgress || 'Saving...' : isEditing ? 'Update Product' : 'Add Product'}
         </Button>
       </div>
     </form>

@@ -17,10 +17,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result)
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { valid: false, error: error.issues[0].message },
-        { status: 400 }
-      )
+      return NextResponse.json({ valid: false, error: error.issues[0].message }, { status: 400 })
     }
     console.error('Error validating discount code:', error)
     return NextResponse.json(

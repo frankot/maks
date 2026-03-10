@@ -97,7 +97,7 @@ export default function FeaturedProductsBase({
           <div className="flex items-center justify-center py-4 sm:col-span-2">
             <Link
               href={href}
-              className="inline-block text-2xl font-extrabold uppercase tracking-wide text-black/80 transition-transform duration-200 hover:translate-x-[1px]"
+              className="inline-block text-2xl font-extrabold tracking-wide text-black/80 uppercase transition-transform duration-200 hover:translate-x-[1px]"
             >
               More
             </Link>
@@ -122,7 +122,7 @@ export default function FeaturedProductsBase({
               <div className="flex min-w-[200px] snap-start items-center justify-center self-stretch">
                 <Link
                   href={href}
-                  className="inline-block text-4xl font-extrabold uppercase tracking-wide text-black/80 transition-transform duration-200 hover:translate-x-[1px] lg:text-5xl"
+                  className="inline-block text-4xl font-extrabold tracking-wide text-black/80 uppercase transition-transform duration-200 hover:translate-x-[1px] lg:text-5xl"
                 >
                   More
                 </Link>

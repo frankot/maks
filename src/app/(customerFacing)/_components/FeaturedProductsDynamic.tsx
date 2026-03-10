@@ -74,7 +74,10 @@ export default function FeaturedProductsDynamic({
           >
             <RefreshCategoryIcon />
           </button>
-          <Link href={href} className="inline-block transition-transform duration-200 hover:translate-x-[1px]">
+          <Link
+            href={href}
+            className="inline-block transition-transform duration-200 hover:translate-x-[1px]"
+          >
             <h2 className="text-4xl leading-[0.9] font-extrabold text-black/90 uppercase sm:text-5xl md:text-6xl lg:text-7xl">
               {titleText}
             </h2>

@@ -73,7 +73,7 @@ export default async function AboutPage() {
           </div>
 
           {/* Right Box - Transparent Background with Black Text */}
-          <div className="hidden w-full flex-col items-center md:translate-x-12 justify-center gap-2.5 px-5 py-4 sm:px-[30px] md:flex md:h-[476px] md:w-[520px] md:flex-none md:py-10">
+          <div className="hidden w-full flex-col items-center justify-center gap-2.5 px-5 py-4 sm:px-[30px] md:flex md:h-[476px] md:w-[520px] md:flex-none md:translate-x-12 md:py-10">
             <p className="flex-grow self-stretch text-lg leading-6 font-medium text-black uppercase sm:text-xl md:text-[32px] md:leading-9">
               {brandText}
             </p>

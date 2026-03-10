@@ -8,7 +8,10 @@ interface DesktopProductPriceProps {
   priceInCents: number
 }
 
-export default function DesktopProductPrice({ priceInGrosz, priceInCents }: DesktopProductPriceProps) {
+export default function DesktopProductPrice({
+  priceInGrosz,
+  priceInCents,
+}: DesktopProductPriceProps) {
   const currency = useCurrencyStore((s) => s.currency)
   const amount = currency === 'EUR' ? priceInCents : priceInGrosz
 

@@ -218,7 +218,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   <p className="mt-1 text-xs text-gray-600">{product.materials}</p>
                 )}
                 <div className="mt-3">
-                  <DesktopProductPrice priceInGrosz={product.priceInGrosz} priceInCents={product.priceInCents} />
+                  <DesktopProductPrice
+                    priceInGrosz={product.priceInGrosz}
+                    priceInCents={product.priceInCents}
+                  />
                 </div>
                 <hr className="mx-auto mt-5 w-20 border-black" />
               </div>
