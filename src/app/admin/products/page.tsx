@@ -1,23 +1,36 @@
 export const dynamic = 'force-dynamic'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { getProductsPaginated } from '@/lib/products'
 import { ProductsTable } from './_components/ProductsTable'
 import Link from 'next/link'
 import AdminPageWrapper from '../components/AdminPageWrapper'
+import { AdminSearchBar } from '../components/AdminSearchBar'
 import { EditCollectionsClient } from './_components/EditCollectionsClient'
 import { PaginationControls } from '@/components/ui/pagination-controls'
+import { ADMIN_PAGE_SIZE_OPTIONS } from '@/lib/constants'
 
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ cursor?: string; q?: string }>
+  searchParams: Promise<{ page?: string; pageSize?: string; q?: string }>
 }) {
-  const { cursor, q } = await searchParams
+  const { page: pageParam, pageSize: pageSizeParam, q } = await searchParams
   const searchQuery = q?.trim() || undefined
-  const { items: products, nextCursor, hasMore } = await getProductsPaginated({
-    cursor,
+  const page = Math.max(1, Number(pageParam) || 1)
+  const rawSize = Number(pageSizeParam) || ADMIN_PAGE_SIZE_OPTIONS[0]
+  const pageSize = ADMIN_PAGE_SIZE_OPTIONS.includes(rawSize as (typeof ADMIN_PAGE_SIZE_OPTIONS)[number])
+    ? rawSize
+    : ADMIN_PAGE_SIZE_OPTIONS[0]
+
+  const {
+    items: products,
+    totalPages,
+    page: currentPage,
+    pageSize: currentPageSize,
+  } = await getProductsPaginated({
+    page,
+    pageSize,
     searchQuery,
   })
 
@@ -25,23 +38,11 @@ export default async function ProductsPage({
     <AdminPageWrapper>
       <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3">
         <h1 className="text-3xl font-bold">Products</h1>
-        <form action="/admin/products" method="get" className="flex flex-1 gap-2">
-          <Input
-            name="q"
-            defaultValue={searchQuery ?? ''}
-            placeholder="Search by product name"
-            aria-label="Search by product name"
-            className="max-w-md"
-          />
-          <Button type="submit" variant="outline">
-            Search
-          </Button>
-          {searchQuery ? (
-            <Button asChild variant="ghost">
-              <Link href="/admin/products">Clear</Link>
-            </Button>
-          ) : null}
-        </form>
+        <AdminSearchBar
+          basePath="/admin/products"
+          searchQuery={searchQuery}
+          placeholder="Search by product name"
+        />
         <div className="flex items-center space-x-4">
           <EditCollectionsClient />
           <Button asChild>
@@ -58,9 +59,9 @@ export default async function ProductsPage({
       <PaginationControls
         basePath="/admin/products"
         queryParams={searchQuery ? { q: searchQuery } : undefined}
-        nextCursor={nextCursor}
-        hasMore={hasMore}
-        hasPrev={!!cursor}
+        page={currentPage}
+        totalPages={totalPages}
+        pageSize={currentPageSize}
       />
     </AdminPageWrapper>
   )

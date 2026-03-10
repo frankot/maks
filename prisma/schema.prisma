@@ -126,24 +126,24 @@ model Address {
 }
 
 model Order {
-  id                String         @id @default(uuid())
+  id                String        @id @default(uuid())
   userId            String
-  status            OrderStatus    @default(PENDING)
+  status            OrderStatus   @default(PENDING)
   paymentMethod     PaymentMethod
   pricePaid         Int // Total price including VAT
   subtotal          Int // Total price including VAT before shipping
   shippingCost      Int
   discountCodeId    String?
-  discountAmount    Int            @default(0) // Snapshot of discount in grosz applied to this order
+  discountAmount    Int           @default(0) // Snapshot of discount in grosz applied to this order
   billingAddressId  String
   shippingAddressId String
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
   deletedAt         DateTime?
-  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  billingAddress    Address        @relation("BillingAddress", fields: [billingAddressId], references: [id])
-  shippingAddress   Address        @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
-  discountCode      DiscountCode?  @relation(fields: [discountCodeId], references: [id])
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  billingAddress    Address       @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  shippingAddress   Address       @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  discountCode      DiscountCode? @relation(fields: [discountCodeId], references: [id])
   orderItems        OrderItem[]
   payments          Payment[]
 

@@ -602,6 +602,7 @@ function ImageSlotComponent({
         aspectRatio="aspect-square"
         showRemoveButton={hasImage}
         disabled={!hasImage && !rowArtistId}
+        disabledMessage="Select an artist for this row before uploading"
         isPending={isPending}
       />
     </div>

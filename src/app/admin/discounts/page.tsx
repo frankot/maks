@@ -5,14 +5,26 @@ import { DiscountsTable } from './_components/DiscountsTable'
 import { DiscountCodeForm } from './_components/DiscountCodeForm'
 import AdminPageWrapper from '../components/AdminPageWrapper'
 import { PaginationControls } from '@/components/ui/pagination-controls'
+import { ADMIN_PAGE_SIZE_OPTIONS } from '@/lib/constants'
 
 export default async function DiscountsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ cursor?: string }>
+  searchParams: Promise<{ page?: string; pageSize?: string }>
 }) {
-  const { cursor } = await searchParams
-  const { items: discountCodes, nextCursor, hasMore } = await getDiscountCodesPaginated({ cursor })
+  const { page: pageParam, pageSize: pageSizeParam } = await searchParams
+  const page = Math.max(1, Number(pageParam) || 1)
+  const rawSize = Number(pageSizeParam) || ADMIN_PAGE_SIZE_OPTIONS[0]
+  const pageSize = ADMIN_PAGE_SIZE_OPTIONS.includes(rawSize as (typeof ADMIN_PAGE_SIZE_OPTIONS)[number])
+    ? rawSize
+    : ADMIN_PAGE_SIZE_OPTIONS[0]
+
+  const {
+    items: discountCodes,
+    totalPages,
+    page: currentPage,
+    pageSize: currentPageSize,
+  } = await getDiscountCodesPaginated({ page, pageSize })
 
   return (
     <AdminPageWrapper>
@@ -25,9 +37,9 @@ export default async function DiscountsPage({
 
       <PaginationControls
         basePath="/admin/discounts"
-        nextCursor={nextCursor}
-        hasMore={hasMore}
-        hasPrev={!!cursor}
+        page={currentPage}
+        totalPages={totalPages}
+        pageSize={currentPageSize}
       />
     </AdminPageWrapper>
   )

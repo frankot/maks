@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { Upload, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -21,6 +21,7 @@ interface ImageUploadSlotProps {
   disabled?: boolean
   isPending?: boolean
   maxFileSize?: number
+  disabledMessage?: string
 }
 
 export default function ImageUploadSlot({
@@ -35,8 +36,26 @@ export default function ImageUploadSlot({
   disabled = false,
   isPending = false,
   maxFileSize = MAX_FILE_SIZE,
+  disabledMessage,
 }: ImageUploadSlotProps) {
   const [isDraggingOver, setIsDraggingOver] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const inputId = `upload-${slotId}`
+
+  const handleDisabledInteraction = () => {
+    if (disabledMessage) {
+      toast.error(disabledMessage)
+    }
+  }
+
+  const openFileDialog = () => {
+    if (disabled) {
+      handleDisabledInteraction()
+      return
+    }
+
+    inputRef.current?.click()
+  }
 
   const validateImage = (file: File): string | null => {
     if (file.size > maxFileSize) {
@@ -66,9 +85,14 @@ export default function ImageUploadSlot({
   }
 
   const handleDragOver = (e: React.DragEvent) => {
-    if (disabled) return
     e.preventDefault()
     e.stopPropagation()
+
+    if (disabled) {
+      setIsDraggingOver(false)
+      return
+    }
+
     setIsDraggingOver(true)
   }
 
@@ -79,10 +103,14 @@ export default function ImageUploadSlot({
   }
 
   const handleDrop = (e: React.DragEvent) => {
-    if (disabled) return
     e.preventDefault()
     e.stopPropagation()
     setIsDraggingOver(false)
+
+    if (disabled) {
+      handleDisabledInteraction()
+      return
+    }
 
     const files = e.dataTransfer.files
     if (files.length > 0) {
@@ -95,6 +123,23 @@ export default function ImageUploadSlot({
     }
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Enter' && e.key !== ' ') {
+      return
+    }
+
+    e.preventDefault()
+    openFileDialog()
+  }
+
+  const triggerProps = {
+    role: 'button' as const,
+    tabIndex: disabled ? -1 : 0,
+    'aria-disabled': disabled,
+    onClick: openFileDialog,
+    onKeyDown: handleKeyDown,
+  }
+
   return (
     <div className="space-y-2">
       {imageUrl ? (
@@ -105,6 +150,7 @@ export default function ImageUploadSlot({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
+          {...triggerProps}
         >
           <Image
             src={imageUrl}
@@ -128,28 +174,18 @@ export default function ImageUploadSlot({
           )}
           {!disabled && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-              <label className="cursor-pointer" htmlFor={`upload-${slotId}`}>
+              <div className="pointer-events-none">
                 <Upload className="h-6 w-6 text-white" />
                 <span className="sr-only">Replace {label || 'image'}</span>
-                <input
-                  id={`upload-${slotId}`}
-                  type="file"
-                  accept={ALLOWED_EXTENSIONS.join(',')}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) handleFile(file)
-                    e.target.value = ''
-                  }}
-                  disabled={disabled}
-                  className="hidden"
-                  aria-label={`Replace ${label || 'image'}`}
-                />
-              </label>
+              </div>
             </div>
           )}
           {showRemoveButton && onRemove && !disabled && (
             <button
-              onClick={onRemove}
+              onClick={(e) => {
+                e.stopPropagation()
+                onRemove()
+              }}
               type="button"
               aria-label={`Remove ${label || 'image'}`}
               className="bg-destructive hover:bg-destructive/90 absolute top-2 right-2 rounded p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
@@ -159,8 +195,7 @@ export default function ImageUploadSlot({
           )}
         </div>
       ) : (
-        <label
-          htmlFor={`upload-${slotId}`}
+        <div
           className={`flex ${aspectRatio} cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-all ${
             isDraggingOver
               ? 'border-primary bg-primary/5 ring-primary/20 ring-2'
@@ -169,6 +204,7 @@ export default function ImageUploadSlot({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
+          {...triggerProps}
         >
           {isDraggingOver && !disabled ? (
             <div className="text-center">
@@ -184,23 +220,28 @@ export default function ImageUploadSlot({
               <span className="text-muted-foreground mt-1 block text-xs">
                 JPG, PNG, WebP (max {maxFileSize / (1024 * 1024)}MB)
               </span>
+              {disabledMessage && disabled && (
+                <span className="mt-1 block text-xs text-amber-600">{disabledMessage}</span>
+              )}
             </div>
           )}
-          <input
-            id={`upload-${slotId}`}
-            type="file"
-            accept={ALLOWED_EXTENSIONS.join(',')}
-            onChange={(e) => {
-              const file = e.target.files?.[0]
-              if (file) handleFile(file)
-              e.target.value = ''
-            }}
-            disabled={disabled}
-            className="hidden"
-            aria-label={`Upload ${label || 'image'}`}
-          />
-        </label>
+        </div>
       )}
+
+      <input
+        ref={inputRef}
+        id={inputId}
+        type="file"
+        accept={ALLOWED_EXTENSIONS.join(',')}
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (file) handleFile(file)
+          e.target.value = ''
+        }}
+        disabled={disabled}
+        className="hidden"
+        aria-label={`${imageUrl ? 'Replace' : 'Upload'} ${label || 'image'}`}
+      />
     </div>
   )
 }

@@ -11,6 +11,8 @@ export const CART_STORAGE_KEY = 'maks-cart'
 
 // Pagination defaults
 export const DEFAULT_PAGE_SIZE = 20
+export const ADMIN_PAGE_SIZE_OPTIONS = [20, 50, 100] as const
+export type AdminPageSize = (typeof ADMIN_PAGE_SIZE_OPTIONS)[number]
 export const FEATURED_PRODUCTS_LIMIT = 6
 export const CATEGORY_PRODUCTS_LIMIT = 24
 

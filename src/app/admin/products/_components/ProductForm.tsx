@@ -25,6 +25,24 @@ interface Collection {
   slug: string
 }
 
+interface ProductFormRowProps {
+  label: string
+  description?: string
+  children: React.ReactNode
+}
+
+function ProductFormRow({ label, description, children }: ProductFormRowProps) {
+  return (
+    <div className="grid gap-4 border-b py-5 md:grid-cols-[220px_minmax(0,1fr)] md:gap-8">
+      <div className="space-y-1">
+        <p className="text-sm font-medium text-black">{label}</p>
+        {description ? <p className="text-xs leading-relaxed text-gray-500">{description}</p> : null}
+      </div>
+      <div className="min-w-0">{children}</div>
+    </div>
+  )
+}
+
 function generateProductId(name: string): string {
   return name
     .toLowerCase()
@@ -288,101 +306,102 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
   const previewUrl = formData.slug ? `/shop/${formData.slug}` : ''
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="name">Product Name</Label>
-          <Input
-            id="name"
-            type="text"
-            value={formData.name}
-            onChange={(e) => handleInputChange('name', e.target.value)}
-            required
-            placeholder="Enter product name"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="isAvailable">Available</Label>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="isAvailable"
-              checked={formData.isAvailable}
-              onCheckedChange={(checked) => handleInputChange('isAvailable', checked)}
+    <form onSubmit={handleSubmit} className="mx-auto max-w-5xl border-t">
+      <ProductFormRow label="Product" description="Core catalog details and storefront metadata.">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="name">Product Name</Label>
+            <Input
+              id="name"
+              type="text"
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              required
+              placeholder="Enter product name"
             />
-            <Label htmlFor="isAvailable" className="text-sm text-gray-600">
-              {formData.isAvailable ? 'Available' : 'Unavailable'}
-            </Label>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="materials">Materials</Label>
+            <Input
+              id="materials"
+              type="text"
+              value={formData.materials}
+              onChange={(e) => handleInputChange('materials', e.target.value)}
+              placeholder="e.g. 18k white gold, diamonds"
+            />
           </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="category">Category</Label>
-          <select
-            id="category"
-            className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:outline-none"
-            value={formData.category}
-            onChange={(e) => handleInputChange('category', e.target.value as Category)}
-          >
-            <option value="RINGS">Rings</option>
-            <option value="NECKLACES">Necklaces</option>
-            <option value="EARRINGS">Earrings</option>
-          </select>
+      </ProductFormRow>
+
+      <ProductFormRow label="Availability" description="Control whether the product is visible and its lifecycle status.">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="space-y-2">
+            <Label htmlFor="isAvailable">Available</Label>
+            <div className="flex h-9 items-center gap-3 border px-3">
+              <Switch
+                id="isAvailable"
+                checked={formData.isAvailable}
+                onCheckedChange={(checked) => handleInputChange('isAvailable', checked)}
+              />
+              <Label htmlFor="isAvailable" className="text-sm text-gray-600">
+                {formData.isAvailable ? 'Available' : 'Unavailable'}
+              </Label>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="category">Category</Label>
+            <select
+              id="category"
+              className="block h-9 w-full border bg-transparent px-3 text-sm outline-none transition-colors focus:border-black"
+              value={formData.category}
+              onChange={(e) => handleInputChange('category', e.target.value as Category)}
+            >
+              <option value="RINGS">Rings</option>
+              <option value="NECKLACES">Necklaces</option>
+              <option value="EARRINGS">Earrings</option>
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="collection">Collection</Label>
+            <select
+              id="collection"
+              className="block h-9 w-full border bg-transparent px-3 text-sm outline-none transition-colors focus:border-black"
+              value={formData.collectionId}
+              onChange={(e) => handleInputChange('collectionId', e.target.value)}
+            >
+              <option value="">No Collection</option>
+              {collections.map((collection) => (
+                <option key={collection.id} value={collection.id}>
+                  {collection.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-2 md:col-span-3">
+            <Label htmlFor="productStatus">Product Status</Label>
+            <select
+              id="productStatus"
+              className="block h-9 w-full border bg-transparent px-3 text-sm outline-none transition-colors focus:border-black"
+              value={formData.productStatus}
+              onChange={(e) =>
+                handleInputChange('productStatus', e.target.value as 'SHOP' | 'ORDERED' | 'SOLD')
+              }
+            >
+              <option value="SHOP">Shop (Available for purchase)</option>
+              <option value="ORDERED">Ordered (Payment received)</option>
+              <option value="SOLD">Sold (Shipped/Delivered)</option>
+            </select>
+          </div>
         </div>
+      </ProductFormRow>
 
-        <div className="space-y-2">
-          <Label htmlFor="productStatus">Product Status</Label>
-          <select
-            id="productStatus"
-            className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:outline-none"
-            value={formData.productStatus}
-            onChange={(e) =>
-              handleInputChange('productStatus', e.target.value as 'SHOP' | 'ORDERED' | 'SOLD')
-            }
-          >
-            <option value="SHOP">Shop (Available for purchase)</option>
-            <option value="ORDERED">Ordered (Payment received)</option>
-            <option value="SOLD">Sold (Shipped/Delivered)</option>
-          </select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="collection">Collection</Label>
-          <select
-            id="collection"
-            className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:outline-none"
-            value={formData.collectionId}
-            onChange={(e) => handleInputChange('collectionId', e.target.value)}
-          >
-            <option value="">No Collection</option>
-            {collections.map((collection) => (
-              <option key={collection.id} value={collection.id}>
-                {collection.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Materials */}
-      <div className="space-y-2">
-        <Label htmlFor="materials">Materials</Label>
-        <Input
-          id="materials"
-          type="text"
-          value={formData.materials}
-          onChange={(e) => handleInputChange('materials', e.target.value)}
-          placeholder="e.g. 18k white gold, diamonds"
-        />
-        <p className="text-xs text-gray-500">
-          Short materials description shown on product cards (optional).
-        </p>
-      </div>
-
-      {/* Product ID Section */}
-      <div className="space-y-2">
-        <Label htmlFor="id">Product ID (URL)</Label>
-        <div className="space-y-2">
-          <div className="flex space-x-2">
+      <ProductFormRow label="URL" description="Used for the storefront route. Auto-generated from the product name.">
+        <div className="space-y-3">
+          <div className="flex gap-2">
             <Input
               id="slug"
               type="text"
@@ -404,132 +423,127 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
             </Button>
           </div>
 
-          {previewUrl && (
-            <div className="flex items-center space-x-2 rounded-md bg-gray-50 p-3">
-              <Link2 className="h-4 w-4 text-gray-500" />
-              <span className="text-sm text-gray-600">Preview URL:</span>
-              <code className="font-mono text-sm text-blue-600">{previewUrl}</code>
+          {previewUrl ? (
+            <div className="flex items-center gap-2 border px-3 py-2 text-sm text-gray-600">
+              <Link2 className="h-4 w-4 text-gray-400" />
+              <span className="text-gray-500">Preview URL</span>
+              <code className="font-mono text-black">{previewUrl}</code>
             </div>
-          )}
-
-          <p className="text-xs text-gray-500">
-            {'Auto-generated from product name. You can edit it manually or regenerate.'}
-          </p>
+          ) : null}
         </div>
-      </div>
+      </ProductFormRow>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="priceInGrosz">Price (PLN)</Label>
-          <Input
-            id="priceInGrosz"
-            type="number"
-            step="0.01"
-            min="0"
-            value={formData.priceInGrosz}
-            onChange={(e) => handleInputChange('priceInGrosz', e.target.value)}
-            required
-            placeholder="0.00"
-          />
+      <ProductFormRow label="Pricing" description="Store both PLN and EUR values used in checkout and admin views.">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="priceInGrosz">Price (PLN)</Label>
+            <Input
+              id="priceInGrosz"
+              type="number"
+              step="0.01"
+              min="0"
+              value={formData.priceInGrosz}
+              onChange={(e) => handleInputChange('priceInGrosz', e.target.value)}
+              required
+              placeholder="0.00"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="priceInCents">Price (EUR)</Label>
+            <Input
+              id="priceInCents"
+              type="number"
+              step="0.01"
+              min="0"
+              value={formData.priceInCents}
+              onChange={(e) => handleInputChange('priceInCents', e.target.value)}
+              required
+              placeholder="0.00"
+            />
+          </div>
         </div>
+      </ProductFormRow>
 
-        <div className="space-y-2">
-          <Label htmlFor="priceInCents">Price (EUR)</Label>
-          <Input
-            id="priceInCents"
-            type="number"
-            step="0.01"
-            min="0"
-            value={formData.priceInCents}
-            onChange={(e) => handleInputChange('priceInCents', e.target.value)}
-            required
-            placeholder="0.00"
-          />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
+      <ProductFormRow label="Description" description="Long-form copy displayed on the product page.">
         <Textarea
           id="description"
           value={formData.description}
           onChange={(e) => handleInputChange('description', e.target.value)}
           required
           placeholder="Enter product description"
-          rows={4}
+          rows={6}
         />
-      </div>
+      </ProductFormRow>
 
-      {/* Image Upload Section */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <Label>Product Images</Label>
-          <div className="flex items-center gap-2">
-            <Input
-              type="file"
-              accept="image/jpeg,image/jpg,image/png,image/webp"
-              multiple
-              onChange={handleBulkFileSelect}
-              className="hidden"
-              id="bulk-image-upload"
+      <ProductFormRow label="Images" description="Upload and reorder the images used for the gallery and product cards.">
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-gray-500">Square images work best across the storefront.</p>
+            <div className="flex items-center gap-2">
+              <Input
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/webp"
+                multiple
+                onChange={handleBulkFileSelect}
+                className="hidden"
+                id="bulk-image-upload"
+              />
+              <Label
+                htmlFor="bulk-image-upload"
+                className="inline-flex h-9 cursor-pointer items-center gap-2 border px-3 text-sm transition-colors hover:bg-gray-50"
+              >
+                <Upload className="h-4 w-4" />
+                Upload Multiple
+              </Label>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            {slotImages.map((img, index) => {
+              const imageUrl = img.type === 'existing' ? img.data.url : img.data.previewUrl
+              return (
+                <ImageUploadSlot
+                  key={`${img.type}-${index}`}
+                  imageUrl={imageUrl}
+                  onFileSelect={(file, previewUrl) => {
+                    setSlotImages((prev) => {
+                      const old = prev[index]
+                      if (old.type === 'existing' && old.data.publicId) {
+                        setDeletedPublicIds((d) => [...d, old.data.publicId])
+                      }
+                      if (old.type === 'pending') {
+                        URL.revokeObjectURL(old.data.previewUrl)
+                      }
+                      const newImages = [...prev]
+                      newImages[index] = { type: 'pending', data: { file, previewUrl } }
+                      return newImages
+                    })
+                  }}
+                  onRemove={() => handleRemoveImage(index)}
+                  slotId={`product-image-${index}`}
+                  label={`Image ${index + 1}`}
+                  altText={`Product image ${index + 1}`}
+                  aspectRatio="aspect-square"
+                  isPending={img.type === 'pending'}
+                />
+              )
+            })}
+
+            <ImageUploadSlot
+              imageUrl={null}
+              onFileSelect={handleFileSelect}
+              slotId="product-image-new"
+              label="new"
+              altText="Add product image"
+              aspectRatio="aspect-square"
+              showRemoveButton={false}
             />
-            <Label
-              htmlFor="bulk-image-upload"
-              className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
-            >
-              <Upload className="h-4 w-4" />
-              Upload Multiple
-            </Label>
           </div>
         </div>
+      </ProductFormRow>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {slotImages.map((img, index) => {
-            const imageUrl =
-              img.type === 'existing' ? img.data.url : img.data.previewUrl
-            return (
-              <ImageUploadSlot
-                key={`${img.type}-${index}`}
-                imageUrl={imageUrl}
-                onFileSelect={(file, previewUrl) => {
-                  // Replace image at this index
-                  setSlotImages((prev) => {
-                    const old = prev[index]
-                    if (old.type === 'existing' && old.data.publicId) {
-                      setDeletedPublicIds((d) => [...d, old.data.publicId])
-                    }
-                    if (old.type === 'pending') {
-                      URL.revokeObjectURL(old.data.previewUrl)
-                    }
-                    const newImages = [...prev]
-                    newImages[index] = { type: 'pending', data: { file, previewUrl } }
-                    return newImages
-                  })
-                }}
-                onRemove={() => handleRemoveImage(index)}
-                slotId={`product-image-${index}`}
-                label={`Image ${index + 1}`}
-                altText={`Product image ${index + 1}`}
-                aspectRatio="aspect-square"
-                isPending={img.type === 'pending'}
-              />
-            )
-          })}
-
-          {/* Empty slot for adding new image */}
-          <ImageUploadSlot
-            imageUrl={null}
-            onFileSelect={handleFileSelect}
-            slotId="product-image-new"
-            label="new"
-            altText="Add product image"
-            aspectRatio="aspect-square"
-            showRemoveButton={false}
-          />
-        </div>
-      </div>
-
-      <div className="flex justify-end space-x-4">
+      <div className="flex justify-end gap-3 py-6">
         <Button
           type="button"
           variant="outline"

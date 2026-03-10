@@ -31,36 +31,55 @@ export async function getCustomers() {
   }
 }
 
-export async function getCustomersPaginated(params: { cursor?: string; pageSize?: number }) {
-  const { cursor, pageSize = DEFAULT_PAGE_SIZE } = params
+export async function getCustomersPaginated(params: {
+  page?: number
+  pageSize?: number
+  searchQuery?: string
+}) {
+  const { page = 1, pageSize = DEFAULT_PAGE_SIZE, searchQuery } = params
+  const skip = (page - 1) * pageSize
 
-  const customers = await prisma.user.findMany({
-    take: pageSize + 1,
-    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-    where: { deletedAt: null },
-    include: {
-      orders: {
-        select: {
-          id: true,
-          status: true,
-          pricePaid: true,
-          createdAt: true,
+  const where = {
+    deletedAt: null,
+    ...(searchQuery
+      ? {
+          OR: [
+            { firstName: { contains: searchQuery, mode: 'insensitive' as const } },
+            { lastName: { contains: searchQuery, mode: 'insensitive' as const } },
+            { email: { contains: searchQuery, mode: 'insensitive' as const } },
+          ],
+        }
+      : {}),
+  }
+
+  const [items, total] = await Promise.all([
+    prisma.user.findMany({
+      skip,
+      take: pageSize,
+      where,
+      include: {
+        orders: {
+          select: {
+            id: true,
+            status: true,
+            pricePaid: true,
+            createdAt: true,
+          },
+        },
+        _count: {
+          select: {
+            orders: true,
+          },
         },
       },
-      _count: {
-        select: {
-          orders: true,
-        },
-      },
-    },
-    orderBy: { createdAt: 'desc' },
-  })
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.user.count({ where }),
+  ])
 
-  const hasMore = customers.length > pageSize
-  const items = hasMore ? customers.slice(0, -1) : customers
-  const nextCursor = hasMore ? items[items.length - 1]?.id : undefined
+  const totalPages = Math.ceil(total / pageSize)
 
-  return { items, nextCursor, hasMore }
+  return { items, total, page, pageSize, totalPages }
 }
 
 export async function getCustomerById(customerId: string) {

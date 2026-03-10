@@ -26,35 +26,51 @@ export async function getOrders() {
 }
 
 export async function getOrdersPaginated(params: {
-  cursor?: string
+  page?: number
   pageSize?: number
   status?: OrderStatus
+  searchQuery?: string
 }) {
-  const { cursor, pageSize = DEFAULT_PAGE_SIZE, status } = params
+  const { page = 1, pageSize = DEFAULT_PAGE_SIZE, status, searchQuery } = params
+  const skip = (page - 1) * pageSize
 
-  const orders = await prisma.order.findMany({
-    take: pageSize + 1,
-    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-    where: {
-      deletedAt: null,
-      ...(status ? { status } : {}),
-    },
-    include: {
-      user: {
-        select: {
-          email: true,
-          phoneNumber: true,
+  const where = {
+    deletedAt: null,
+    ...(status ? { status } : {}),
+    ...(searchQuery
+      ? {
+          user: {
+            OR: [
+              { firstName: { contains: searchQuery, mode: 'insensitive' as const } },
+              { lastName: { contains: searchQuery, mode: 'insensitive' as const } },
+              { email: { contains: searchQuery, mode: 'insensitive' as const } },
+            ],
+          },
+        }
+      : {}),
+  }
+
+  const [items, total] = await Promise.all([
+    prisma.order.findMany({
+      skip,
+      take: pageSize,
+      where,
+      include: {
+        user: {
+          select: {
+            email: true,
+            phoneNumber: true,
+          },
         },
       },
-    },
-    orderBy: { createdAt: 'desc' },
-  })
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.order.count({ where }),
+  ])
 
-  const hasMore = orders.length > pageSize
-  const items = hasMore ? orders.slice(0, -1) : orders
-  const nextCursor = hasMore ? items[items.length - 1]?.id : undefined
+  const totalPages = Math.ceil(total / pageSize)
 
-  return { items, nextCursor, hasMore }
+  return { items, total, page, pageSize, totalPages }
 }
 
 export async function updateOrderStatus(orderId: string, status: OrderStatus) {

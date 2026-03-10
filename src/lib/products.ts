@@ -56,41 +56,45 @@ export async function getProducts(): Promise<ProductWithOrderItems[]> {
   }
 }
 
-// For admin - paginated products
+// For admin - paginated products (offset-based)
 export async function getProductsPaginated(params: {
-  cursor?: string
+  page?: number
   pageSize?: number
   status?: ProductStatus
   category?: Category
   searchQuery?: string
 }) {
-  const { cursor, pageSize = DEFAULT_PAGE_SIZE, status, category, searchQuery } = params
+  const { page = 1, pageSize = DEFAULT_PAGE_SIZE, status, category, searchQuery } = params
+  const skip = (page - 1) * pageSize
 
-  const products = await prisma.product.findMany({
-    take: pageSize + 1,
-    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-    where: {
-      deletedAt: null,
-      ...(status ? { productStatus: status } : {}),
-      ...(category ? { category } : {}),
-      ...(searchQuery
-        ? {
-            name: {
-              contains: searchQuery,
-              mode: 'insensitive' as const,
-            },
-          }
-        : {}),
-    },
-    include: { orderItems: true, collection: true },
-    orderBy: { createdAt: 'desc' },
-  })
+  const where = {
+    deletedAt: null,
+    ...(status ? { productStatus: status } : {}),
+    ...(category ? { category } : {}),
+    ...(searchQuery
+      ? {
+          name: {
+            contains: searchQuery,
+            mode: 'insensitive' as const,
+          },
+        }
+      : {}),
+  }
 
-  const hasMore = products.length > pageSize
-  const items = hasMore ? products.slice(0, -1) : products
-  const nextCursor = hasMore ? items[items.length - 1]?.id : undefined
+  const [items, total] = await Promise.all([
+    prisma.product.findMany({
+      skip,
+      take: pageSize,
+      where,
+      include: { orderItems: true, collection: true },
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.product.count({ where }),
+  ])
 
-  return { items, nextCursor, hasMore }
+  const totalPages = Math.ceil(total / pageSize)
+
+  return { items, total, page, pageSize, totalPages }
 }
 
 // For customer-facing - only SHOP products

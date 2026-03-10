@@ -3,6 +3,16 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import type { HeroContent } from '@prisma/client'
 import { Loader2, Upload, Trash2, Plus } from 'lucide-react'
 import { toast } from 'sonner'
@@ -11,8 +21,17 @@ import type { SlotImage } from '@/lib/types/image'
 import { uploadFile, deleteCloudinaryImage } from '@/lib/upload'
 
 interface ImagePair {
+  id: string
   image1: SlotImage | null
   image2: SlotImage | null
+}
+
+function createImagePair(image1: SlotImage | null = null, image2: SlotImage | null = null): ImagePair {
+  return {
+    id: crypto.randomUUID(),
+    image1,
+    image2,
+  }
 }
 
 export default function HeroCms() {
@@ -22,6 +41,8 @@ export default function HeroCms() {
   const [saving, setSaving] = useState(false)
   const [saveProgress, setSaveProgress] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [pairPendingDelete, setPairPendingDelete] = useState<ImagePair | null>(null)
+  const [deletingPairId, setDeletingPairId] = useState<string | null>(null)
 
   const hasUnsavedChanges =
     deletedPublicIds.length > 0 ||
@@ -50,25 +71,26 @@ export default function HeroCms() {
 
         const pairs: ImagePair[] = []
         for (let i = 0; i < data.imagePaths.length; i += 2) {
-          pairs.push({
-            image1:
-              i < data.imagePaths.length
-                ? {
-                    type: 'existing',
-                    data: { url: data.imagePaths[i]!, publicId: data.imagePublicIds[i] || '' },
-                  }
-                : null,
-            image2:
-              i + 1 < data.imagePaths.length
-                ? {
-                    type: 'existing',
-                    data: {
-                      url: data.imagePaths[i + 1]!,
-                      publicId: data.imagePublicIds[i + 1] || '',
-                    },
-                  }
-                : null,
-          })
+          const image1 =
+            i < data.imagePaths.length
+              ? {
+                  type: 'existing' as const,
+                  data: { url: data.imagePaths[i]!, publicId: data.imagePublicIds[i] || '' },
+                }
+              : null
+
+          const image2 =
+            i + 1 < data.imagePaths.length
+              ? {
+                  type: 'existing' as const,
+                  data: {
+                    url: data.imagePaths[i + 1]!,
+                    publicId: data.imagePublicIds[i + 1] || '',
+                  },
+                }
+              : null
+
+          pairs.push(createImagePair(image1, image2))
         }
         setImagePairs(pairs)
       }
@@ -84,14 +106,17 @@ export default function HeroCms() {
   const handleFileSelect = (
     file: File,
     previewUrl: string,
-    pairIndex: number,
+    pairId: string,
     imageSlot: 'image1' | 'image2'
   ) => {
     setImagePairs((prev) => {
       const newPairs = [...prev]
-      if (!newPairs[pairIndex]) {
-        newPairs[pairIndex] = { image1: null, image2: null }
+      const pairIndex = newPairs.findIndex((pair) => pair.id === pairId)
+
+      if (pairIndex === -1) {
+        return prev
       }
+
       // Revoke old pending preview if replacing
       const old = newPairs[pairIndex]![imageSlot]
       if (old?.type === 'pending') {
@@ -103,26 +128,110 @@ export default function HeroCms() {
   }
 
   const addNewPair = () => {
-    setImagePairs([{ image1: null, image2: null }, ...imagePairs])
+    setImagePairs((prev) => [createImagePair(), ...prev])
   }
 
-  const removePair = (index: number) => {
-    const pair = imagePairs[index]!
-    // Track existing images for deletion and revoke pending previews
-    for (const slot of [pair.image1, pair.image2]) {
-      if (slot?.type === 'existing' && slot.data.publicId) {
-        setDeletedPublicIds((prev) => [...prev, slot.data.publicId])
+  const removePairLocally = (pairId: string) => {
+    setImagePairs((prev) => {
+      const pair = prev.find((item) => item.id === pairId)
+
+      if (!pair) {
+        return prev
       }
-      if (slot?.type === 'pending') {
-        URL.revokeObjectURL(slot.data.previewUrl)
+
+      for (const slot of [pair.image1, pair.image2]) {
+        if (slot?.type === 'pending') {
+          URL.revokeObjectURL(slot.data.previewUrl)
+        }
       }
+
+      return prev.filter((item) => item.id !== pairId)
+    })
+  }
+
+  const confirmRemovePair = async () => {
+    if (!pairPendingDelete) {
+      return
     }
-    setImagePairs((prev) => prev.filter((_, i) => i !== index))
+
+    const pairToDelete = pairPendingDelete
+    const existingSlots = [pairToDelete.image1, pairToDelete.image2].filter(
+      (slot): slot is Extract<SlotImage, { type: 'existing' }> => {
+        return Boolean(slot && slot.type === 'existing' && slot.data.publicId)
+      }
+    )
+    const publicIdsToDelete = existingSlots.map((slot) => slot.data.publicId)
+
+    setDeletingPairId(pairToDelete.id)
+
+    try {
+      if (heroContent && publicIdsToDelete.length > 0) {
+        const filteredImages = heroContent.imagePaths.reduce<
+          { imagePath: string; publicId: string }[]
+        >((acc, imagePath, index) => {
+          const publicId = heroContent.imagePublicIds[index]
+
+          if (!publicId || publicIdsToDelete.includes(publicId)) {
+            return acc
+          }
+
+          acc.push({ imagePath, publicId })
+          return acc
+        }, [])
+
+        const response = await fetch('/api/hero', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: heroContent.id,
+            imagePaths: filteredImages.map((item) => item.imagePath),
+            imagePublicIds: filteredImages.map((item) => item.publicId),
+          }),
+        })
+
+        if (!response.ok) {
+          let errorMessage = 'Failed to delete hero pair'
+          try {
+            const error = await response.json()
+            errorMessage = error.error || error.message || errorMessage
+          } catch {
+            errorMessage = `Delete failed with status ${response.status}`
+          }
+          throw new Error(errorMessage)
+        }
+
+        const updatedHeroContent: HeroContent = await response.json()
+        setHeroContent(updatedHeroContent)
+
+        for (const publicId of publicIdsToDelete) {
+          await deleteCloudinaryImage(publicId, '/api/upload/hero')
+        }
+      }
+
+      removePairLocally(pairToDelete.id)
+      setDeletedPublicIds((current) =>
+        current.filter((publicId) => !publicIdsToDelete.includes(publicId))
+      )
+      setPairPendingDelete(null)
+      toast.success('Hero pair deleted')
+    } catch (error) {
+      console.error('Pair delete error:', error)
+      const message = error instanceof Error ? error.message : 'Failed to delete hero pair'
+      toast.error(message)
+    } finally {
+      setDeletingPairId(null)
+    }
   }
 
-  const removeImage = (pairIndex: number, slot: 'image1' | 'image2') => {
+  const removeImage = (pairId: string, slot: 'image1' | 'image2') => {
     setImagePairs((prev) => {
       const newPairs = [...prev]
+      const pairIndex = newPairs.findIndex((pair) => pair.id === pairId)
+
+      if (pairIndex === -1) {
+        return prev
+      }
+
       const image = newPairs[pairIndex]![slot]
       if (image?.type === 'existing' && image.data.publicId) {
         setDeletedPublicIds((prev) => [...prev, image.data.publicId])
@@ -136,8 +245,10 @@ export default function HeroCms() {
   }
 
   const saveHeroContent = async () => {
-    const hasCompleteData = imagePairs.some((pair) => pair.image1 || pair.image2)
-    if (!hasCompleteData) {
+    const hasImages = imagePairs.some((pair) => pair.image1 || pair.image2)
+    const canSaveEmptyExistingHero = Boolean(heroContent && deletedPublicIds.length > 0)
+
+    if (!hasImages && !canSaveEmptyExistingHero) {
       toast.error('Please add at least one image before saving')
       return
     }
@@ -168,16 +279,7 @@ export default function HeroCms() {
         uploadResults.set(`${pairIndex}-${slot}`, result)
       }
 
-      // 2. Delete removed images
-      for (const publicId of deletedPublicIds) {
-        try {
-          await deleteCloudinaryImage(publicId, '/api/upload/hero')
-        } catch {
-          console.warn(`Failed to delete image ${publicId}`)
-        }
-      }
-
-      // 3. Build final arrays with uploaded URLs replacing pending
+      // 2. Build final arrays with uploaded URLs replacing pending
       const imagePaths: string[] = []
       const imagePublicIds: string[] = []
       const updatedPairs: ImagePair[] = []
@@ -199,7 +301,7 @@ export default function HeroCms() {
         const resolved1 = resolveSlot(pair.image1, 'image1')
         const resolved2 = resolveSlot(pair.image2, 'image2')
 
-        updatedPairs.push({ image1: resolved1, image2: resolved2 })
+        updatedPairs.push({ id: pair.id, image1: resolved1, image2: resolved2 })
 
         if (resolved1 && resolved1.type === 'existing') {
           imagePaths.push(resolved1.data.url)
@@ -211,7 +313,7 @@ export default function HeroCms() {
         }
       })
 
-      // 4. Save to DB
+      // 3. Save to DB first so Cloudinary cleanup only happens after persistence succeeds.
       setSaveProgress('Saving...')
       const payload = { imagePaths, imagePublicIds }
       const url = '/api/hero'
@@ -237,6 +339,23 @@ export default function HeroCms() {
       const savedContent: HeroContent = await response.json()
       setHeroContent(savedContent)
 
+      // 4. Delete removed images from Cloudinary.
+      const failedDeleteIds: string[] = []
+      const uniqueDeletedPublicIds = [...new Set(deletedPublicIds)]
+
+      if (uniqueDeletedPublicIds.length > 0) {
+        setSaveProgress('Cleaning up removed images...')
+      }
+
+      for (const publicId of uniqueDeletedPublicIds) {
+        try {
+          await deleteCloudinaryImage(publicId, '/api/upload/hero')
+        } catch (error) {
+          console.warn(`Failed to delete image ${publicId}`, error)
+          failedDeleteIds.push(publicId)
+        }
+      }
+
       // 5. Revoke pending previews and update state
       pendingFiles.forEach(({ pairIndex, slot }) => {
         const img = imagePairs[pairIndex]?.[slot]
@@ -245,9 +364,13 @@ export default function HeroCms() {
         }
       })
       setImagePairs(updatedPairs)
-      setDeletedPublicIds([])
+      setDeletedPublicIds(failedDeleteIds)
 
-      toast.success('Hero content saved successfully!')
+      if (failedDeleteIds.length > 0) {
+        toast.error('Hero content saved, but some removed images could not be deleted from Cloudinary')
+      } else {
+        toast.success('Hero content saved successfully!')
+      }
     } catch (error) {
       console.error('Save error:', error)
       const message = error instanceof Error ? error.message : 'Failed to save hero content'
@@ -319,7 +442,7 @@ export default function HeroCms() {
             <div className="grid gap-4">
               {imagePairs.map((pair, pairIndex) => (
                 <div
-                  key={pairIndex}
+                  key={pair.id}
                   className="bg-card hover:bg-muted/50 rounded-lg border p-4 transition-colors"
                 >
                   <div className="mb-4 flex items-center justify-between">
@@ -330,19 +453,24 @@ export default function HeroCms() {
                       </span>
                     </h3>
                     <Button
-                      onClick={() => removePair(pairIndex)}
+                      onClick={() => setPairPendingDelete(pair)}
                       variant="ghost"
                       size="sm"
+                      disabled={saving || deletingPairId === pair.id}
                       className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      {deletingPairId === pair.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
                     </Button>
                   </div>
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {(['image1', 'image2'] as const).map((slot) => {
                       const image = pair[slot]
-                      const slotKey = `${pairIndex}-${slot}`
+                      const slotKey = `${pair.id}-${slot}`
                       const slotLabel = slot === 'image1' ? 'Left' : 'Right'
                       const imageUrl = image
                         ? image.type === 'existing'
@@ -355,9 +483,9 @@ export default function HeroCms() {
                           key={slot}
                           imageUrl={imageUrl}
                           onFileSelect={(file, previewUrl) =>
-                            handleFileSelect(file, previewUrl, pairIndex, slot)
+                            handleFileSelect(file, previewUrl, pair.id, slot)
                           }
-                          onRemove={() => removeImage(pairIndex, slot)}
+                          onRemove={() => removeImage(pair.id, slot)}
                           slotId={slotKey}
                           label={slotLabel}
                           altText={`Hero ${slotLabel} image for pair ${imagePairs.length - pairIndex}`}
@@ -372,6 +500,27 @@ export default function HeroCms() {
           )}
         </CardContent>
       </Card>
+
+      <AlertDialog open={pairPendingDelete !== null} onOpenChange={(open) => !open && setPairPendingDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this image pair?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will remove both images from the hero section permanently. <br />This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deletingPairId !== null}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRemovePair}
+              className="bg-red-600 hover:bg-red-700"
+              disabled={deletingPairId !== null}
+            >
+              {deletingPairId !== null ? 'Deleting...' : 'Delete Pair'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

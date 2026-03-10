@@ -6,22 +6,24 @@ import type { Currency } from '@/stores/currency-store'
 export type { DiscountCode }
 
 export async function getDiscountCodesPaginated(params: {
-  cursor?: string
+  page?: number
   pageSize?: number
 }) {
-  const { cursor, pageSize = DEFAULT_PAGE_SIZE } = params
+  const { page = 1, pageSize = DEFAULT_PAGE_SIZE } = params
+  const skip = (page - 1) * pageSize
 
-  const codes = await prisma.discountCode.findMany({
-    take: pageSize + 1,
-    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-    orderBy: { createdAt: 'desc' },
-  })
+  const [items, total] = await Promise.all([
+    prisma.discountCode.findMany({
+      skip,
+      take: pageSize,
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.discountCode.count(),
+  ])
 
-  const hasMore = codes.length > pageSize
-  const items = hasMore ? codes.slice(0, -1) : codes
-  const nextCursor = hasMore ? items[items.length - 1]?.id : undefined
+  const totalPages = Math.ceil(total / pageSize)
 
-  return { items, nextCursor, hasMore }
+  return { items, total, page, pageSize, totalPages }
 }
 
 export async function getDiscountCodeByCode(code: string): Promise<DiscountCode | null> {
