@@ -13,10 +13,13 @@ interface AddToCartButtonProps {
     priceInCents: number
     imagePath?: string
     slug: string
+    selectedSize?: string | null
+    collectionName?: string | null
   }
   className?: string
   size?: 'default' | 'sm' | 'lg' | 'icon'
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
+  isDisabled?: boolean
 }
 
 export default function AddToCartButton({
@@ -24,6 +27,7 @@ export default function AddToCartButton({
   className = '',
   size = 'default',
   variant = 'default',
+  isDisabled = false,
 }: AddToCartButtonProps) {
   const { addItem, openCart, isInCart } = useCartStore()
   const [added, setAdded] = useState(false)
@@ -43,6 +47,8 @@ export default function AddToCartButton({
       priceInCents: product.priceInCents,
       imagePath: product.imagePath,
       slug: product.slug,
+      size: product.selectedSize ?? undefined,
+      collectionName: product.collectionName ?? undefined,
     })
 
     setAdded(true)
@@ -58,7 +64,7 @@ export default function AddToCartButton({
       className={className}
       size={size}
       variant={alreadyInCart ? 'outline' : variant}
-      disabled={added}
+      disabled={added || isDisabled}
     >
       {added ? (
         <>

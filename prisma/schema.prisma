@@ -73,6 +73,7 @@ model Product {
   isAvailable    Boolean                  @default(true)
   isFeatured     Boolean                  @default(false)
   category       Category                 @default(RINGS)
+  sizes          String[]                 @default([])
   collectionId   String?
   collection     Collection?              @relation(fields: [collectionId], references: [id])
   createdAt      DateTime                 @default(now())

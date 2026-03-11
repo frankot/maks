@@ -8,6 +8,8 @@ export type CartItem = {
   priceInCents: number
   imagePath?: string
   slug: string | null
+  size?: string | null
+  collectionName?: string | null
 }
 
 export type Cart = {

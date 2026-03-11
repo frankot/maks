@@ -8,6 +8,7 @@ export const createProductSchema = z.object({
   priceInCents: z.coerce.number().int().positive(),
   description: z.string().min(1, 'Description is required'),
   materials: z.string().nullable().optional(),
+  sizes: z.array(z.string()).optional(),
   imagePaths: z.array(z.string()).optional(),
   imagePublicIds: z.array(z.string()).optional(),
   productStatus: z.enum(['SHOP', 'ORDERED', 'SOLD']).optional(),

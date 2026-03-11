@@ -204,6 +204,7 @@ export async function createProduct(data: {
   priceInCents: number
   description: string
   materials?: string | null
+  sizes?: string[]
   imagePaths?: string[]
   imagePublicIds?: string[]
   productStatus?: ProductStatus
@@ -237,6 +238,7 @@ export async function createProduct(data: {
       priceInCents: data.priceInCents,
       description: data.description,
       materials: data.materials ?? null,
+      sizes: data.sizes ?? [],
       imagePaths: data.imagePaths || [],
       imagePublicIds: data.imagePublicIds || [],
       productStatus: data.productStatus || 'SHOP',
@@ -257,6 +259,7 @@ export async function updateProduct(
     priceInCents?: number
     description?: string
     materials?: string | null
+    sizes?: string[]
     imagePaths?: string[]
     imagePublicIds?: string[]
     productStatus?: ProductStatus

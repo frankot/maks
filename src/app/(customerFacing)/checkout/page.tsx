@@ -470,6 +470,14 @@ export default function CheckoutPage() {
                       <div className="flex min-w-0 flex-1 items-start justify-between">
                         <div>
                           <p className="text-sm font-medium uppercase">{item.name}</p>
+                          {(item.collectionName || item.size) && (
+                            <div className="mt-1 space-y-0.5">
+                              {item.collectionName && (
+                                <p className="text-xs text-black/45">Collection: {item.collectionName}</p>
+                              )}
+                              {item.size && <p className="text-xs text-black/45">Size: {item.size}</p>}
+                            </div>
+                          )}
                         </div>
                         <p className="text-sm text-black/70">
                           {formatCartPrice(getItemPrice(item, currency), currency)}

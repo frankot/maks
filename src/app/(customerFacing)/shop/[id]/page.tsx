@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { getProductById, getProductBySlug } from '@/lib/products'
 import { getCollectionBySlug, getCollections } from '@/lib/collections'
 import ProductDetailsTabs from '@/app/(customerFacing)/shop/[id]/ProductDetailsTabs'
-import AddToCartButton from '@/components/AddToCartButton'
+import ProductActions from './ProductActions'
 import DesktopProductPrice from './DesktopProductPrice'
 import CollectionsBar from '@/app/(customerFacing)/_components/CollectionsBar'
 import MobileProductView from './MobileProductView'
@@ -126,6 +126,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
           slug: product.slug,
           productStatus: product.productStatus,
           materials: product.materials,
+          sizes: product.sizes,
+          collectionName: product.collection?.name ?? null,
         }}
         isSold={isSold}
       />
@@ -231,49 +233,22 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </div>
 
               <div className="flex justify-center">
-                {isSold ? (
-                  <div className="cursor-not-allowed border border-black bg-white px-6 py-2 text-xs tracking-wider text-black uppercase">
-                    SOLD
-                  </div>
-                ) : (
-                  <AddToCartButton
-                    product={{
-                      id: product.id,
-                      name: product.name,
-                      priceInGrosz: product.priceInGrosz,
-                      priceInCents: product.priceInCents,
-                      imagePath: product.imagePaths[0],
-                      slug: product.slug ?? product.id,
-                    }}
-                    className="bg-black px-6 py-2 text-xs tracking-wider text-white uppercase transition-colors hover:bg-gray-800"
-                  />
-                )}
+                <ProductActions
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    priceInGrosz: product.priceInGrosz,
+                    priceInCents: product.priceInCents,
+                    imagePath: product.imagePaths[0],
+                    slug: product.slug ?? product.id,
+                    sizes: product.sizes,
+                    collectionName: product.collection?.name ?? null,
+                  }}
+                  isSold={isSold}
+                />
               </div>
 
               <div className="mx-auto max-w-md">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs">Size:</span>
-                    <a href="#" className="text-xs underline">
-                      size guide
-                    </a>
-                  </div>
-                  <select className="w-full border border-gray-900 px-3 py-2 text-xs focus:ring-1 focus:ring-black focus:outline-none">
-                    <option>Select size</option>
-                    <option>XS</option>
-                    <option>S</option>
-                    <option>M</option>
-                    <option>L</option>
-                    <option>XL</option>
-                    <option>50</option>
-                    <option>52</option>
-                    <option>54</option>
-                    <option>56</option>
-                    <option>58</option>
-                    <option>60</option>
-                  </select>
-                </div>
-
                 <ProductDetailsTabs
                   details={
                     <p className="text-sm leading-relaxed">

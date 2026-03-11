@@ -62,6 +62,7 @@ export default function CartItemList({ compact = false, onNavigate }: CartItemLi
             </div>
 
             <div className={`text-gray-600 ${compact ? 'text-[11px]' : 'text-xs'}`}>
+              {item.size && <span className="mr-2">Size: {item.size}</span>}
               {formatCartPrice(getItemPrice(item, currency), currency)}
             </div>
           </div>

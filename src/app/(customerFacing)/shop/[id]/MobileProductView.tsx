@@ -19,12 +19,15 @@ interface MobileProductViewProps {
     slug: string | null
     productStatus: string
     materials: string | null
+    sizes: string[]
+    collectionName?: string | null
   }
   isSold: boolean
 }
 
 export default function MobileProductView({ product, isSold }: MobileProductViewProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+    const [selectedSize, setSelectedSize] = useState('')
   const currency = useCurrencyStore((s) => s.currency)
   const amount = currency === 'EUR' ? product.priceInCents : product.priceInGrosz
 
@@ -111,41 +114,31 @@ export default function MobileProductView({ product, isSold }: MobileProductView
           <p className="text-base font-light text-gray-900">{formatCartPrice(amount, currency)}</p>
         </div>
 
-        {/* Size Selector */}
-        <div className="relative mb-4">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs">Size:</span>
-            <a href="#" className="text-xs underline">
-              size guide
-            </a>
-          </div>
-          <div className="relative">
-            <select className="w-full appearance-none border border-gray-900 bg-white px-3 py-2.5 text-xs focus:ring-1 focus:ring-black focus:outline-none">
-              <option>Select size</option>
-              <option>XS</option>
-              <option>S</option>
-              <option>M</option>
-              <option>L</option>
-              <option>XL</option>
-              <option>50</option>
-              <option>52</option>
-              <option>54</option>
-              <option>56</option>
-              <option>58</option>
-              <option>60</option>
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-900">
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
+        {/* Size Display */}
+        {product.sizes.length > 0 && (
+          <div className="relative mb-4">
+            <div className="mb-2">
+              <span className="text-xs">Size:</span>
+            </div>
+            <div className="relative">
+              <select
+                value={selectedSize}
+                onChange={(e) => setSelectedSize(e.target.value)}
+                className="w-full appearance-none border border-gray-900 bg-white px-3 py-2.5 text-xs focus:ring-1 focus:ring-black focus:outline-none"
+              >
+                <option value="">Select size</option>
+                {product.sizes.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-900">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Add to Cart Button */}
         <div className="mb-4 space-y-3">
@@ -165,7 +158,10 @@ export default function MobileProductView({ product, isSold }: MobileProductView
                 priceInCents: product.priceInCents,
                 imagePath: product.imagePaths[0],
                 slug: product.slug ?? product.id,
+                selectedSize: selectedSize || null,
+                collectionName: product.collectionName,
               }}
+                            isDisabled={product.sizes.length > 0 && !selectedSize}
               className="w-full bg-black py-3.5 text-sm tracking-wider text-white uppercase transition-colors hover:bg-gray-800"
             />
           )}

@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
     const product = await createProduct({
       ...data,
       materials: data.materials || null,
+      sizes: data.sizes || [],
       imagePaths: data.imagePaths || [],
       imagePublicIds: data.imagePublicIds || [],
       isAvailable: data.isAvailable ?? true,

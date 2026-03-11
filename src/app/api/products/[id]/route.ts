@@ -44,6 +44,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       priceInCents,
       description,
       materials,
+      sizes,
       imagePaths,
       imagePublicIds,
       isAvailable,
@@ -56,6 +57,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       priceInCents?: number | string
       description?: string
       materials?: string | null
+      sizes?: string[]
       imagePaths?: string[]
       imagePublicIds?: string[]
       isAvailable?: boolean
@@ -75,6 +77,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       ...(priceC !== undefined && Number.isFinite(priceC) && { priceInCents: priceC }),
       ...(description && { description }),
       ...(materials !== undefined && { materials: materials || null }),
+      ...(sizes !== undefined && { sizes }),
       ...(imagePaths && { imagePaths }),
       ...(imagePublicIds && { imagePublicIds }),
       ...(isAvailable !== undefined && { isAvailable }),

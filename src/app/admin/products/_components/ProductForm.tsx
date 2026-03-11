@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import type { Category } from '@prisma/client'
 import { Switch } from '@/components/ui/switch'
-import { Upload, Link2, RefreshCw } from 'lucide-react'
+import { Upload, Link2, RefreshCw, X } from 'lucide-react'
 import { toast } from 'sonner'
 import ImageUploadSlot from '@/components/admin/ImageUploadSlot'
 import type { SlotImage } from '@/lib/types/image'
@@ -72,10 +72,14 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     materials: '',
     isAvailable: true,
     category: 'RINGS' as Category,
+    sizes: [] as string[],
     collectionId: '',
     productStatus: 'SHOP' as 'SHOP' | 'ORDERED' | 'SOLD',
   })
   const [isIdManuallyEdited, setIsIdManuallyEdited] = useState(false)
+  const [ringSizeMin, setRingSizeMin] = useState('4')
+  const [ringSizeMax, setRingSizeMax] = useState('12')
+  const [newSizeInput, setNewSizeInput] = useState('')
 
   const isEditing = Boolean(productId)
 
@@ -96,9 +100,18 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
               materials: (product as { materials?: string | null }).materials || '',
               isAvailable: product.isAvailable,
               category: (product.category ?? 'RINGS') as Category,
+              sizes: product.sizes || [],
               collectionId: product.collectionId || '',
               productStatus: product.productStatus || 'SHOP',
             })
+            // Restore ring range state from loaded sizes
+            if ((product.category ?? 'RINGS') === 'RINGS' && product.sizes?.length > 0) {
+              const nums = product.sizes.map(Number).filter((n: number) => !isNaN(n))
+              if (nums.length > 0) {
+                setRingSizeMin(String(Math.min(...nums)))
+                setRingSizeMax(String(Math.max(...nums)))
+              }
+            }
             setIsIdManuallyEdited(true)
 
             if (product.imagePublicIds && product.imagePaths) {
@@ -237,6 +250,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
         priceInCents: Math.round(parseFloat(formData.priceInCents) * 100),
         description: formData.description,
         materials: formData.materials || null,
+        sizes: formData.category === 'EARRINGS' ? [] : formData.sizes,
         isAvailable: formData.isAvailable,
         category: formData.category,
         collectionId: formData.collectionId || null,
@@ -304,6 +318,31 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
 
   const previewUrl = formData.slug ? `/shop/${formData.slug}` : ''
 
+  // Sync ring size range → formData.sizes whenever min/max or category changes
+  useEffect(() => {
+    if (formData.category !== 'RINGS') return
+    const min = parseInt(ringSizeMin)
+    const max = parseInt(ringSizeMax)
+    setFormData((prev) => ({
+      ...prev,
+      sizes:
+        min <= max ? Array.from({ length: max - min + 1 }, (_, i) => String(min + i)) : [],
+    }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ringSizeMin, ringSizeMax, formData.category])
+
+  const handleAddSize = () => {
+    const trimmed = newSizeInput.trim()
+    if (trimmed && !formData.sizes.includes(trimmed)) {
+      setFormData((prev) => ({ ...prev, sizes: [...prev.sizes, trimmed] }))
+      setNewSizeInput('')
+    }
+  }
+
+  const handleRemoveSize = (size: string) => {
+    setFormData((prev) => ({ ...prev, sizes: prev.sizes.filter((s) => s !== size) }))
+  }
+
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-5xl border-t">
       <ProductFormRow label="Product" description="Core catalog details and storefront metadata.">
@@ -358,11 +397,21 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
               id="category"
               className="block h-9 w-full border bg-transparent px-3 text-sm transition-colors outline-none focus:border-black"
               value={formData.category}
-              onChange={(e) => handleInputChange('category', e.target.value as Category)}
+              onChange={(e) => {
+                const newCat = e.target.value as Category
+                setFormData((prev) => ({ ...prev, category: newCat, sizes: [] }))
+                if (newCat === 'RINGS') {
+                  setRingSizeMin('4')
+                  setRingSizeMax('12')
+                }
+                setNewSizeInput('')
+              }}
             >
               <option value="RINGS">Rings</option>
               <option value="NECKLACES">Necklaces</option>
               <option value="EARRINGS">Earrings</option>
+              <option value="BRACELETS">Bracelets</option>
+              <option value="CHAINS">Chains</option>
             </select>
           </div>
 
@@ -400,6 +449,105 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
           </div>
         </div>
       </ProductFormRow>
+
+      {formData.category !== 'EARRINGS' && (
+        <ProductFormRow
+          label="Size"
+          description={
+            formData.category === 'RINGS'
+              ? 'Select the available size range. Customers will pick from all sizes in this range.'
+              : 'Add each size manually (numbers or letters). Customers will pick from the list.'
+          }
+        >
+          {formData.category === 'RINGS' ? (
+            <div className="space-y-3">
+              <div className="flex items-center gap-6">
+                <div className="flex-1 space-y-1.5">
+                  <Label htmlFor="ringSizeMin">From</Label>
+                  <select
+                    id="ringSizeMin"
+                    className="block h-9 w-full border bg-transparent px-3 text-sm outline-none focus:border-black"
+                    value={ringSizeMin}
+                    onChange={(e) => setRingSizeMin(e.target.value)}
+                  >
+                    {Array.from({ length: 9 }, (_, i) => i + 4).map((n) => (
+                      <option key={n} value={String(n)}>{n}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex-1 space-y-1.5">
+                  <Label htmlFor="ringSizeMax">To</Label>
+                  <select
+                    id="ringSizeMax"
+                    className="block h-9 w-full border bg-transparent px-3 text-sm outline-none focus:border-black"
+                    value={ringSizeMax}
+                    onChange={(e) => setRingSizeMax(e.target.value)}
+                  >
+                    {Array.from({ length: 9 }, (_, i) => i + 4).map((n) => (
+                      <option key={n} value={String(n)}>{n}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {formData.sizes.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {formData.sizes.map((s) => (
+                    <span key={s} className="inline-flex items-center border border-gray-300 bg-gray-50 px-2 py-0.5 text-xs">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-amber-600">Min must be ≤ Max to generate sizes.</p>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex gap-2">
+                <Input
+                  value={newSizeInput}
+                  onChange={(e) => setNewSizeInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      handleAddSize()
+                    }
+                  }}
+                  placeholder="e.g. S, M, L, 45cm, 50"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddSize}
+                  disabled={!newSizeInput.trim()}
+                  className="shrink-0 px-4"
+                >
+                  Add
+                </Button>
+              </div>
+              {formData.sizes.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {formData.sizes.map((s) => (
+                    <span key={s} className="inline-flex items-center gap-1 border border-gray-300 bg-gray-50 px-2 py-0.5 text-xs">
+                      {s}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSize(s)}
+                        className="text-gray-400 hover:text-black"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-gray-400">No sizes added — size selector will be hidden in storefront.</p>
+              )}
+            </div>
+          )}
+        </ProductFormRow>
+      )}
 
       <ProductFormRow
         label="URL"
