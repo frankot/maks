@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic'
 import { getDiscountCodesPaginated } from '@/lib/discounts'
 import { DiscountsTable } from './_components/DiscountsTable'
 import { DiscountCodeForm } from './_components/DiscountCodeForm'
-import AdminPageWrapper from '../components/AdminPageWrapper'
+import AdminPageWrapper from '../../components/AdminPageWrapper'
 import { PaginationControls } from '@/components/ui/pagination-controls'
 import { ADMIN_PAGE_SIZE_OPTIONS } from '@/lib/constants'
 

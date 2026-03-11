@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
-import AdminPageWrapper from '../../components/AdminPageWrapper'
+import AdminPageWrapper from '../../../components/AdminPageWrapper'
 import { ProductForm } from '../_components/ProductForm'
 
 export default function AddProductPage() {

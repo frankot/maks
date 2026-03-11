@@ -1,4 +1,4 @@
-import AdminPageWrapper from '../components/AdminPageWrapper'
+import AdminPageWrapper from '../../components/AdminPageWrapper'
 import { DangerZone } from './_components/DangerZone'
 
 export default function SettingsPage() {

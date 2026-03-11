@@ -27,7 +27,7 @@ interface MobileProductViewProps {
 
 export default function MobileProductView({ product, isSold }: MobileProductViewProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-    const [selectedSize, setSelectedSize] = useState('')
+  const [selectedSize, setSelectedSize] = useState('')
   const currency = useCurrencyStore((s) => s.currency)
   const amount = currency === 'EUR' ? product.priceInCents : product.priceInGrosz
 
@@ -128,12 +128,19 @@ export default function MobileProductView({ product, isSold }: MobileProductView
               >
                 <option value="">Select size</option>
                 {product.sizes.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-900">
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
             </div>
@@ -161,7 +168,7 @@ export default function MobileProductView({ product, isSold }: MobileProductView
                 selectedSize: selectedSize || null,
                 collectionName: product.collectionName,
               }}
-                            isDisabled={product.sizes.length > 0 && !selectedSize}
+              isDisabled={product.sizes.length > 0 && !selectedSize}
               className="w-full bg-black py-3.5 text-sm tracking-wider text-white uppercase transition-colors hover:bg-gray-800"
             />
           )}

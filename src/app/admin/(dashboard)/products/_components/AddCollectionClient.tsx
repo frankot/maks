@@ -1,6 +1,6 @@
 'use client'
 
-import { EditCollections } from '../../components/EditCollections'
+import { EditCollections } from '../../../components/EditCollections'
 import { useRouter } from 'next/navigation'
 
 export function EditCollectionsClient() {

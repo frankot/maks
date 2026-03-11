@@ -1,5 +1,5 @@
 import { getDashboardStats } from '@/lib/dashboard'
-import { DashboardStats } from './components/DashboardStats'
+import { DashboardStats } from '../components/DashboardStats'
 
 export default async function AdminPage() {
   const stats = await getDashboardStats()

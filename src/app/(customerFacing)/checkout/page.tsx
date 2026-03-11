@@ -473,9 +473,13 @@ export default function CheckoutPage() {
                           {(item.collectionName || item.size) && (
                             <div className="mt-1 space-y-0.5">
                               {item.collectionName && (
-                                <p className="text-xs text-black/45">Collection: {item.collectionName}</p>
+                                <p className="text-xs text-black/45">
+                                  Collection: {item.collectionName}
+                                </p>
                               )}
-                              {item.size && <p className="text-xs text-black/45">Size: {item.size}</p>}
+                              {item.size && (
+                                <p className="text-xs text-black/45">Size: {item.size}</p>
+                              )}
                             </div>
                           )}
                         </div>

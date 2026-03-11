@@ -1,16 +1,13 @@
 export const dynamic = 'force-dynamic'
-import { Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { getProductsPaginated } from '@/lib/products'
-import { ProductsTable } from './_components/ProductsTable'
-import Link from 'next/link'
-import AdminPageWrapper from '../components/AdminPageWrapper'
-import { AdminSearchBar } from '../components/AdminSearchBar'
-import { EditCollectionsClient } from './_components/EditCollectionsClient'
+
+import { getCustomersPaginated } from '@/lib/customers'
+import { CustomersTable } from './_components/CustomersTable'
+import AdminPageWrapper from '../../components/AdminPageWrapper'
+import { AdminSearchBar } from '../../components/AdminSearchBar'
 import { PaginationControls } from '@/components/ui/pagination-controls'
 import { ADMIN_PAGE_SIZE_OPTIONS } from '@/lib/constants'
 
-export default async function ProductsPage({
+export default async function CustomersPage({
   searchParams,
 }: {
   searchParams: Promise<{ page?: string; pageSize?: string; q?: string }>
@@ -26,40 +23,27 @@ export default async function ProductsPage({
     : ADMIN_PAGE_SIZE_OPTIONS[0]
 
   const {
-    items: products,
+    items: customers,
     totalPages,
     page: currentPage,
     pageSize: currentPageSize,
-  } = await getProductsPaginated({
-    page,
-    pageSize,
-    searchQuery,
-  })
+  } = await getCustomersPaginated({ page, pageSize, searchQuery })
 
   return (
     <AdminPageWrapper>
       <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3">
-        <h1 className="text-3xl font-bold">Products</h1>
+        <h1 className="text-3xl font-bold">Customers</h1>
         <AdminSearchBar
-          basePath="/admin/products"
+          basePath="/admin/customers"
           searchQuery={searchQuery}
-          placeholder="Search by product name"
+          placeholder="Search by name or email"
         />
-        <div className="flex items-center space-x-4">
-          <EditCollectionsClient />
-          <Button asChild>
-            <Link href="/admin/products/add">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Product
-            </Link>
-          </Button>
-        </div>
       </div>
 
-      <ProductsTable products={products} />
+      <CustomersTable customers={customers} />
 
       <PaginationControls
-        basePath="/admin/products"
+        basePath="/admin/customers"
         queryParams={searchQuery ? { q: searchQuery } : undefined}
         page={currentPage}
         totalPages={totalPages}

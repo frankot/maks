@@ -14,8 +14,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { AdminTable, TableColumn } from '../../components/Table'
-import { AdminDropdown, DropdownAction } from '../../components/Dropdown'
+import { AdminTable, TableColumn } from '../../../components/Table'
+import { AdminDropdown, DropdownAction } from '../../../components/Dropdown'
 import { DiscountCodeForm } from './DiscountCodeForm'
 import { toggleDiscountCodeAction, deleteDiscountCodeAction } from '../actions'
 import type { DiscountCode } from '@prisma/client'

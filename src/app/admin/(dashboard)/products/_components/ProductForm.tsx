@@ -325,8 +325,7 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
     const max = parseInt(ringSizeMax)
     setFormData((prev) => ({
       ...prev,
-      sizes:
-        min <= max ? Array.from({ length: max - min + 1 }, (_, i) => String(min + i)) : [],
+      sizes: min <= max ? Array.from({ length: max - min + 1 }, (_, i) => String(min + i)) : [],
     }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ringSizeMin, ringSizeMax, formData.category])
@@ -471,7 +470,9 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
                     onChange={(e) => setRingSizeMin(e.target.value)}
                   >
                     {Array.from({ length: 9 }, (_, i) => i + 4).map((n) => (
-                      <option key={n} value={String(n)}>{n}</option>
+                      <option key={n} value={String(n)}>
+                        {n}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -484,7 +485,9 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
                     onChange={(e) => setRingSizeMax(e.target.value)}
                   >
                     {Array.from({ length: 9 }, (_, i) => i + 4).map((n) => (
-                      <option key={n} value={String(n)}>{n}</option>
+                      <option key={n} value={String(n)}>
+                        {n}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -492,7 +495,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
               {formData.sizes.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
                   {formData.sizes.map((s) => (
-                    <span key={s} className="inline-flex items-center border border-gray-300 bg-gray-50 px-2 py-0.5 text-xs">
+                    <span
+                      key={s}
+                      className="inline-flex items-center border border-gray-300 bg-gray-50 px-2 py-0.5 text-xs"
+                    >
                       {s}
                     </span>
                   ))}
@@ -529,7 +535,10 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
               {formData.sizes.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
                   {formData.sizes.map((s) => (
-                    <span key={s} className="inline-flex items-center gap-1 border border-gray-300 bg-gray-50 px-2 py-0.5 text-xs">
+                    <span
+                      key={s}
+                      className="inline-flex items-center gap-1 border border-gray-300 bg-gray-50 px-2 py-0.5 text-xs"
+                    >
                       {s}
                       <button
                         type="button"
@@ -542,7 +551,9 @@ export function ProductForm({ productId, onSuccess }: ProductFormProps) {
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-gray-400">No sizes added — size selector will be hidden in storefront.</p>
+                <p className="text-xs text-gray-400">
+                  No sizes added — size selector will be hidden in storefront.
+                </p>
               )}
             </div>
           )}
