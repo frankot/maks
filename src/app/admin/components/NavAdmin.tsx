@@ -26,6 +26,11 @@ const navItems = [
 export default function NavAdmin() {
   const pathname = usePathname()
 
+  async function handleSignOut() {
+    const result = await signOut({ redirect: false, redirectTo: '/admin/login' })
+    window.location.replace(result.url ?? '/admin/login')
+  }
+
   const isActive = (href: string) => {
     if (href === '/admin') {
       return pathname === '/admin'
@@ -57,7 +62,7 @@ export default function NavAdmin() {
               ))}
               <NavigationMenuItem>
                 <button
-                  onClick={() => signOut({ callbackUrl: '/admin/login' })}
+                  onClick={handleSignOut}
                   className={cn(
                     navigationMenuTriggerStyle(),
                     'text-muted-foreground hover:text-foreground cursor-pointer transition-colors'
