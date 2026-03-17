@@ -10,8 +10,8 @@ import {
 import { cn } from '@/lib/utils'
 import { LogOut } from 'lucide-react'
 import Link from 'next/link'
-import { signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
+import { signOutAction } from '../actions'
 
 const navItems = [
   { name: 'Home', href: '/admin' },
@@ -25,11 +25,6 @@ const navItems = [
 
 export default function NavAdmin() {
   const pathname = usePathname()
-
-  async function handleSignOut() {
-    const result = await signOut({ redirect: false, redirectTo: '/admin/login' })
-    window.location.replace(result.url ?? '/admin/login')
-  }
 
   const isActive = (href: string) => {
     if (href === '/admin') {
@@ -61,16 +56,18 @@ export default function NavAdmin() {
                 </NavigationMenuItem>
               ))}
               <NavigationMenuItem>
-                <button
-                  onClick={handleSignOut}
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    'text-muted-foreground hover:text-foreground cursor-pointer transition-colors'
-                  )}
-                >
-                  <LogOut className="mr-1 h-4 w-4" />
-                  Sign out
-                </button>
+                <form action={signOutAction}>
+                  <button
+                    type="submit"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      'text-muted-foreground hover:text-foreground cursor-pointer transition-colors'
+                    )}
+                  >
+                    <LogOut className="mr-1 h-4 w-4" />
+                    Sign out
+                  </button>
+                </form>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
