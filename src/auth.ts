@@ -1,11 +1,12 @@
 import bcrypt from 'bcryptjs'
-import NextAuth from 'next-auth'
-import Credentials from 'next-auth/providers/credentials'
+import type { NextAuthOptions } from 'next-auth'
+import { getServerSession } from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  trustHost: true,
+export const authOptions: NextAuthOptions = {
   providers: [
-    Credentials({
+    CredentialsProvider({
+      name: 'Credentials',
       credentials: {
         login: { label: 'Login', type: 'text' },
         password: { label: 'Password', type: 'password' },
@@ -34,4 +35,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: '/admin/login',
   },
-})
+  session: {
+    strategy: 'jwt',
+  },
+}
+
+export function auth() {
+  return getServerSession(authOptions)
+}

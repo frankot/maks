@@ -1,7 +1,2 @@
-'use server'
+// Auth actions - sign out handled client-side via next-auth/react signOut()
 
-import { signOut } from '@/auth'
-
-export async function signOutAction() {
-  await signOut({ redirectTo: '/admin/login' })
-}

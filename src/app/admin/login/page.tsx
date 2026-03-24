@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -10,8 +10,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function AdminLoginPage() {
   const router = useRouter()
+  const [error, setError] = useState<string | null>(null)
+  const [isPending, setIsPending] = useState(false)
 
-  async function login(_prevState: string | null, formData: FormData) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setIsPending(true)
+    setError(null)
+
+    const formData = new FormData(e.currentTarget)
+
     const result = await signIn('credentials', {
       login: formData.get('login') as string,
       password: formData.get('password') as string,
@@ -19,15 +27,14 @@ export default function AdminLoginPage() {
     })
 
     if (result?.error) {
-      return 'Invalid login or password.'
+      setError('Invalid login or password.')
+      setIsPending(false)
+      return
     }
 
     router.push('/admin')
     router.refresh()
-    return null
   }
-
-  const [error, formAction, isPending] = useActionState(login, null)
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -36,7 +43,7 @@ export default function AdminLoginPage() {
           <CardTitle className="text-center text-2xl">Admin Login</CardTitle>
         </CardHeader>
         <CardContent>
-          <form action={formAction} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="login">Login</Label>
               <Input id="login" name="login" type="text" required autoComplete="username" />

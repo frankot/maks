@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Source_Sans_3 } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
+import Providers from '@/components/Providers'
 
 const sourceSans3 = Source_Sans_3({ subsets: ['latin'], display: 'swap' })
 
@@ -67,7 +68,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${sourceSans3.className} bg-white text-black antialiased`}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
         <Toaster />
       </body>
     </html>
